@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OTP Verification</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #000; /* Black background color */
+      color: #fff; /* Text color */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .otp-container {
+      background-color: #fff; /* White background */
+      padding: 20px;
+      text-align: center;
+      animation: fadeIn 0.5s ease-in-out;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    h2 {
+      color: #000; /* Heading color */
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 16px;
+      color: #777; /* Subtext color */
+      margin-bottom: 30px;
+    }
+
+    .otp-field {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .otp-input {
+      width: 40px; /* Adjust width as needed */
+      height: 40px; /* Adjust height as needed */
+      font-size: 24px;
+      text-align: center;
+      margin: 0 5px; /* Adjust margin as needed */
+      border: 2px solid #000; /* Black border */
+      border-radius: 5px;
+      color: #000; /* Black text color */
+      outline: none;
+    }
+
+    .otp-input:focus {
+      border-color: #333; /* Darker border on focus */
+    }
+
+    .submit-btn {
+      background-color: #000; /* Black button background color */
+      color: #fff; /* Button text color */
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: background-color 0.3s ease-in-out;
+    }
+
+    .submit-btn:hover {
+      background-color: #333; /* Button background color on hover */
+    }
+
+    .timer {
+      font-size: 18px;
+      color: #000; /* Timer text color */
+    }
+  </style>
+</head>
+<body>
+<div class="otp-container">
+  <h2>OTP Verification</h2>
+  <p>Please enter the 6-digit OTP sent to your Email.</p>
+  <form th:action="@{/registration/otpRegistrationValidation}"  method="post">
+    <div th:if="${error}" class="text-danger">
+      <p th:text="${error}"></p>
+      <p>error message is present</p>
+    </div>
+    <div class="otp-field form-outline form-white mb-4">
+      <label>
+        <input type="text" maxlength="6" class="form-control w-50" name="otp" placeholder="Enter your otp" required/>
+      </label>
+    </div>
+    <button class="submit-btn" type="submit">
+      Verify OTP
+    </button>
+    <button class="submit-btn" type="button" id="resendOTPButton">
+      Resend OTP
+    </button>
+
+  </form>
+  <div class="timer">
+    Time left: <span id="timer">02:00</span>
+  </div>
+
+  <div th:if="${otpTimer}" class="text-danger">
+    <p th:text="${otpTimer}"></p>
+<!--    <p>Time exceeded, please regenerate OTP.</p>-->
+  </div>
+
+
+</div>
+
+<script>
+  var timer = document.getElementById('timer');
+  var timeoutMessage = document.querySelector('.text-danger'); // Get the timeout error message element
+  var timeLeft = 120; // Initial time in seconds
+
+  function updateTimer() {
+    var minutes = Math.floor(timeLeft / 60);
+    var seconds = timeLeft % 60;
+    timer.textContent = (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+
+    if (timeLeft === 0) {
+      // Handle timeout, e.g., show a message or disable the submit button
+      timer.textContent = '00:00'; // Optional: Set the timer to 00:00 on timeout
+      timeoutMessage.textContent = 'Time exceeded, please regenerate OTP.'; // Set the timeout message
+      timeoutMessage.style.display = 'block'; // Show the timeout message
+    } else {
+      timeLeft--;
+      setTimeout(updateTimer, 1000); // Update every second
+    }
+  }
+
+  updateTimer(); // Start the timer
+</script>
+
+</body>
+</html>
