@@ -40,7 +40,7 @@ public class OtpService {
         int randomNumber = random.nextInt(max - min + 1) + min;
 
         // Set the expiration time for the OTP
-        LocalDateTime expirationTime = LocalDateTime.now().plus(4, ChronoUnit.MINUTES);
+        LocalDateTime expirationTime = LocalDateTime.now().plus(2, ChronoUnit.MINUTES);
 
         String emailBody = "Your OTP is: " + randomNumber;
         try {
