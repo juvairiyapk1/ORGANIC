@@ -8,6 +8,7 @@ import javax.validation.constraints.Min;
 
 public class ProductDto {
 
+    private Long id;
     private String productName;
     private String current_state;
     private String description;
@@ -24,6 +25,14 @@ public class ProductDto {
     private Subcategory subcategory;
 
     private String productImages;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getProductName() {
         return productName;

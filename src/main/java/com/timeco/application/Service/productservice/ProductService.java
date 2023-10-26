@@ -5,7 +5,6 @@ import com.timeco.application.model.product.Product;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public interface ProductService {
@@ -20,7 +19,7 @@ public interface ProductService {
 
     List<Product> searchProducts(String searchTerm);
 
-    Optional<Product> getProductById(Long productId);
+    Product getProductById(Long productId);
 
 //    List<ProductIDto> getAllProductsWithImages();
 

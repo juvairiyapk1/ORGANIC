@@ -5,6 +5,7 @@ import com.timeco.application.Dto.RegistrationDto;
 import com.timeco.application.Repository.UserRepository;
 import com.timeco.application.Service.otpservice.OtpService;
 import com.timeco.application.Service.userservice.UserService;
+import com.timeco.application.model.cart.Cart;
 import com.timeco.application.model.user.LoginDto;
 import com.timeco.application.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,7 +92,11 @@ public class UserRegistrationController {
 
         if (flag) {
             User verifyCustomer = (User) session.getAttribute("verifyCustomer");
+            Cart cart=new Cart();
+            cart.setUser(verifyCustomer);
+            verifyCustomer.setCart(cart);
             userRepository.save(verifyCustomer);
+
             return "redirect:/";
         } else {
             redirectAttributes.addFlashAttribute("error", "Invalid otp. Please try again");

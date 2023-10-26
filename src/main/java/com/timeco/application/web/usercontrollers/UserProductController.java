@@ -32,10 +32,10 @@ public class UserProductController {
     @GetMapping("/products/{productId}")
     public String viewProductDetails(@PathVariable Long productId, Model model) {
         // Retrieve the product details for the specified productId
-       Optional<Product> product = productService.getProductById(productId);
+       Product product = productService.getProductById(productId);
 
-        if (product.isPresent()) {
-            model.addAttribute("product", product.get());
+        if (product !=null) {
+            model.addAttribute("product", product);
             return "product-single"; // Create a Thymeleaf template for product details.
         } else {
             // Handle the case where the product with the specified ID does not exist.

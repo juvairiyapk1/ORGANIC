@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService{
@@ -74,8 +73,8 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public Optional<Product> getProductById(Long productId) {
-        return productRepository.findById(productId);
+    public Product getProductById(Long productId) {
+        return productRepository.findById(productId).orElse(null);
     }
 
 //    @Override

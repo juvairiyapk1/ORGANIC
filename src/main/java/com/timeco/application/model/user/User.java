@@ -1,5 +1,6 @@
 package com.timeco.application.model.user;
 
+import com.timeco.application.model.cart.Cart;
 import com.timeco.application.model.role.Role;
 
 import javax.persistence.*;
@@ -40,6 +41,11 @@ public class User {
 
     private Collection<Role> roles;
 
+
+    @OneToOne(mappedBy = "user" , cascade= CascadeType.ALL)
+    private Cart cart;
+
+
     public User() {
 
     }
@@ -53,7 +59,20 @@ public class User {
         this.password = password;
         this.roles = roles;
 
+
     }
+
+    public User(String firstName, String lastName, String email, String phoneNumber, String password, boolean isBlocked, Collection<Role> roles, Cart cart) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.password = password;
+        this.isBlocked = isBlocked;
+        this.roles = roles;
+        this.cart = cart;
+    }
+
     public Long getId() {
         return id;
     }
@@ -108,6 +127,14 @@ public class User {
         this.roles = roles;
     }
 
+    public Cart getCart() {
+        return cart;
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
+    }
+
     public User(Long id, String firstName, String lastName, String email, String phoneNumber, String password, boolean isBlocked, Collection<Role> roles) {
         this.id = id;
         this.firstName = firstName;
@@ -117,5 +144,8 @@ public class User {
         this.password = password;
         this.isBlocked = isBlocked;
         this.roles = roles;
+
     }
+
+
 }

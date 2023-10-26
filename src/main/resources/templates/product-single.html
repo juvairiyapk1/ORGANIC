@@ -171,8 +171,13 @@
 						</div>
 					</div>
 				</div>
-				<p><a th:href="@{cart}" class="btn btn-black py-3 px-5">Add to Cart</a></p>
-			</div>
+					<!-- Add to Cart button -->
+					<div class="add_to_cart" >
+						<a href="#" class="btn_3" id="addToCartButton" th:attr="data-id=${product.id}">Add to Cart</a>
+						<a href="" class="btn_3">Add to Wishlist</a>
+					</div>
+
+				</div>
 		</div>
 	</div>
 	</div>
@@ -441,6 +446,55 @@
 
     });
 </script>
+
+<script>
+	$(document).ready(function() {
+            $("#addToCartButton").click(function(event) {
+                event.preventDefault();
+
+                var id = $(this).data("id"); // Replace with the actual product ID
+                var quantity = 1; // You can allow users to specify the quantity
+                console.log(id);
+
+                // Show a SweetAlert while the request is being processed
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'info',
+                    title: 'Adding to cart...',
+                    showConfirmButton: false
+                });
+
+                $.ajax({
+                    type: "POST",
+                    url: "/addProductToCart",
+                    data: JSON.stringify({ id: id, quantity: quantity }),
+                    contentType: "application/json",
+                    success: function(data) {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Product added to cart successfully',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+
+                        // Implement code to update the cart UI as needed
+                    },
+                    error: function() {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'error',
+                            title: 'Failed to add the product to the cart',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }
+                });
+            });
+        });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.14.0/dist/sweetalert2.all.min.js"></script>
 
 </body>
 </html>
