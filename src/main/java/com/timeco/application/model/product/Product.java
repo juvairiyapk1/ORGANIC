@@ -1,12 +1,15 @@
 package com.timeco.application.model.product;
 
 
+import com.timeco.application.model.cart.CartItem;
 import com.timeco.application.model.category.Category;
 import com.timeco.application.model.category.Subcategory;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name="product")
@@ -34,13 +37,12 @@ public class Product {
 
     private String productImages;
 
-//    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<ProductImage> productImages;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    private Set<CartItem> cartItems = new HashSet<>();
 
     @ManyToOne(fetch =FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "category_id",referencedColumnName = "category_id")
     private Category category;
-
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "subcategory_id", referencedColumnName = "subcategory_Id")
@@ -55,6 +57,18 @@ public class Product {
 //        this.productImages = productImages;
 //    }
 
+
+    public Product(String productName, String current_state, String description, Integer quantity, Double price, String productImages, Set<CartItem> cartItems, Category category, Subcategory subcategory) {
+        this.productName = productName;
+        this.current_state = current_state;
+        this.description = description;
+        this.quantity = quantity;
+        this.price = price;
+        this.productImages = productImages;
+        this.cartItems = cartItems;
+        this.category = category;
+        this.subcategory = subcategory;
+    }
 
     public Product(Long id, String productName, String current_state, String description, Integer quantity, Double price, String productImages, Category category) {
         this.id = id;
@@ -149,4 +163,11 @@ public class Product {
         this.subcategory = subcategory;
     }
 
+    public Set<CartItem> getCartItems() {
+        return cartItems;
+    }
+
+    public void setCartItems(Set<CartItem> cartItems) {
+        this.cartItems = cartItems;
+    }
 }

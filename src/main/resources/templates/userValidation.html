@@ -116,36 +116,42 @@
     Time left: <span id="timer">02:00</span>
   </div>
 
-  <div th:if="${otpTimer}" class="text-danger">
-    <p th:text="${otpTimer}"></p>
+  <div id="timeExceededElement" th:attr="data-timeExceeded='false'"></div>
+
+
+  <!--    <p th:text="${otpTimer}"></p>-->
 <!--    <p>Time exceeded, please regenerate OTP.</p>-->
   </div>
 
 
-</div>
+
 
 <script>
   var timer = document.getElementById('timer');
-  var timeoutMessage = document.querySelector('.text-danger'); // Get the timeout error message element
-  var timeLeft = 120; // Initial time in seconds
+var timeLeft = 120; // Initial time in seconds
+var timeExceededElement = document.getElementById('timeExceededElement');
 
-  function updateTimer() {
+function updateTimer() {
     var minutes = Math.floor(timeLeft / 60);
     var seconds = timeLeft % 60;
     timer.textContent = (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
 
     if (timeLeft === 0) {
-      // Handle timeout, e.g., show a message or disable the submit button
-      timer.textContent = '00:00'; // Optional: Set the timer to 00:00 on timeout
-      timeoutMessage.textContent = 'Time exceeded, please regenerate OTP.'; // Set the timeout message
-      timeoutMessage.style.display = 'block'; // Show the timeout message
-    } else {
-      timeLeft--;
-      setTimeout(updateTimer, 1000); // Update every second
-    }
-  }
+        // Handle timeout, e.g., show a message or disable the submit button
+        timer.textContent = '00:00'; // Optional: Set the timer to 00:00 on timeout
+        document.getElementById('timerContainer').style.display = 'none'; // Hide the timer
+        document.getElementById('timeoutMessage').style.display = 'block'; // Show the timeout message
 
-  updateTimer(); // Start the timer
+        // Set the data-timeExceeded attribute to 'true' when the timer reaches 0
+        timeExceededElement.setAttribute('data-timeExceeded', 'true');
+    } else {
+        timeLeft--;
+        setTimeout(updateTimer, 1000); // Update every second
+    }
+}
+
+updateTimer(); // Start the timer
+
 </script>
 
 </body>

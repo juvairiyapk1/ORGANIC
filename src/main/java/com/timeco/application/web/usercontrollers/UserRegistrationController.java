@@ -65,7 +65,6 @@ public class UserRegistrationController {
 
         User verifyCustomer = userService.save(registrationDto);
         otpService.sendRegistrationOtp(verifyCustomer.getEmail());
-        System.out.println("customer"+verifyCustomer.getEmail());
         session.setAttribute("validEmailId", verifyCustomer.getEmail());
         session.setAttribute("verifyCustomer", verifyCustomer);
 
@@ -75,7 +74,7 @@ public class UserRegistrationController {
     @GetMapping("/otpVerification")
     public String otpVerification(Model model, HttpSession session) {
 
-        session.setAttribute("otpTimer",120);
+       session.setAttribute("otpTimer",120);
 
         LoginDto otpBasedLoginAccount = new LoginDto();
         model.addAttribute("otpBasedLoginAccount", otpBasedLoginAccount);

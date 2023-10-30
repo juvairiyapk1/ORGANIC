@@ -21,7 +21,10 @@ public interface ProductService {
 
     Product getProductById(Long productId);
 
-//    List<ProductIDto> getAllProductsWithImages();
+    boolean isExistOrNot(Long id);
+
+//    void deleteProduct(Long productId) throws Exception;
+
 
 
 }

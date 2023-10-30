@@ -382,3 +382,13 @@
 .footer .copyright a:hover {
     color: var(--primary);
 }
+
+/* Initial styles for the image */
+.zoom-image {
+    transition: transform 0.3s; /* Add a smooth transition */
+}
+
+/* Zoom effect on hover */
+.zoom-image:hover {
+    transform: scale(1.2); /* Adjust the scale factor as needed */
+}

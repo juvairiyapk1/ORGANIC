@@ -20,9 +20,4 @@ public interface UserService extends UserDetailsService {
 
 
     List<User> getUsersByPartialEmailOrName(String searchTerm);
-
-
-
-
-
 }

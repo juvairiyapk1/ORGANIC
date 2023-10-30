@@ -58,6 +58,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/accessdenied").hasAnyRole("ROLE_USER", "ROLE_ADMIN")
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/user/**").hasRole("USER")
+                //.antMatchers("/product/{productId}/addToCart").authenticated()
+                //.antMatchers("/addProductToCart").authenticated()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

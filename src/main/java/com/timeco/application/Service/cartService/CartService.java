@@ -1,6 +1,7 @@
 package com.timeco.application.Service.cartService;
 
 import com.timeco.application.Dto.ProductDto;
+import com.timeco.application.Repository.CartItemRepository;
 import com.timeco.application.Repository.CartRepository;
 import com.timeco.application.Repository.UserRepository;
 import com.timeco.application.Service.productservice.ProductService;
@@ -13,9 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class CartService {
@@ -27,6 +26,9 @@ public class CartService {
     private UserRepository userRepository;
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private CartItemRepository cartItemRepository;
 
 
     public boolean isProductInCart(ProductDto productDTO, Principal principal) {
@@ -114,4 +116,35 @@ public class CartService {
     }
 
 
+    public int getProductCountInCart(ProductDto productDTO, Principal principal) {
+        if (principal != null)
+        {
+            String userName=principal.getName();
+            User user=userRepository.findByEmail(userName);
+            Cart cart=cartRepository.findByUser(user);
+            List<CartItem>cartItems=cartItemRepository.findByCart(cart);
+            if (cartItems != null) {
+                Set<Long> uniqueProductIds = new HashSet<>();
+
+                for (CartItem cartItem : cartItems) {
+                    uniqueProductIds.add(cartItem.getProduct().getId());
+                }
+
+                int uniqueProductCount = uniqueProductIds.size();
+
+                return uniqueProductCount;
+
+            }
+        }
+        return 0;
+    }
+
+    public void deleteProduct(Long cartItemId) {
+      Optional<CartItem> cartItem=cartItemRepository.findById(cartItemId);
+      if (cartItem.isPresent())
+      {
+          cartItemRepository.deleteById(cartItemId);
+      }
+
+    }
 }

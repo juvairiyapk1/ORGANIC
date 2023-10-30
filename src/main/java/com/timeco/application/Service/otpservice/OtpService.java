@@ -60,38 +60,31 @@ public class OtpService {
         errorMessage = null;
 
     }
-    public boolean validateRegistrationOtp(String email, Integer otp) {
-        // Check if the OTP is valid
-        // Get the current time
-
+    public boolean validateRegistrationOtp(String email, int otp) {
         Otp validatedOtp = otpRepository.findByEmail(email);
 
-        LocalDateTime expirationTime = validatedOtp.getExpirationTime();
-        LocalDateTime currentTime = LocalDateTime.now();
-        int comparison = currentTime.compareTo(expirationTime);
+        if (validatedOtp != null) {
+            LocalDateTime expirationTime = validatedOtp.getExpirationTime();
+            LocalDateTime currentTime = LocalDateTime.now();
 
-
-        // Compare the two times
-        if (currentTime.isBefore(expirationTime) &&validatedOtp.getOtp().equals(otp)) {
-            System.out.println("Allowed Registration...");
-            errorMessage = null;
-            successMessage = "Account Created Successfully";
-            otpRepository.delete(validatedOtp);
-            return true;
+            if (currentTime.isBefore(expirationTime) && validatedOtp.getOtp().equals(otp)) {
+                // The OTP is valid and within the time limit
+                errorMessage = null;
+                successMessage = "Account Created Successfully";
+                otpRepository.delete(validatedOtp);
+                return true;
+            } else if (currentTime.isAfter(expirationTime)) {
+                // Time has expired
+                errorMessage = "Time expired....";
+                successMessage = null;
+                otpRepository.delete(validatedOtp);
+            } else {
+                // Invalid OTP
+                errorMessage = "Invalid OTP";
+                successMessage = null;
+            }
         }
-        else if(comparison > 0) {
-            System.out.println("Time expired....");
-            errorMessage = "Time expired....";
-            successMessage = null;
-            otpRepository.delete(validatedOtp);
-            return false;
-        }
-        else {
-            System.out.println("Invalid OTP");
-            errorMessage = "Invalid OTP";
-            successMessage = null;
-            return false;
-        }
+        return false;
     }
 
 }

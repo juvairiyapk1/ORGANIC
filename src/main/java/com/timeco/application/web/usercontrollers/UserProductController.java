@@ -2,6 +2,7 @@ package com.timeco.application.web.usercontrollers;
 
 
 import com.timeco.application.Service.productservice.ProductService;
+import com.timeco.application.model.category.Category;
 import com.timeco.application.model.product.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,7 @@ public class UserProductController {
 
     @GetMapping("/products")
     public String listProductsWithImages(Model model) {
+
         List<Product> productsWithImages = productService.getAllProducts();
 
         model.addAttribute("productsWithImages", productsWithImages);

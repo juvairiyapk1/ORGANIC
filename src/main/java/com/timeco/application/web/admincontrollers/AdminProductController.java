@@ -1,12 +1,15 @@
 package com.timeco.application.web.admincontrollers;
 
 import com.timeco.application.Dto.ProductDto;
+import com.timeco.application.Repository.CartItemRepository;
 import com.timeco.application.Repository.CategoryRepository;
 import com.timeco.application.Repository.ProductRepository;
 import com.timeco.application.Repository.SubCategoryRepository;
 import com.timeco.application.Service.categoryservice.CategoryService;
 import com.timeco.application.Service.categoryservice.SubCategoryService;
 import com.timeco.application.Service.productservice.ProductService;
+import com.timeco.application.Service.userservice.UserService;
+import com.timeco.application.model.cart.CartItem;
 import com.timeco.application.model.category.Category;
 import com.timeco.application.model.category.Subcategory;
 import com.timeco.application.model.product.Product;
@@ -21,6 +24,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.persistence.Id;
 import javax.swing.text.html.Option;
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +33,8 @@ import java.util.Optional;
 @RequestMapping("/admin")
 public class AdminProductController {
 
+    @Autowired
+    private  CartItemRepository cartItemRepository;
     @Autowired
     private ProductService productService;
 
@@ -46,6 +52,8 @@ public class AdminProductController {
     @Autowired
     private SubCategoryService subCategoryService;
 
+    @Autowired
+    private UserService userService;
 
 
     @GetMapping("/listProducts")
@@ -59,14 +67,7 @@ public class AdminProductController {
 
    //  Product -------------
 
-//    @GetMapping("/addProducts")
-//    public String addproductsForm(Model model)
-//    {
-//        ProductDto productDto=new ProductDto();
-//        model.addAttribute("product",productDto);
-//        model.addAttribute("categories",categoryRepository.findByIsListed(false));
-//        return "add-product";
-//    }
+
 @GetMapping("/addProducts")
 public String addproductsForm(Model model) {
     ProductDto productDto = new ProductDto();
@@ -120,12 +121,26 @@ public String addproductsForm(Model model) {
 
 
     @GetMapping("/deleteProduct/{id}")
-    public String deleteProduct(@PathVariable Long id){
+    public String deleteProduct(@PathVariable Long id) {
 
-        productService.deleteProductById(id);
+            Product product = productRepository.findById(id).orElse(null);
+            boolean isExist = productService.isExistOrNot(id);
+            if(isExist)
+            {
+                return "redirect:/admin/listProducts?cantDelete";
+            }
+            if (product != null) {
+                // Handle the case where the product doesn't exist
+                productService.deleteProductById(id);
+                return "redirect:/admin/listProducts";
+            }
 
-        return "redirect:/admin/listProducts";
+            return "redirect:/admin/listProducts?error";
+
     }
+
+
+
     @GetMapping("/updateProduct/{id}")
     public String updateProduct(@PathVariable Long id,Model model){
 
@@ -140,6 +155,7 @@ public String addproductsForm(Model model) {
     }
     @PostMapping("/updateProduct/{id}")
     public String updateProduct(@ModelAttribute ProductDto updatedProduct,@PathVariable Long id) {
+        System.out.println(id);
         productService.updateProductById(id,updatedProduct);
 
         return "redirect:/admin/listProducts";

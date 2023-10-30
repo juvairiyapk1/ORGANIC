@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
 	<title>ORGANIC</title>
 	<meta charset="utf-8">
@@ -83,7 +83,7 @@
 					<div class="dropdown-menu m-0">
 						<a href="blog.html" class="dropdown-item">Blog Grid</a>
 						<a th:href="@{/login}" class="dropdown-item">Login</a>
-						<a th:href="@{/login?logout}" class="dropdown-item">Logout</a>
+						<a th:href="@{/logout}" sec:authorize="isAuthenticated()" class="dropdown-item">Logout</a>
 						<a href="404.html" class="dropdown-item">404 Page</a>
 					</div>
 				</div>
@@ -96,7 +96,7 @@
 				<a class="btn-sm-square bg-white rounded-circle ms-3" href="">
 					<small class="fa fa-user text-body"></small>
 				</a>
-				<a class="btn-sm-square bg-white rounded-circle ms-3" href="">
+				<a class="btn-sm-square bg-white rounded-circle ms-3" th:href="@{/cart}">
 					<small class="fa fa-shopping-bag text-body"></small>
 				</a>
 			</div>
@@ -126,11 +126,14 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-6">
-
-				<img th:src="${product.productImages}" class="img-fluid" alt="Product Image" src="">
-
+				<div class="col-lg-6">
+					<div class="image-container">
+						<img id="zoom-image" th:src="${product.productImages}" class="img-fluid" alt="Product Image">
+					</div>
+				</div>
 
 			</div>
+
 			<div class="col-lg-6 product-details pl-md-5 ftco-animate">
 				<h3 th:text="${product.productName}"></h3>
 				<div class="rating d-flex">
@@ -158,23 +161,25 @@
 					<div class="col-md-6">
 						<div class="input-group d-flex mb-3">
                             <span class="input-group-btn mr-2">
-                                <button type="button" class="quantity-left-minus btn" data-type="minus" data-field="">
-                                    <i class="ion-ios-remove"></i>
-                                </button>
+<!--                                <button type="button" class="quantity-left-minus btn" data-type="minus" data-field="">-->
+<!--                                    <i class="ion-ios-remove"></i>-->
+<!--                                </button>-->
                             </span>
 							<p th:text="${product. quantity}"></p>
 							<span class="input-group-btn ml-2">
-                                <button type="button" class="quantity-right-plus btn" data-type="plus" data-field="">
-                                    <i class="ion-ios-add"></i>
-                                </button>
+<!--                                <button type="button" class="quantity-right-plus btn" data-type="plus" data-field="">-->
+<!--                                    <i class="ion-ios-add"></i>-->
+<!--                                </button>-->
                             </span>
 						</div>
 					</div>
 				</div>
 					<!-- Add to Cart button -->
-					<div class="add_to_cart" >
-						<a href="#" class="btn_3" id="addToCartButton" th:attr="data-id=${product.id}">Add to Cart</a>
-						<a href="" class="btn_3">Add to Wishlist</a>
+					<div class="add_to_cart">
+						<!-- Check if the user is authenticated and render accordingly -->
+						<a class="btn_3 btn-primary py-2 px-5" style="cursor:pointer" id="addToCartButton" th:if="${#authorization.expression('isAuthenticated()')}" th:attr="data-id=${product.id}">Add to Cart</a>
+						<a href="/login" style="cursor:pointer" class="btn_3 btn-primary py-2 px-5" th:if="${not #authorization.expression('isAuthenticated()')}">Add to Cart</a>
+						<a href="" class="btn_3 btn-primary py-2 px-5" th:if="${#authorization.expression('isAuthenticated()')}">Add to Wishlist</a>
 					</div>
 
 				</div>
@@ -282,7 +287,7 @@
 						</div>
 					</div>
 				</div>
-			</div>
+			</div>p
 			<div class="col-md-6 col-lg-3 ftco-animate">
 				<div class="product">
 					<a href="#" class="img-prod"><img class="img-fluid" src="images/product-4.jpg" alt="Colorlib Template">
@@ -409,90 +414,88 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
 <script src="/single/js/google-map.js"></script>
 <script src="/single/js/main.js"></script>
-
 <script>
-	$(document).ready(function(){
-
-    var quantitiy=0;
-       $('.quantity-right-plus').click(function(e){
-
-            // Stop acting like a button
-            e.preventDefault();
-            // Get the field name
-            var quantity = parseInt($('#quantity').val());
-
-            // If is not undefined
-
-                $('#quantity').val(quantity + 1);
-
-
-                // Increment
+	$(document).ready(function () {
+        $('#zoom-image').elevateZoom({
+            zoomType: "inner",
+            cursor: "crosshair",
+            zoomLevel: 4
 
         });
-
-         $('.quantity-left-minus').click(function(e){
-            // Stop acting like a button
-            e.preventDefault();
-            // Get the field name
-            var quantity = parseInt($('#quantity').val());
-
-            // If is not undefined
-
-                // Increment
-                if(quantity>0){
-                $('#quantity').val(quantity - 1);
-                }
-        });
-
     });
 </script>
 
+
+
 <script>
 	$(document).ready(function() {
-            $("#addToCartButton").click(function(event) {
-                event.preventDefault();
+    $("#addToCartButton").click(function(event) {
+        event.preventDefault();
 
-                var id = $(this).data("id"); // Replace with the actual product ID
-                var quantity = 1; // You can allow users to specify the quantity
-                console.log(id);
+        var id = $(this).data("id"); // Replace with the actual product ID
+        var quantity = 1; // You can allow users to specify the quantity
+        console.log(id);
 
-                // Show a SweetAlert while the request is being processed
+        // Show a SweetAlert while the request is being processed
+        Swal.fire({
+            position: 'top-end',
+            icon: 'info',
+            title: 'Adding to cart...',
+            showConfirmButton: false
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "/addProductToCart",
+            data: JSON.stringify({ id: id, quantity: quantity }),
+            contentType: "application/json",
+            success: function(data) {
+                if (data === "Product is already in the cart.") {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'warning',
+                        title: 'Product is already in the cart',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                } else if (data === "Product added to cart.") {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Product added to cart successfully',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                    // Implement code to update the cart UI as needed
+                } else if (data === "Product limit reached. You cannot add more of this product.") {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'info', // You can change the icon as needed
+                        title: 'Product limit reached. You cannot add more of this product.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            },
+            error: function() {
                 Swal.fire({
                     position: 'top-end',
-                    icon: 'info',
-                    title: 'Adding to cart...',
-                    showConfirmButton: false
+                    icon: 'error',
+                    title: 'Failed to add the product to the cart',
+                    showConfirmButton: false,
+                    timer: 1500
                 });
-
-                $.ajax({
-                    type: "POST",
-                    url: "/addProductToCart",
-                    data: JSON.stringify({ id: id, quantity: quantity }),
-                    contentType: "application/json",
-                    success: function(data) {
-                        Swal.fire({
-                            position: 'top-end',
-                            icon: 'success',
-                            title: 'Product added to cart successfully',
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-
-                        // Implement code to update the cart UI as needed
-                    },
-                    error: function() {
-                        Swal.fire({
-                            position: 'top-end',
-                            icon: 'error',
-                            title: 'Failed to add the product to the cart',
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                    }
-                });
-            });
+            }
         });
+    });
+});
 </script>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/2.2.3/jquery.elevatezoom.min.js"></script>
+
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.14.0/dist/sweetalert2.all.min.js"></script>
 
