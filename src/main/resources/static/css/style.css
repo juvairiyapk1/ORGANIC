@@ -392,3 +392,19 @@
 .zoom-image:hover {
     transform: scale(1.2); /* Adjust the scale factor as needed */
 }
+.sidebar {
+	background-color: #aeaeae;
+}
+
+.sidebar a {
+	padding: 15px;
+	text-decoration: none;
+	font-size: 18px;
+	color: black;
+	display: block;
+	transition: 0.3s;
+}
+.sidebar a:hover {
+	background-color: #555;
+	color: #fff;
+}

@@ -11,6 +11,7 @@ import com.timeco.application.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/registration")
@@ -83,44 +85,49 @@ public class UserRegistrationController {
 
 
     @PostMapping("/otpRegistrationValidation")
-    public String otpRegistrationValidation(@ModelAttribute("otpBasedLoginAccount") LoginDto LoginAccount, HttpSession session, RedirectAttributes redirectAttributes) {
-        String emailId = session.getAttribute("validEmailId").toString();
-        boolean flag = otpService.validateRegistrationOtp(emailId, LoginAccount.getOtp());
+    public String otpRegistrationValidation (@ModelAttribute("otpBasedLoginAccount") LoginDto LoginAccount, HttpSession session, RedirectAttributes redirectAttributes) {
 
-        int otpTimer = (int) session.getAttribute("otpTimer");
+//        if(LoginAccount.getOtp() == null){
+//            System.out.println("hgddbxvbfgfsfsfsfsfsfdsf");
+//            redirectAttributes.addFlashAttribute("message","Please fill in field");
+//        }
+            String emailId = session.getAttribute("validEmailId").toString();
+            boolean flag = otpService.validateRegistrationOtp(emailId, LoginAccount.getOtp());
 
-        if (flag) {
-            User verifyCustomer = (User) session.getAttribute("verifyCustomer");
-            Cart cart=new Cart();
-            cart.setUser(verifyCustomer);
-            verifyCustomer.setCart(cart);
-            userRepository.save(verifyCustomer);
+            int otpTimer = (int) session.getAttribute("otpTimer");
 
-            return "redirect:/";
-        } else {
-            redirectAttributes.addFlashAttribute("error", "Invalid otp. Please try again");
+            if (flag) {
+                User verifyCustomer = (User) session.getAttribute("verifyCustomer");
+                Cart cart = new Cart();
+                cart.setUser(verifyCustomer);
+                verifyCustomer.setCart(cart);
+                userRepository.save(verifyCustomer);
 
-            if (otpTimer <= 0) {
-                redirectAttributes.addFlashAttribute("otpTimer", "Time exceeded. Please regenerate OTP.");
+                return "redirect:/";
             } else {
-                otpTimer -= 1;
-                session.setAttribute("otpTimer", otpTimer);
+                redirectAttributes.addFlashAttribute("error", "Invalid otp. Please try again");
+
+                if (otpTimer <= 0) {
+                    redirectAttributes.addFlashAttribute("otpTimer", "Time exceeded. Please regenerate OTP.");
+                } else {
+                    otpTimer -= 1;
+                    session.setAttribute("otpTimer", otpTimer);
+                }
+
+                return "redirect:/registration/otpVerification";
             }
 
-            return "redirect:/registration/otpVerification";
-        }
+
     }
 
 
-    @GetMapping("/resendOTP")
+    @PostMapping("/resendOTP")
     public String resendOTP(HttpSession session) {
-        // Retrieve the email from the session
-        String emailId = session.getAttribute("validEmailId").toString();
-        // Send the registration OTP again
-        otpService.sendRegistrationOtp(emailId);
-        // Redirect to the OTP verification page
-        return "redirect:/registration/otpRegistrationValidation";
+        String email = session.getAttribute("validEmailId").toString();
+        otpService.sendRegistrationOtp(email);
+        return "redirect:/registration/otpVerification";
     }
+
 
 
 

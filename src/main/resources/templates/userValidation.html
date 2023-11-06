@@ -97,7 +97,7 @@
   <form th:action="@{/registration/otpRegistrationValidation}"  method="post">
     <div th:if="${error}" class="text-danger">
       <p th:text="${error}"></p>
-<!--      <p>error message is present</p>-->
+      <!--      <p>error message is present</p>-->
     </div>
     <div class="otp-field form-outline form-white mb-4">
       <label>
@@ -107,11 +107,14 @@
     <button class="submit-btn" type="submit">
       Verify OTP
     </button>
-    <button class="submit-btn" type="button" id="resendOTPButton">
+  </form>
+  <br>
+  <form  method="post" th:action="@{/registration/resendOTP}">
+    <button class="submit-btn" type="submit" name="action" value="resend">
       Resend OTP
     </button>
-
   </form>
+
   <div class="timer">
     Time left: <span id="timer">02:00</span>
   </div>
@@ -131,6 +134,27 @@
 var timeLeft = 120; // Initial time in seconds
 var timeExceededElement = document.getElementById('timeExceededElement');
 
+<!--function updateTimer() {-->
+<!--    var minutes = Math.floor(timeLeft / 60);-->
+<!--    var seconds = timeLeft % 60;-->
+<!--    timer.textContent = (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;-->
+
+<!--    if (timeLeft === 0) {-->
+<!--        // Handle timeout, e.g., show a message or disable the submit button-->
+<!--        swal(-->
+<!--        timer.textContent = '00:00'; // Optional: Set the timer to 00:00 on timeout-->
+<!--        document.getElementById('timerContainer').style.display = 'none'; // Hide the timer-->
+<!--        document.getElementById('timeoutMessage').style.display = 'block'; // Show the timeout message-->
+
+<!--        // Set the data-timeExceeded attribute to 'true' when the timer reaches 0-->
+<!--        timeExceededElement.setAttribute('data-timeExceeded', 'true');-->
+<!--    } else {-->
+<!--        timeLeft&#45;&#45;;-->
+<!--        setTimeout(updateTimer, 1000); // Update every second-->
+<!--    }-->
+<!--}-->
+
+<!--updateTimer(); // Start the timer-->
 function updateTimer() {
     var minutes = Math.floor(timeLeft / 60);
     var seconds = timeLeft % 60;
@@ -138,9 +162,19 @@ function updateTimer() {
 
     if (timeLeft === 0) {
         // Handle timeout, e.g., show a message or disable the submit button
-        timer.textContent = '00:00'; // Optional: Set the timer to 00:00 on timeout
-        document.getElementById('timerContainer').style.display = 'none'; // Hide the timer
-        document.getElementById('timeoutMessage').style.display = 'block'; // Show the timeout message
+        swal({
+            title: 'Time Exceeded',
+            text: 'The time limit has been reached.',
+            icon: 'error',
+            timer: 2000, // Auto-close the alert after 2 seconds (or set to your desired duration)
+            button: false // Hide the "OK" button
+        })
+        .then(function() {
+            // Optional: Set the timer to 00:00 on timeout
+            timer.textContent = '00:00';
+            document.getElementById('timerContainer').style.display = 'none'; // Hide the timer
+            document.getElementById('timeoutMessage').style.display = 'block'; // Show the timeout message
+        });
 
         // Set the data-timeExceeded attribute to 'true' when the timer reaches 0
         timeExceededElement.setAttribute('data-timeExceeded', 'true');
@@ -151,6 +185,9 @@ function updateTimer() {
 }
 
 updateTimer(); // Start the timer
+
+
+
 
 </script>
 

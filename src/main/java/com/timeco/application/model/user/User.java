@@ -4,6 +4,7 @@ import com.timeco.application.model.cart.Cart;
 import com.timeco.application.model.role.Role;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -45,12 +46,15 @@ public class User {
     @OneToOne(mappedBy = "user" , cascade= CascadeType.ALL)
     private Cart cart;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Address> address = new ArrayList<>();
 
     public User() {
 
     }
 
-    public User(String firstName, String lastName, String email,String phoneNumber, String password, Collection<Role> roles) {
+
+    public User(String firstName, String lastName, String email, String phoneNumber, String password, Collection<Role> roles) {
         super();
         this.firstName = firstName;
         this.lastName = lastName;
@@ -62,7 +66,7 @@ public class User {
 
     }
 
-    public User(String firstName, String lastName, String email, String phoneNumber, String password, boolean isBlocked, Collection<Role> roles, Cart cart) {
+    public User(String firstName, String lastName, String email, String phoneNumber, String password, boolean isBlocked, Collection<Role> roles, Cart cart,List<Address> address) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -71,6 +75,7 @@ public class User {
         this.isBlocked = isBlocked;
         this.roles = roles;
         this.cart = cart;
+        this.address=address;
     }
 
     public Long getId() {
@@ -133,6 +138,14 @@ public class User {
 
     public void setCart(Cart cart) {
         this.cart = cart;
+    }
+
+    public List<Address> getAddress() {
+        return address;
+    }
+
+    public void setAddress(List<Address> address) {
+        this.address = address;
     }
 
     public User(Long id, String firstName, String lastName, String email, String phoneNumber, String password, boolean isBlocked, Collection<Role> roles) {

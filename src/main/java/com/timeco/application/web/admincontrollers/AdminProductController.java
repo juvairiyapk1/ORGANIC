@@ -43,8 +43,7 @@ public class AdminProductController {
 
     @Autowired
     private CategoryRepository categoryRepository;
-//    @Autowired
-//    private ProductImageService productImageService;
+
     @Autowired
     private CategoryService categoryService;
     @Autowired

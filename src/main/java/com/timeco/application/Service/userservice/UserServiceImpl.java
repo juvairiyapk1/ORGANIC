@@ -1,9 +1,9 @@
 package com.timeco.application.Service.userservice;
 
 import com.timeco.application.Dto.RegistrationDto;
+import com.timeco.application.Repository.AddressRepository;
 import com.timeco.application.Repository.RoleRepository;
 import com.timeco.application.Repository.UserRepository;
-import com.timeco.application.model.product.Product;
 import com.timeco.application.model.role.Role;
 import com.timeco.application.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -36,18 +37,14 @@ public class UserServiceImpl implements UserService {
     private BCryptPasswordEncoder passwordEncoder;
 
 
-//    public UserServiceImpl(UserRepository userRepository) {
-//        super();
-//        this.userRepository = userRepository;
-//    }
-
+   @Autowired
+   private AddressRepository addressRepository;
 
 
 
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        System.out.println("Email received in loadUserByUsername: " + email);
         User user = userRepository.findByEmail(email);
         if (user == null) {
             throw new UsernameNotFoundException("Invalid username or password.");
@@ -55,7 +52,6 @@ public class UserServiceImpl implements UserService {
         if(user.isBlocked()){
             throw new DisabledException("User is blocked");
         }
-        System.out.println("User found: " + user.getEmail());
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), mapRolesToAuthorities(user.getRoles()));
 
     }
@@ -106,9 +102,52 @@ public class UserServiceImpl implements UserService {
 
 
     }
+    @Transactional
+    @Override
+    public boolean updateProfile(User updatedUser) {
+
+        try {
+            User existingUser = userRepository.findByEmail(updatedUser.getEmail());
+            if (existingUser != null) {
+                existingUser.setFirstName(updatedUser.getFirstName());
+                existingUser.setEmail(updatedUser.getEmail());
+                System.out.println(updatedUser.getFirstName());
+                existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
+
+                // Save the updated user
+                userRepository.save(existingUser);
+
+                return true; // Successful update
+            }
+            return false;
+        }catch (Exception e) {
+            // Handle exceptions or validation errors if needed
+            e.printStackTrace();
+            return false;
+        }
+    }
 
 
+    @Override
+    public boolean isCurrentPasswordCorrect(String email, String currentPassword) {
+        User user = userRepository.findByEmail(email);
+        if (user != null) {
+            // Compare the current password with the stored password
+            return passwordEncoder.matches(currentPassword, user.getPassword()); // Assuming passwords are hashed with BCrypt
+        }
+        return false;
+    }
 
+    @Override
+    public void updatePassword(String email, String newPassword) {
+        User user = userRepository.findByEmail(email);
+        if (user != null) {
+            // Hash and update the new password
+            String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+            user.setPassword(hashedPassword);
+            userRepository.save(user);
+        }
+    }
 
 
 }

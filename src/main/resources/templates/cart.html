@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
+	  xmlns="http://www.w3.org/1999/html">
 
   <head>
     <title>ORGANIC</title>
@@ -111,7 +112,7 @@
       <div class="container">
         <div class="row no-gutters slider-text align-items-center justify-content-center">
           <div class="col-md-9 ftco-animate text-center">
-          	<p class="breadcrumbs"><span class="mr-2"><a href="index.html">Home</a></span> <span>Cart</span></p>
+<!--          	<p class="breadcrumbs"><span class="mr-2"><a href="index.html">Home</a></span> <span>Cart</span></p>-->
             <h1 class="mb-0 bread">My Cart</h1>
           </div>
         </div>
@@ -135,44 +136,66 @@
 							</thead>
 							<tbody>
 							<tr th:each="cartItem : ${cartItems}">
-								<td><img th:src="${cartItem.product.productImages}" /></td>
+								<td><img style="width:56px; height:56px;" th:src="${cartItem.product.productImages}" /></td>
 								<td th:text="${cartItem.product.productName}"></td>
 								<td th:text="${cartItem.price}"></td>
+
 								<td>
+<!--									&lt;!&ndash; Decrement Button &ndash;&gt;-->
+<!--									<button th:onclick="'changeQtyM(\'' + ${cartItem.cartItemId} + '\')'">-</button>-->
+
+
+<!--									&lt;!&ndash; Quantity Display &ndash;&gt;-->
+<!--									<span th:id="'quantity' + ${cartItem.cartItemId}" th:text="${cartItem.quantity}"></span>-->
+
+<!--									&lt;!&ndash; Increment Button &ndash;&gt;-->
+<!--									<button th:onclick="'changeQtyP(\'' + ${cartItem.cartItemId} + '\')'">+</button>-->
+
 									<!-- Decrement Button -->
-									<button th:onclick="decrementQuantity(${cartItem.id})" th:disabled="${cartItem.quantity <= 1}">-</button>
-
+									<button class="change-quantity" data-cart-item-id="${cartItem.cartItemId}" data-quantity-change="-1">-</button>
 									<!-- Quantity Display -->
-									<span th:text="${cartItem.quantity}"></span>
-
+									<span th:id="'quantity' + ${cartItem.cartItemId}" th:text="${cartItem.quantity}"></span>
 									<!-- Increment Button -->
-									<button th:onclick="incrementQuantity(${cartItem.id})" th:disabled="${cartItem.quantity >= 10}">+</button>
+									<button class="change-quantity" data-cart-item-id="${cartItem.cartItemId}" data-quantity-change="1">+</button>
 								</td>
-								<td th:text="${cartItem.price * cartItem.quantity}"></td>
-								<td>
-									<form th:action="@{'/deleteCartItem/'+${cartItem.cartItemId}}" th:method="get">
+
+								<td th:id="'TotalPrice' + ${cartItem.cartItemId}" name="Total" th:text="'$ ' + (${cartItem.quantity} * ${cartItem.price})"></td>
+
+								<td><form th:action="@{'/deleteCartItem/'+${cartItem.cartItemId}}" th:method="get">
 										<button type="submit">Delete</button>
 									</form>
 									<span id="cartMessage" style="color: red;"></span>
 								</td>
-
 							</tr>
+
+
 							</tbody>
 						</table>
 
-					<div class="col-lg-4 mt-5 cart-wrap ftco-animate">
-    					<div class="cart-total mb-3">
-    						<h3>Cart Totals</h3>
-    						<p class="d-flex">
-    							<span>Subtotal</span>
-    							<span>$20.60</span>
-    						<hr>
-    						<p class="d-flex total-price">
-    							<span>Total</span>
-    							<span>$17.60</span>
-    						</p>
-    					</div>
-    					<p><a href="checkout.html" class="btn btn-primary py-3 px-4">Proceed to Checkout</a></p>
+				<div class="cart-total mb-3">
+					<!-- Subtotal -->
+					<p class="d-flex">
+						<span>Subtotal</span>
+						<span  id="totalSubAmount" th:text="'$ '+${totalPrice}" >0.00</span>
+					</p>
+					<p class="d-flex">
+						<span>Delivery</span>
+						<span>$0.00</span>
+					</p>
+					<p class="d-flex">
+						<span>Discount</span>
+						<span>$0.00</span>
+					</p>
+
+					<hr>
+					<!-- Total -->
+					<p class="d-flex total-price">
+						<span>Total</span>
+						<span id="totalAmount" th:text="'$ '+${totalPrice}">0.00</span>
+					</p>
+				</div>
+
+				<p><a th:href="@{/checkOut}" class="btn btn-primary py-3 px-4">Proceed to Checkout</a></p>
     				</div>
 				</div>
 			</div>
@@ -236,69 +259,234 @@
 	  </div>
   </div>
   <!-- Footer End -->
+<!--  <script>-->
+<!--	  function changeQtyP(cartItemId) {-->
+
+<!--          let quantityInput = document.getElementById('quantity' + cartItemId);-->
+<!--          console.log(quantityInput);-->
+<!--          let TotalPrice = document.getElementById('TotalPrice' + cartItemId);-->
+<!--          console.log(TotalPrice);-->
+<!--		  let OgPrice = parseFloat(document.getElementById('Price' + cartItemId).innerHTML);-->
+<!--          console.log(OgPrice);-->
+<!--          let totalSubAmount = document.getElementById('totalSubAmount')-->
+<!--          console.log(totalSubAmount);-->
+<!--          let productQuantity = document.getElementById('productQuantity' + cartItemId).innerHTML;-->
+<!--          console.log(productQuantity);-->
+<!--          let currentQuantity = parseInt(quantityInput.value);-->
+<!--          if (currentQuantity + 1 > productQuantity) {-->
+<!--              Swal.fire('Quantity cannot exceed the available product quantity!')-->
+<!--              return;-->
+<!--          }-->
 
 
+<!--          $.ajax({-->
+<!--              url: '/updateQuantity',-->
+<!--              method: 'post',-->
+<!--              data: { count: 1, id:cartItemId },-->
+<!--              success: (response) => {-->
+<!--                  var responseData = JSON.parse(response);-->
 
 
-<script>
-  function deleteProduct(button) {
-  const productId = button.getAttribute('data-item-id');
+<!--                  quantityInput.value = responseData.updatedQuantity;-->
 
-  fetch(`/products/${productId}`, {
-  method: 'DELETE',
-  })
-  .then(response => {
-  if (response.ok) {
-  // Item deleted successfully, update the UI (remove the row).
-  const row = button.parentElement.parentElement;
-  row.remove();
-  } else {
-  // Handle errors (e.g., item not found).
-  console.error('Item not deleted');
-  }
-  })
-  .catch(error => {
-  console.error('Error:', error);
-  });
-  }
-</script>
+<!--                  TotalPrice.innerHTML = '$' + (OgPrice * responseData.updatedQuantity).toFixed(2);-->
 
-  <!--  <script>-->
-<!--		$(document).ready(function(){-->
+<!--                  totalSubAmount.innerHTML = '$' + responseData.totalPrice;-->
 
-<!--		var quantitiy=0;-->
-<!--		   $('.quantity-right-plus').click(function(e){-->
-<!--		        -->
-<!--		        // Stop acting like a button-->
-<!--		        e.preventDefault();-->
-<!--		        // Get the field name-->
-<!--		        var quantity = parseInt($('#quantity').val());-->
-<!--		        -->
-<!--		        // If is not undefined-->
-<!--		            -->
-<!--		            $('#quantity').val(quantity + 1);-->
+<!--              }-->
+<!--          });-->
+<!--      }-->
 
-<!--		          -->
-<!--		            // Increment-->
-<!--		        -->
-<!--		    });-->
 
-<!--		     $('.quantity-left-minus').click(function(e){-->
-<!--		        // Stop acting like a button-->
-<!--		        e.preventDefault();-->
-<!--		        // Get the field name-->
-<!--		        var quantity = parseInt($('#quantity').val());-->
-<!--		        -->
-<!--		        // If is not undefined-->
-<!--		      -->
-<!--		            // Increment-->
-<!--		            if(quantity>0){-->
-<!--		            $('#quantity').val(quantity - 1);-->
-<!--		            }-->
-<!--		    });-->
-<!--		    -->
-<!--		});-->
-<!--	</script>-->
-    
+<!--      function changeQtyM(cartItemId) {-->
+<!--          let quantityInput = document.getElementById('quantity' + cartItemId);-->
+<!--          let TotalPrice = document.getElementById('Totalprice' + cartItemId);-->
+<!--          let totalSubAmount = document.getElementById('totalSubAmount')-->
+<!--          let OgPrice = parseFloat(document.getElementById('price' + cartItemId).innerHTML);-->
+
+<!--          $.ajax({-->
+<!--              url: '/updateQuantity',-->
+<!--              method: 'post',-->
+<!--              data: { count: -1, id:cartItemId },-->
+<!--              success: (response) => {-->
+<!--                  var responseData = JSON.parse(response);-->
+
+
+<!--                  quantityInput.value = responseData.updatedQuantity;-->
+
+<!--                  TotalPrice.innerHTML = '$' + (OgPrice * responseData.updatedQuantity).toFixed(2);-->
+
+<!--                  totalSubAmount.innerHTML = '$' + responseData.totalPrice;-->
+
+<!--              }-->
+<!--          });-->
+<!--      }-->
+
+
+<!--  </script>-->
+<!--  <script >-->
+
+<!--	  function changeQtyP(cartItemId){-->
+<!--	  alert("jui")-->
+<!--      let quantityInput = document.getElementById('quantity'+cartItemId)-->
+<!--      let totalAmount = document.getElementById('totalAmount')-->
+<!--      let totalSubAmount = document.getElementById('totalSubAmount')-->
+
+<!--      let TotalPrice = document.getElementById('Totalprice'+cartItemId)-->
+<!--      let OgPrice = document.getElementById('price'+cartItemId).innerHTML-->
+
+<!--          if (Number(quantityInput.value) < 5) {-->
+<!--          $.ajax({-->
+<!--                url:'/incrementQuantity',-->
+<!--                    method:'post',-->
+<!--                data:{cartItemId},-->
+<!--                success:(response)=>{-->
+<!--         var responseData = JSON.parse(response);-->
+<!--         if(response){-->
+<!--         // Update the quantity and total price on the page-->
+<!--         quantityInput.value = response;-->
+<!--         console.log(responseData.updatedQuantity)-->
+<!--         TotalPrice.innerHTML = '$ ' + (Number(OgPrice) * responseData.updatedQuantity)+'.0';-->
+<!--          totalAmount.innerHTML = '$' + responseData.totalPrice+'.0';-->
+<!--           totalSubAmount.innerHTML = '$' + responseData.totalPrice+'.0';-->
+<!--             }-->
+<!--             else{-->
+<!--                 showAlertOutOfStock()-->
+<!--             }-->
+
+<!--                    }-->
+<!--          })-->
+<!--           }-->
+<!--           }-->
+
+<!--              function showAlertOutOfStock() {-->
+<!--             console.log("alert fun called...");-->
+<!--             $("#cartAlertOutOfStock").fadeIn();-->
+
+<!--             // Hide the alert box after 5 seconds-->
+<!--             setTimeout(function () {-->
+<!--                 $("#cartAlertOutOfStock").fadeOut();-->
+<!--             }, 3000);-->
+<!--         }-->
+
+<!--     function changeQtyM(cartItemId){-->
+<!--     let quantityInput = document.getElementById('quantity'+cartItemId)-->
+<!--     let totalAmount = document.getElementById('totalAmount')-->
+<!--      let totalSubAmount = document.getElementById('totalSubAmount')-->
+<!--     let TotalPrice = document.getElementById('Totalprice'+cartItemId)-->
+<!--      let OgPrice = document.getElementById('price'+cartItemId).innerHTML-->
+<!--      if(Number(quantityInput.value)>1){-->
+<!--          $.ajax({-->
+<!--                url:'/updateQuantity',-->
+<!--                    method:'post',-->
+<!--                data:{count:-1,productId},-->
+<!--                success:(response)=>{-->
+
+<!--          var responseData = JSON.parse(response);-->
+
+<!--         // Update the quantity and total price on the page-->
+<!--         quantityInput.value = responseData.updatedQuantity;-->
+<!--         console.log(responseData.updatedQuantity)-->
+<!--         TotalPrice.innerHTML = '$ ' + (Number(OgPrice) * responseData.updatedQuantity)+'.0';-->
+<!--         totalAmount.innerHTML = '$' + responseData.totalPrice+'.0';-->
+<!--          totalSubAmount.innerHTML = '$' + responseData.totalPrice+'.0';-->
+<!--                    }-->
+<!--          })-->
+<!--           }-->
+<!--     }-->
+<!--  </script>-->
+
+<!--  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!--  <script>-->
+<!--	  $('.change-quantity').click(function() {-->
+<!--      var cartItemId = $(this).data('cart-item-id');-->
+<!--      var quantityChange = $(this).data('quantity-change');-->
+<!--      changeQty(cartItemId, quantityChange);-->
+<!--  });-->
+
+<!--	  function changeQty(cartItemId, quantityChange) {-->
+<!--	  console.log(cartItemId);-->
+
+<!--          $.ajax({-->
+<!--              type: 'POST',-->
+<!--              url: '/updateCartItemQuantity/' + cartItemId,-->
+<!--              data: {-->
+<!--                 cartItemId:cartItemId,-->
+<!--                  quantityChange: quantityChange-->
+<!--              },-->
+<!--              success: function(response) {-->
+<!--                console.log("hi");-->
+<!--                  if (response.success) {-->
+<!--                      // Update the quantity display and total price for the item-->
+<!--                      $('#quantity' + cartItemId).text(response.updatedQuantity);-->
+<!--                      $('#TotalPrice' + cartItemId).text('$ ' + response.updatedTotalPrice);-->
+
+<!--                      // Update the sub-total and total amounts-->
+<!--                      $('#subTotal').text('$ ' + response.subTotal);-->
+<!--                      $('#totalAmount').text('$ ' + response.totalAmount);-->
+
+<!--                      // Display success message-->
+<!--                      $('#cartMessage').text('Quantity updated successfully');-->
+<!--                  } else {-->
+<!--                      // Display an error message-->
+<!--                      $('#cartMessage').text('Error updating quantity');-->
+<!--                  }-->
+<!--              }-->
+<!--          });-->
+<!--      }-->
+
+<!--      // Example for decrement button-->
+<!--      $('#decrementButton').click(function() {-->
+<!--          var cartItemId = $(this).data('cartItemId');-->
+<!--          changeQty(cartItemId, -1); // Decrease quantity by 1-->
+<!--      });-->
+
+<!--      // Example for increment button-->
+<!--      $('#incrementButton').click(function() {-->
+<!--          var cartItemId = $(this).data('cartItemId');-->
+<!--          changeQty(cartItemId, 1); // Increase quantity by 1-->
+<!--      });-->
+<!--  </script>-->
+  <script>
+	  $(document).ready(function() {
+
+          $('.change-quantity').click(function() {
+              var cartItemId = $(this).data('cart-item-id');
+              var quantityChange = $(this).data('quantity-change');
+              changeQty(cartItemId, quantityChange);
+          });
+
+          function changeQty(cartItemId, quantityChange) {
+              $.ajax({
+                  type: 'POST',
+                  url: '/updateCartItemQuantity/' + cartItemId,
+                  data: {
+                      cartItemId: cartItemId,
+                      quantityChange: quantityChange
+                  },
+                  success: function(response) {
+                      if (response.success) {
+                          // Update the quantity display and total price for the item
+                          $('#quantity' + cartItemId).text(response.updatedQuantity);
+                          $('#TotalPrice' + cartItemId).text('$ ' + response.updatedTotalPrice);
+
+                          // Update the sub-total and total amounts
+                          $('#subTotal').text('$ ' + response.subTotal);
+                          $('#totalAmount').text('$ ' + response.totalAmount);
+
+                          // Display success message
+                          $('#cartMessage').text('Quantity updated successfully');
+                      } else {
+                          // Display an error message
+                          $('#cartMessage').text('Error updating quantity');
+                      }
+                  }
+              });
+          }
+      });
+  </script>
+
   </body>
 </html>
