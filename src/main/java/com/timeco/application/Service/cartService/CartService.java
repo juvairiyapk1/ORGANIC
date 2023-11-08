@@ -241,7 +241,14 @@ public class CartService {
 //        return totalCartPrice;
 //    }
 
-    
+    public double calculateTotalPrice(List<CartItem> cartItems) {
+        // Calculate total price based on cart items
+        double totalPrice = 0.0;
+        for (CartItem cartItem : cartItems) {
+            totalPrice += cartItem.getPrice() * cartItem.getQuantity();
+        }
+        return totalPrice;
+    }
     public Map<String, Object> updateCartItemQuantity(Long cartItemId, int quantityChange) {
         Map<String, Object> response = new HashMap<>();
 
@@ -251,10 +258,12 @@ public class CartService {
             int currentQuantity = cartItem.getQuantity();
             int updatedQuantity = currentQuantity + quantityChange;
 
-            if (updatedQuantity >= 1) {
+            int pQuantity=cartItem.getProduct().getQuantity();
+
+            if (updatedQuantity >= 1 && updatedQuantity<=pQuantity) {
                 cartItem.setQuantity(updatedQuantity);
                 cartItemRepository.save(cartItem);
-                System.out.println("sssssssssssssssssss"+updatedQuantity);
+
 
                 response.put("success", true);
                 response.put("updatedQuantity", updatedQuantity);
@@ -306,6 +315,7 @@ public class CartService {
 
         return subTotal;
     }
+
 
 
 }

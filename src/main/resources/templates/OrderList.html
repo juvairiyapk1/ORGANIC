@@ -196,36 +196,50 @@
 
         </ul>
     </nav>
-    <table>
-        <thead>
-        <tr>
+    <div class="main-panel">
+        <div class="col-lg-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <div>
+                        <h4 class="card-title">ORDER MANAGEMENT</h4>
+<!--                        <a class="btn btn-primary" >Add</a>-->
+                    </div>
+                    <!--        <p class="card-description"> Add class <code>.table-striped</code>-->
+                    </p>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+            <tr>
+                <th>Order ID</th>
+                <th>Customer Name</th>
+                <th>Order Amount</th>
+                <th>Quantity</th>
+                <th>Status</th>
+                <th>Ordered Date</th>
+                <th>Payment Method</th>
+            </tr>
 
-            <th>Customer Name</th>
-            <th>Order Date</th>
-            <th>Total Amount</th>
-            <th>Status</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-        <tbody>
-        <!-- Use a loop to generate rows for each order -->
-        <tr>
+            <tr th:each="order:${orderList}">
+                <td th:text="${order.orderId}"></td>
+                <td th:text="${order.customer.firstName}"></td>
+                <td th:text="${order.orderAmount}"></td>
+                <td th:text="${order.orderedQuantity}"></td>
+                <td th:text="${order.orderStatus}"></td>
+                <td th:text="${order.orderedDate}"></td>
+                <td th:text="${order.paymentMethod.paymentMethodName}"></td>
+            </tr>
 
-            <td>John Doe</td>
-            <td>2023-11-05 10:30 AM</td>
-            <td>$100.00</td>
-            <td>Processing</td>
-            <td>
-                <button>Edit</button>
-                <button>Delete</button>
-            </td>
-        </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td th:text="'Total Amount:' + ${totalOrderAmount}"></td>
+                <td th:text="'Total Ordered Quantity:' + ${totalOrderedQuantity}"></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
 
-        <!-- Repeat the above row structure for each order -->
-        </tbody>
-    </table>
-
-
+        </table>
+    </div>
 
     <!-- page-body-wrapper ends -->
 </div>

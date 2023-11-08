@@ -6,6 +6,7 @@ import com.timeco.application.Repository.ProductRepository;
 import com.timeco.application.Repository.UserRepository;
 import com.timeco.application.Service.cartService.CartService;
 import com.timeco.application.Service.productservice.ProductService;
+import com.timeco.application.model.cart.Cart;
 import com.timeco.application.model.cart.CartItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -92,7 +93,10 @@ public ResponseEntity<String> addToCart(@RequestBody ProductDto productDTO, Prin
     @GetMapping("/cart")
     public String showCartPage(Model model, Principal principal) {
         List<CartItem> cartItems = cartService.getCartItemsForUser(principal);
+        double totalPrice = cartService.calculateTotalPrice(cartItems);
         model.addAttribute("cartItems", cartItems);
+        model.addAttribute("totalPrice",totalPrice);
+//        model.addAttribute("cart",cart);
         return "cart"; // Return the view name for the cart page (cart.html)
     }
 //    @PostMapping("/updateQuantity")
@@ -127,9 +131,10 @@ public ResponseEntity<String> addToCart(@RequestBody ProductDto productDTO, Prin
 //        }
 //    }
 
-    @PostMapping("/updateCartItemQuantity/{cartItemId}")
+    @GetMapping("/updateCartItemQuantity/{cartItemId}")
     @ResponseBody
     public Map<String, Object> updateCartItemQuantity(@PathVariable Long cartItemId, @RequestParam int quantityChange) {
+
         return cartService.updateCartItemQuantity(cartItemId, quantityChange);
     }
     @PostMapping("/deleteCartItem/{cartItemId}")
