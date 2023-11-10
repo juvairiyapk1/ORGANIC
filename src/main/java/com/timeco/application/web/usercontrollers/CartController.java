@@ -93,10 +93,14 @@ public ResponseEntity<String> addToCart(@RequestBody ProductDto productDTO, Prin
     @GetMapping("/cart")
     public String showCartPage(Model model, Principal principal) {
         List<CartItem> cartItems = cartService.getCartItemsForUser(principal);
-        double totalPrice = cartService.calculateTotalPrice(cartItems);
+        double discount=50;
+        double deliveryCharge=100;
+        double total = cartService.calculateTotalAmount(cartItems,discount,deliveryCharge);
+        double subTotal=cartService.calculateSubTotal(cartItems);
         model.addAttribute("cartItems", cartItems);
-        model.addAttribute("totalPrice",totalPrice);
-//        model.addAttribute("cart",cart);
+        model.addAttribute("totalPrice",total);
+        model.addAttribute("subTotal",subTotal);
+
         return "cart"; // Return the view name for the cart page (cart.html)
     }
 //    @PostMapping("/updateQuantity")

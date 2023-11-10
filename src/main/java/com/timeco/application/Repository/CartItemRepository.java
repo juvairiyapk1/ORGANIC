@@ -3,6 +3,7 @@ package com.timeco.application.Repository;
 import com.timeco.application.model.cart.Cart;
 import com.timeco.application.model.cart.CartItem;
 import com.timeco.application.model.product.Product;
+import com.timeco.application.model.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -22,6 +23,9 @@ public interface CartItemRepository extends JpaRepository<CartItem,Long> {
     void deleteByProduct(Product product);
 
     List<CartItem> findByCart(Cart cart);
+
+//    void deleteByUser(User user);
+
 
 //    List<CartItem> findByCartId(Long cartId);
 }

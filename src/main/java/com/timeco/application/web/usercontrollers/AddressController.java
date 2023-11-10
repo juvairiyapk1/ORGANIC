@@ -51,7 +51,7 @@ public class AddressController {
 
         addressService.saveAddress(addressDto,principal);
 
-        return "redirect:/userProfile"; // Redirect to the user's profile page
+        return "redirect:/address"; // Redirect to the user's profile page
     }
     @PostMapping("/editAddress/{addressId}")
     public String editUserAddress(@PathVariable Long addressId,AddressDto addressDto)

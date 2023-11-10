@@ -10,7 +10,7 @@ public class OrderItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long cartItemId;
+    private Long orderItemId;
 
     private Integer orderItemCount;
     @OneToOne(fetch = FetchType.LAZY)
@@ -21,19 +21,23 @@ public class OrderItem {
     private PurchaseOrder order;
 
 
-    public OrderItem(Long cartItemId, Integer orderItemCount, Product product, PurchaseOrder order) {
-        this.cartItemId = cartItemId;
+    public OrderItem(Long orderItemId, Integer orderItemCount, Product product, PurchaseOrder order) {
+        this.orderItemId = orderItemId;
         this.orderItemCount = orderItemCount;
         this.product = product;
         this.order = order;
     }
 
+    public OrderItem() {
+
+    }
+
     public Long getCartItemId() {
-        return cartItemId;
+        return orderItemId;
     }
 
     public void setCartItemId(Long cartItemId) {
-        this.cartItemId = cartItemId;
+        this.orderItemId = cartItemId;
     }
 
     public Integer getOrderItemCount() {

@@ -1,13 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
-      xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="utf-8">
-    <title> ORGANIC BEAUTY</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
-
+    <meta charset="UTF-8">
+    <title>Orders</title>
+    <!-- Add any necessary CSS styles here -->
     <!-- Favicon -->
     <link th:href="@{/img/favicon.ico}" rel="icon">
 
@@ -89,7 +85,7 @@
 <!-- Page Header Start -->
 <div class="container-fluid page-header mb-5 wow fadeIn" data-wow-delay="0.1s">
     <div class="container">
-        <h1 class="display-3 mb-3 animated slideInDown">UserProfile</h1>
+        <h1 class="display-3 mb-3 animated slideInDown">Orders</h1>
         <nav aria-label="breadcrumb animated slideInDown">
         </nav>
     </div>
@@ -111,88 +107,36 @@
                 </div>
             </div>
 
-            <!-- Main Content -->
+            <!-- Order Details -->
             <div class="col-md-9">
-                <div class="container mt-5" style="min-height: 100vh">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <form class="row g-3" th:object="${user}" th:action="@{/userProfile}" method="post">
-                                <div class="mb-3">
-                                    <label for="firstName" class="form-label"><b>Name</b></label>
-                                    <input type="text" class="form-control py-4" id="firstName" name="firstName" th:field="*{firstName}" th:readonly="${!editMode}">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="email" class="form-label"><b>Email address</b></label>
-                                    <input type="email" class="form-control py-4" id="email" name="emailId" th:field="*{email}" th:readonly="${!editMode}">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="phoneNumber" class="form-label"><b>Mobile No</b></label>
-                                    <input type="text" class="form-control py-4" id="phoneNumber" name="phoneNumber" th:field="*{phoneNumber}" th:readonly="${!editMode}">
-                                </div>
-                                <button type="button" class="btn text-white mt-3" style="background-color: rgb(201, 20, 89);" th:if="${!editMode}" onclick="enableEdit()">EDIT DETAILS</button>
-                                <button type="submit" class="btn text-white mt-3" style="background-color: rgb(201, 20, 89);" th:if="${editMode}">SAVE</button>
-                            </form>
+                <h3>Your Orders</h3>
 
-                            <div class="form-container my-3" id="otpform" style="border: 1px solid grey;">
-<!--                                <form action="" method="post" style="width: 10rem;">-->
-<!--                                    <div class="form-group">-->
-<!--                                        <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter OTP">-->
-<!--                                    </div>-->
-<!--                                    <div>-->
-<!--                                        <div class="timer mb-2" id="timer"><span id="time">05:00</span></div>-->
-<!--                                        <button type="submit" class="btn btn-secondary">Verify</button>-->
-<!--                                    </div>-->
-<!--                                </form>-->
-                            </div>
-                            <!-- Button trigger modal -->
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                                Change Password
-                            </button>
+                <!-- Iterate over user's orders and display details -->
+                <div th:each="order : ${orderItems}">
+                    <div>
 
-                            <!-- Modal -->
-                            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="staticBackdropLabel">Change password</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <form id="updatePasswordForm" method="post" th:action="@{/changePassword}">
-                                                <div class="form-group">
-                                                    <label for="currentPassword">Current Password</label>
-                                                    <input type="password" class="form-control my-2" id="currentPassword" name="currentPassword">
-                                                    <input type="checkbox" id="showPasswordCheckbox"> Show password
+                        <!-- <h3>Order ID: <span th:text="${order.orderId}"></span></h3> -->
+                        <p>Order Date: <span th:text="${order.order.orderedDate}"></span></p>
+
+                        <!-- Display order items -->
+                        <ul>
+                            <li>
+                                <img style="width:56px; height:56px;" th:src="${order.product.productImages}" />
+
+                                <span th:text="${order.product.productName}"></span> - Quantity: <span th:text="${order.orderItemCount}"></span>
+                            </li>
+                        </ul>
 
 
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="newPassword">New Password</label>
-                                                    <input type="password" class="form-control mt-2" id="newPassword" name="newPassword">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="confirmPassword">Confirm Password</label>
-                                                    <input type="password" class="form-control mt-2" id="confirmPassword" name="confirmPassword">
-                                                </div>
-                                                <!-- Display error messages if there are any -->
-                                                <p class="text-danger" th:text="${error}"></p>
-                                                <!-- Display success messages if there are any -->
-                                                <p class="text-success" th:text="${success}"></p>
-                                                <input type="hidden" id="categoryId" name="categoryId" value="">
-                                               <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                            <button type="submit" class="btn btn-primary">Update</button>
 
+                    <p>Total : $<span th:text="${order.orderItemCount * order.product.price}"></span></p>
 
-                                               </div>
-                                            </form>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <p>Order Status: <span th:text="${order.order.orderStatus}"></span></p>
+<!--                        <form th:action="@{'/cancelOrderItem/'+${orderItem.orderItemId}}" th:method="post">-->
+                            <button type="submit">Cancel</button>
+<!--                        </form>-->
+                        <hr>
+                </div>
                 </div>
             </div>
         </div>
@@ -201,6 +145,7 @@
 
 
 
+<!-- Add any additional content or styling as needed -->
 <!-- Footer Start -->
 <div class="container-fluid bg-dark footer mt-5 pt-5 wow fadeIn" data-wow-delay="0.1s">
     <div class="container py-5">
@@ -254,7 +199,7 @@
         </div>
     </div>
 </div>
-    </div>
+
 <!-- Footer End -->
 
 <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"><i class="bi bi-arrow-up"></i></a>
@@ -270,42 +215,6 @@
 
 <!-- Template Javascript -->
 <script src="../static/js/main.js"></script>
-
-<script>
-
-    function enableEdit() {
-     console.log("started")
-     toggleReadOnly('firstName')
-     toggleReadOnly('email')
-     toggleReadOnly('phoneNumber')
-
-
-    }
-    function toggleReadOnly(elementId){
-    const inputElement = document.getElementById(elementId)
-    inputElement.readOnly = !inputElement.readOnly
-     window.location.href = "/editProfile";
-    }
-</script>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<script>
-    $(document).ready(function() {
-        $("#showPasswordCheckbox").change(function() {
-            var currentPasswordInput = $("#currentPassword");
-            if (this.checked) {
-                // Show the current password
-                currentPasswordInput.attr("type", "text");
-            } else {
-                // Hide the current password
-                currentPasswordInput.attr("type", "password");
-            }
-        });
-    });
-</script>
-
-
 
 </body>
 </html>

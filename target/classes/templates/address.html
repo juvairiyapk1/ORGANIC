@@ -103,7 +103,7 @@
                 <ul class="list-unstyled">
                     <li><a th:href="@{/userProfile}">Profile</a></li>
                     <li><a th:href="@{/address}">Addresses</a></li>
-                    <li><a href="/orders">Orders</a></li>
+                    <li><a th:href="@{/userOrder}">Orders</a></li>
                     <li><a href="/coupons">Coupons</a></li>
                 </ul>
                 <a href="/logOut" class="btn mt-5" style="background-color: rgb(93, 93, 93);"><b>Log out</b></a>
@@ -116,15 +116,15 @@
                         <div class="card mb-3">
                             <div class="card-body">
                                 <h5 class="card-title">Address</h5>
-                                <p class="card-text">First Name: <span th:text="${address.firstName}"></span></p>
-                                <p class="card-text">Last Name: <span th:text="${address.lastName}"></span></p>
-                                <p class="card-text">Email: <span th:text="${address.email}"></span></p>
-                                <p class="card-text">Street: <span th:text="${address.street}"></span></p>
-                                <p class="card-text">City: <span th:text="${address.city}"></span></p>
-                                <p class="card-text">State: <span th:text="${address.state}"></span></p>
-                                <p class="card-text">Address: <span th:text="${address.address}"></span></p>
-                                <p class="card-text">Postal Code: <span th:text="${address.postalCode}"></span></p>
-                                <p class="card-text">Phone Number: <span th:text="${address.phoneNumber}"></span></p>
+                                <p class="card-text"><span th:text="${address.firstName}"></span>
+                                    .<span th:text="${address.lastName}"></span></p>
+                                <p class="card-text"><span th:text="${address.email}"></span></p>
+                                <p class="card-text"><span th:text="${address.street}"></span>,
+                                    <span th:text="${address.city}"></span>,
+                                    <span th:text="${address.state}"></span></p>
+                                <p class="card-text"><span th:text="${address.address}"></span>,
+                                    <span th:text="${address.postalCode}"></span>,
+                                    <span th:text="${address.phoneNumber}"></span></p>
                                 <form th:action="@{'/deleteAddress/' + ${address.addressId}}" method="post">
                                     <button type="submit" class="btn btn-primary">Delete</button>
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" th:attr="data-bs-target='#modal_' + ${address.addressId}">

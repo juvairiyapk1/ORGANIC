@@ -33,7 +33,7 @@ public class PurchaseOrder {
 
     private String transcationId;
 
-    private Integer orderedQuantity;
+//    private Integer orderedQuantity;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "purchase_order_order_statuses",
@@ -41,7 +41,7 @@ public class PurchaseOrder {
             inverseJoinColumns = @JoinColumn(name = "order_status_id"))
     private Set<OrderStatus> possibleOrderStatuses = new HashSet<>();
 
-    public PurchaseOrder(Long orderId, Address address, List<OrderItem> orderItems, PaymentMethod paymentMethod, User user, LocalDate orderedDate, String orderStatus, Double orderAmount, String transcationId, Integer orderedQuantity, Set<OrderStatus> possibleOrderStatuses) {
+    public PurchaseOrder(Long orderId, Address address, List<OrderItem> orderItems, PaymentMethod paymentMethod, User user, LocalDate orderedDate, String orderStatus, Double orderAmount, String transcationId, Set<OrderStatus> possibleOrderStatuses) {
         this.orderId = orderId;
         this.address = address;
         this.orderItems = orderItems;
@@ -51,7 +51,6 @@ public class PurchaseOrder {
         this.orderStatus = orderStatus;
         this.orderAmount = orderAmount;
         this.transcationId = transcationId;
-        this.orderedQuantity = orderedQuantity;
         this.possibleOrderStatuses = possibleOrderStatuses;
     }
 
@@ -130,13 +129,6 @@ public class PurchaseOrder {
         this.transcationId = transcationId;
     }
 
-    public Integer getOrderedQuantity() {
-        return orderedQuantity;
-    }
-
-    public void setOrderedQuantity(Integer orderedQuantity) {
-        this.orderedQuantity = orderedQuantity;
-    }
 
     public Set<OrderStatus> getPossibleOrderStatuses() {
         return possibleOrderStatuses;

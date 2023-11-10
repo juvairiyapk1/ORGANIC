@@ -149,7 +149,7 @@
 								</td>
 								<td th:id="'TotalPrice' + ${cartItem.cartItemId}" name="Total" th:text="'$ ' + (${cartItem.quantity} * ${cartItem.price})"></td>
 
-<h4 th:text="'$ ' + (${cartItem.quantity} * ${cartItem.price})"></h4>
+<!--<h4 th:text="'$ ' + (${cartItem.quantity} * ${cartItem.price})"></h4>-->
 								<td><form th:action="@{'/deleteCartItem/'+${cartItem.cartItemId}}" th:method="post">
 										<button type="submit">Delete</button>
 									</form>
@@ -169,11 +169,11 @@
 					</p>
 					<p class="d-flex">
 						<span>Delivery</span>
-						<span>$0.00</span>
+						<span>$100.00</span>
 					</p>
 					<p class="d-flex">
 						<span>Discount</span>
-						<span>$0.00</span>
+						<span>$50.00</span>
 					</p>
 
 					<hr>
@@ -184,7 +184,7 @@
 					</p>
 				</div>
 
-				<p><a th:href="@{/checkOut}" class="btn btn-primary py-3 px-4">Proceed to Checkout</a></p>
+				<p><a th:href="@{/checkOut}" class="btn btn-primary py-3 px-4" th:value="totalSubAmount">Proceed to Checkout</a></p>
     				</div>
 				</div>
 			</div>
