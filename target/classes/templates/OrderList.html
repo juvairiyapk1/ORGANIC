@@ -223,14 +223,15 @@
                 <td th:text="${order.order.orderedDate}"></td>
                 <td th:text="${order.orderItemCount * order.product.price}"></td>
                 <td th:text="${order.order.paymentMethod.paymentMethodName}"></td>
-                <td th:text="${order.order.orderStatus}"></td>
+                <td th:text="${order.orderStatus}"></td>
 
-               <td> <form th:action="@{'/updateOrderStatus'}" th:method="post">
-                   <input type="hidden" name="orderId" th:value="${order.orderItemId}" />
+               <td> <form th:action="@{/admin/updateOrderStatus}" method="post" >
+                   <input type="hidden" name="orderItemId" th:value="${order.OrderItemId}" />
                    <select name="newStatus">
                        <option value="pending">Pending</option>
                        <option value="shipped">Shipped</option>
                        <option value="delivered">Delivered</option>
+                       <option value="cancel">Cancel</option>
 
                        <!-- add other status options as needed -->
                    </select>

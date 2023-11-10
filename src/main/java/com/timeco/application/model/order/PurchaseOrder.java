@@ -27,7 +27,7 @@ public class PurchaseOrder {
 
     private LocalDate orderedDate;
 
-    private String orderStatus;
+//    private String orderStatus;
 
     private Double orderAmount;
 
@@ -41,14 +41,14 @@ public class PurchaseOrder {
             inverseJoinColumns = @JoinColumn(name = "order_status_id"))
     private Set<OrderStatus> possibleOrderStatuses = new HashSet<>();
 
-    public PurchaseOrder(Long orderId, Address address, List<OrderItem> orderItems, PaymentMethod paymentMethod, User user, LocalDate orderedDate, String orderStatus, Double orderAmount, String transcationId, Set<OrderStatus> possibleOrderStatuses) {
+    public PurchaseOrder(Long orderId, Address address, List<OrderItem> orderItems, PaymentMethod paymentMethod, User user, LocalDate orderedDate, Double orderAmount, String transcationId, Set<OrderStatus> possibleOrderStatuses) {
         this.orderId = orderId;
         this.address = address;
         this.orderItems = orderItems;
         this.paymentMethod = paymentMethod;
         this.user = user;
         this.orderedDate = orderedDate;
-        this.orderStatus = orderStatus;
+//        this.orderStatus = orderStatus;
         this.orderAmount = orderAmount;
         this.transcationId = transcationId;
         this.possibleOrderStatuses = possibleOrderStatuses;
@@ -105,13 +105,13 @@ public class PurchaseOrder {
         this.orderedDate = orderedDate;
     }
 
-    public String getOrderStatus() {
-        return orderStatus;
-    }
+//    public String getOrderStatus() {
+//        return orderStatus;
+//    }
 
-    public void setOrderStatus(String orderStatus) {
-        this.orderStatus = orderStatus;
-    }
+//    public void setOrderStatus(String orderStatus) {
+//        this.orderStatus = orderStatus;
+//    }
 
     public Double getOrderAmount() {
         return orderAmount;

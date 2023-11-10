@@ -13,6 +13,8 @@ public class OrderItem {
     private Long orderItemId;
 
     private Integer orderItemCount;
+
+    private String orderStatus;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "productId")
     private Product product;
@@ -21,10 +23,11 @@ public class OrderItem {
     private PurchaseOrder order;
 
 
-    public OrderItem(Long orderItemId, Integer orderItemCount, Product product, PurchaseOrder order) {
+    public OrderItem(Long orderItemId, Integer orderItemCount, Product product,String orderStatus, PurchaseOrder order) {
         this.orderItemId = orderItemId;
         this.orderItemCount = orderItemCount;
         this.product = product;
+        this.orderStatus=orderStatus;
         this.order = order;
     }
 
@@ -62,5 +65,21 @@ public class OrderItem {
 
     public void setOrder(PurchaseOrder order) {
         this.order = order;
+    }
+
+    public Long getOrderItemId() {
+        return orderItemId;
+    }
+
+    public void setOrderItemId(Long orderItemId) {
+        this.orderItemId = orderItemId;
+    }
+
+    public String getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
     }
 }

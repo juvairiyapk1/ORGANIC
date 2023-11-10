@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Orders</title>
@@ -131,10 +131,11 @@
 
                     <p>Total : $<span th:text="${order.orderItemCount * order.product.price}"></span></p>
 
-                    <p>Order Status: <span th:text="${order.order.orderStatus}"></span></p>
-<!--                        <form th:action="@{'/cancelOrderItem/'+${orderItem.orderItemId}}" th:method="post">-->
+                    <p>Order Status: <span th:text="${order.orderStatus}"></span></p>
+                        <form th:action="@{'/cancelOrderItem/'+${order.orderItemId}}" th:method="post">
                             <button type="submit">Cancel</button>
-<!--                        </form>-->
+                        </form>
+
                         <hr>
                 </div>
                 </div>

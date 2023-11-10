@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class OrderController {
@@ -69,7 +70,6 @@ public class OrderController {
         purchaseOrder.setAddress(address);
         purchaseOrder.setPaymentMethod(method);
         purchaseOrder.setOrderedDate(currentDate);
-        purchaseOrder.setOrderStatus("Placed...");
         purchaseOrder.setOrderAmount(totalAmount);
         User user = userRepository.findByEmail(principal.getName());
         purchaseOrder.setUser(user);
@@ -90,18 +90,16 @@ public class OrderController {
     public String showUserOrder(Model model){
         List<OrderItem>orderItems=orderItemRepository.findAll();
         int orderItemCount = orderItems.size();
-        System.out.println("Total Order Items: " + orderItemCount);
         model.addAttribute("orderItems", orderItems);
         return"UserOrder";
     }
 
 
-    public void updateOrderStatus(Long orderId, String newStatus) {
-        PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(orderId).orElse(null);
-        if (purchaseOrder != null) {
-            purchaseOrder.setOrderStatus(newStatus);
-            purchaseOrderRepository.save(purchaseOrder);
-        }
+    @PostMapping("/cancelOrderItem/{orderItemId}")
+    public String cancelOrderItem(@PathVariable Long orderItemId) {
+        purchaseOrderService.cancelOrderItem(orderItemId);
+
+        return "redirect:/userOrder";
     }
 
 

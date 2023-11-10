@@ -33,11 +33,14 @@ public class AdminOrderController {
 
 
     @PostMapping("/updateOrderStatus")
-    public String updateOrderStatus(@RequestParam("orderId") Long orderId,
+    public String updateOrderStatus(@RequestParam("orderItemId") Long orderItemId,
                                     @RequestParam("newStatus") String newStatus) {
-        purchaseOrderService.updateOrderStatus(orderId, newStatus);
+        System.out.println(orderItemId);
+        purchaseOrderService.updateOrderStatus(orderItemId, newStatus);
 
-        return "redirect:/orderList";
+        return "redirect:/admin/orderList";
     }
+
+
 
 }

@@ -16,7 +16,11 @@ public interface PurchaseOrderService  {
 
     List<OrderItem> convertPurchaseOrderToOrderItems(User user,PurchaseOrder purchaseOrder);
 
+
+
 //    void deleteProduct(Long orderItemId);
 
-    void updateOrderStatus(Long orderId, String newStatus);
+  void updateOrderStatus(Long orderItemId, String newStatus);
+
+    void cancelOrderItem(Long orderItemId);
 }
