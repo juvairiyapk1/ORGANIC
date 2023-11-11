@@ -116,33 +116,27 @@
                 <div class="container mt-5" style="min-height: 100vh">
                     <div class="row">
                         <div class="col-lg-6">
-                            <form class="row g-3" th:object="${user}" th:action="@{/userProfile}" method="post">
+                            <form class="row g-3" th:object="${user}" th:action="@{/userProfile}" method="post" onsubmit="return validateForm()">
                                 <div class="mb-3">
                                     <label for="firstName" class="form-label"><b>Name</b></label>
                                     <input type="text" class="form-control py-4" id="firstName" name="firstName" th:field="*{firstName}" th:readonly="${!editMode}">
+                                    <span id="firstNameError" style="color: red;"></span>
                                 </div>
                                 <div class="mb-3">
                                     <label for="email" class="form-label"><b>Email address</b></label>
                                     <input type="email" class="form-control py-4" id="email" name="emailId" th:field="*{email}" th:readonly="${!editMode}">
+                                    <span id="emailError" style="color: red;"></span>
                                 </div>
                                 <div class="mb-3">
                                     <label for="phoneNumber" class="form-label"><b>Mobile No</b></label>
                                     <input type="text" class="form-control py-4" id="phoneNumber" name="phoneNumber" th:field="*{phoneNumber}" th:readonly="${!editMode}">
+                                    <span id="phoneNumberError" style="color: red;"></span>
                                 </div>
                                 <button type="button" class="btn text-white mt-3" style="background-color: rgb(201, 20, 89);" th:if="${!editMode}" onclick="enableEdit()">EDIT DETAILS</button>
                                 <button type="submit" class="btn text-white mt-3" style="background-color: rgb(201, 20, 89);" th:if="${editMode}">SAVE</button>
                             </form>
-
                             <div class="form-container my-3" id="otpform" style="border: 1px solid grey;">
-<!--                                <form action="" method="post" style="width: 10rem;">-->
-<!--                                    <div class="form-group">-->
-<!--                                        <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter OTP">-->
-<!--                                    </div>-->
-<!--                                    <div>-->
-<!--                                        <div class="timer mb-2" id="timer"><span id="time">05:00</span></div>-->
-<!--                                        <button type="submit" class="btn btn-secondary">Verify</button>-->
-<!--                                    </div>-->
-<!--                                </form>-->
+
                             </div>
                             <!-- Button trigger modal -->
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
@@ -162,30 +156,30 @@
                                                 <div class="form-group">
                                                     <label for="currentPassword">Current Password</label>
                                                     <input type="password" class="form-control my-2" id="currentPassword" name="currentPassword">
+                                                    <p class="text-danger" id="currentPasswordError"></p>
                                                     <input type="checkbox" id="showPasswordCheckbox"> Show password
-
-
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="newPassword">New Password</label>
                                                     <input type="password" class="form-control mt-2" id="newPassword" name="newPassword">
+                                                    <p class="text-danger" id="newPasswordError"></p>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="confirmPassword">Confirm Password</label>
                                                     <input type="password" class="form-control mt-2" id="confirmPassword" name="confirmPassword">
+                                                    <p class="text-danger" id="confirmPasswordError"></p>
                                                 </div>
                                                 <!-- Display error messages if there are any -->
                                                 <p class="text-danger" th:text="${error}"></p>
                                                 <!-- Display success messages if there are any -->
                                                 <p class="text-success" th:text="${success}"></p>
                                                 <input type="hidden" id="categoryId" name="categoryId" value="">
-                                               <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                            <button type="submit" class="btn btn-primary">Update</button>
-
-
-                                               </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Update</button>
+                                                </div>
                                             </form>
+
                                         </div>
 
                                     </div>
@@ -254,7 +248,7 @@
         </div>
     </div>
 </div>
-    </div>
+</div>
 <!-- Footer End -->
 
 <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"><i class="bi bi-arrow-up"></i></a>
@@ -301,6 +295,88 @@
                 // Hide the current password
                 currentPasswordInput.attr("type", "password");
             }
+        });
+    });
+</script>
+
+<script>
+    function validateForm() {
+        var firstName = document.getElementById('firstName').value;
+        var email = document.getElementById('email').value;
+        var phoneNumber = document.getElementById('phoneNumber').value;
+
+        // Reset error messages
+        document.getElementById('firstNameError').innerText = '';
+        document.getElementById('emailError').innerText = '';
+        document.getElementById('phoneNumberError').innerText = '';
+
+        var isValid = true;
+
+        if (firstName.trim() === '') {
+            document.getElementById('firstNameError').innerText = 'Name is required';
+            isValid = false;
+        }
+
+        if (email.trim() === '') {
+            document.getElementById('emailError').innerText = 'Email address is required';
+            isValid = false;
+        }
+
+        if (phoneNumber.trim() === '') {
+            document.getElementById('phoneNumberError').innerText = 'Mobile No is required';
+            isValid = false;
+        }
+
+        return isValid;
+    }
+</script>
+
+<script>
+    document.getElementById('updatePasswordForm').addEventListener('submit', function (event) {
+        // Reset error messages
+        document.getElementById('currentPasswordError').innerText = '';
+        document.getElementById('newPasswordError').innerText = '';
+        document.getElementById('confirmPasswordError').innerText = '';
+
+        // Get form inputs
+        var currentPassword = document.getElementById('currentPassword').value;
+        var newPassword = document.getElementById('newPassword').value;
+        var confirmPassword = document.getElementById('confirmPassword').value;
+
+        var isValid = true;
+
+        // Validate current password
+        if (currentPassword.trim() === '') {
+            document.getElementById('currentPasswordError').innerText = 'Current Password is required';
+            isValid = false;
+        }
+
+        // Validate new password
+        if (newPassword.trim() === '') {
+            document.getElementById('newPasswordError').innerText = 'New Password is required';
+            isValid = false;
+        }
+
+        // Validate password confirmation
+        if (confirmPassword.trim() === '') {
+            document.getElementById('confirmPasswordError').innerText = 'Confirm Password is required';
+            isValid = false;
+        } else if (confirmPassword !== newPassword) {
+            document.getElementById('confirmPasswordError').innerText = 'Passwords do not match';
+            isValid = false;
+        }
+
+        // Prevent form submission if validation fails
+        if (!isValid) {
+            event.preventDefault();
+        }
+    });
+
+    // Show/hide password
+    document.getElementById('showPasswordCheckbox').addEventListener('change', function () {
+        var passwordInputs = document.querySelectorAll('input[type="password"]');
+        passwordInputs.forEach(function (input) {
+            input.type = this.checked ? 'text' : 'password';
         });
     });
 </script>

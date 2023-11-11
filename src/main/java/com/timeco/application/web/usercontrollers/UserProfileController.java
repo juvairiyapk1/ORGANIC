@@ -13,7 +13,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
@@ -43,12 +46,13 @@ public class UserProfileController {
     }
 
     @PostMapping("/userProfile")
-    public String updateUserProfile(@ModelAttribute User user,Model model){
+    public String updateUserProfile( @ModelAttribute User user, RedirectAttributes redirectAttributes, BindingResult bindingResult){
+
         if (userService.updateProfile(user)){
-            model.addAttribute("successMessage","Profile updated successfully");
+            redirectAttributes.addFlashAttribute("successMessage","Profile updated successfully");
         }
         else {
-            model.addAttribute("errorMessage", "Failed to update profile.");
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to update profile.");
         }
         return "redirect:/userProfile";
     }

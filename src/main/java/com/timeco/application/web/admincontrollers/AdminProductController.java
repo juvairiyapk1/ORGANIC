@@ -145,7 +145,8 @@ public String addproductsForm(Model model) {
 
         Product product=productRepository.findById(id)
                 .orElseThrow(()->new IllegalArgumentException("in valid product Id: "+id));
-        model.addAttribute("category",categoryRepository.findAll());
+        List<Category>unListedCategories=categoryRepository.findByIsListed(false);
+        model.addAttribute("category",unListedCategories);
         model.addAttribute("product",product);
         model.addAttribute("pro",id);
 
@@ -154,7 +155,6 @@ public String addproductsForm(Model model) {
     }
     @PostMapping("/updateProduct/{id}")
     public String updateProduct(@ModelAttribute ProductDto updatedProduct,@PathVariable Long id) {
-        System.out.println(id);
         productService.updateProductById(id,updatedProduct);
 
         return "redirect:/admin/listProducts";

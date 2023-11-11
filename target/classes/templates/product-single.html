@@ -163,15 +163,17 @@
                             <span class="input-group-btn mr-2">
 
                             </span>
-							<p th:text="${product. quantity}"></p>
-							<span class="input-group-btn ml-2">
+							<p th:text="${product. quantity}">  </p>
+							<div th:if="${product.quantity == 0}">
+								<span>Out of Stock</span>
+							</div>
 
-                            </span>
+
 						</div>
 					</div>
 				</div>
 					<!-- Add to Cart button -->
-					<div class="add_to_cart">
+					<div class="add_to_cart" th:unless="${product.quantity == 0}">
 						<!-- Check if the user is authenticated and render accordingly -->
 						<a class="btn_3 btn-primary py-2 px-5" style="cursor:pointer" id="addToCartButton" th:if="${#authorization.expression('isAuthenticated()')}" th:attr="data-id=${product.id}">Add to Cart</a>
 						<a href="/login" style="cursor:pointer" class="btn_3 btn-primary py-2 px-5" th:if="${not #authorization.expression('isAuthenticated()')}">Add to Cart</a>

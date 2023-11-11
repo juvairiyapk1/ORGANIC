@@ -35,7 +35,7 @@ public class AdminOrderController {
     @PostMapping("/updateOrderStatus")
     public String updateOrderStatus(@RequestParam("orderItemId") Long orderItemId,
                                     @RequestParam("newStatus") String newStatus) {
-        System.out.println(orderItemId);
+        System.out.println("5555555555555555555555"+orderItemId);
         purchaseOrderService.updateOrderStatus(orderItemId, newStatus);
 
         return "redirect:/admin/orderList";

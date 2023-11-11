@@ -46,38 +46,34 @@ public class PurchaseOrderImpl implements PurchaseOrderService{
     public void addPurchaseOrder(PurchaseOrder purchaseOrder) {
 
        purchaseOrderRepository.save(purchaseOrder);
-       List<OrderItem>orderItems=purchaseOrder.getOrderItems();
-       for (OrderItem orderItem:orderItems)
-       {
-           Product product=orderItem.getProduct();
-           int orderedQuantity=orderItem.getOrderItemCount();
-
-           if (product.getQuantity()>=orderedQuantity)
-           {
-               product.setQuantity(product.getQuantity()-orderedQuantity);
-               productRepository.save(product);
-
-
-           }
-       }
-
-
-
-
+//        List<OrderItem> orderItems = purchaseOrder.getOrderItems();
+//        for (OrderItem orderItem : orderItems) {
+//            System.out.println();
+//            Product product = orderItem.getProduct();
+//            int orderedQuantity = orderItem.getOrderItemCount();
+//            System.out.println("5555555555555555555"+product);
+//            if (product.getQuantity() >= orderedQuantity) {
+//                System.out.println(product.getQuantity());
+//                product.setQuantity(product.getQuantity() - orderedQuantity);
+//                productRepository.save(product);
+//            }
+//        }
 
     }
 
+
+
+
     @Override
-    @Transactional
     public List<OrderItem> convertPurchaseOrderToOrderItems(User user,PurchaseOrder purchaseOrder) {
         List<OrderItem> orderItems = new ArrayList<>();
          Cart cartItem =user.getCart();
          List<CartItem>cartItems= cartItemRepository.findByCart(cartItem);
 
-
+          System.out.println("88888888888888888888888"+cartItems);
         for (CartItem item:cartItems) {
             OrderItem orderItem = new OrderItem();
-
+         System.out.println("77777777777777777777777"+orderItem);
 
             orderItem.setOrderItemCount(item.getQuantity());
             orderItem.setProduct(item.getProduct());
@@ -108,9 +104,15 @@ public class PurchaseOrderImpl implements PurchaseOrderService{
 
         if (optionalOrderItem.isPresent()) {
             OrderItem orderItem = optionalOrderItem.get();
-            // Set order item status to canceled or implement your cancellation logic
+
             orderItem.setOrderStatus("canceled");
+
             orderItemRepository.save(orderItem);
+
+            Product product = orderItem.getProduct();
+            int cancelledQuantity = orderItem.getOrderItemCount();
+            product.setQuantity(product.getQuantity() + cancelledQuantity);
+            productRepository.save(product);
         }
     }
 

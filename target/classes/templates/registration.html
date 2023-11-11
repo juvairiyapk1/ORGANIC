@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -102,14 +102,16 @@
     <div class="col-sm-6">
         <h3 style="margin-top: 10px">Sign Up Now</h3>
         <p>Please fill out this to register</p>
-        <form th:action="@{/registration/Register}" th:object="${user}" method="post">
+        <form th:action="@{/registration/Register}" th:object="${user}" method="post" onsubmit="return validateForm()">
             <div class="form-group">
                 <label for="firstName">First Name</label>
                 <input type="text" name="firstName" id="firstName" required placeholder="Your Firstname" class="form-control form-control-lg">
+                <p id="firstNameError" class="text-dark"></p>
             </div>
             <div class="form-group">
                 <label for="lastName">Last Name</label>
                 <input type="text" name="lastName" id="lastName" required placeholder="Your Lastname" class="form-control form-control-lg">
+                <p id="lastNameError" class="text-dark"></p>
             </div>
             <div th:if="${error}" class="text-danger">
                 <p th:text="${error}"></p>
@@ -126,11 +128,13 @@
                 <label for="phoneNumber">Phone Number</label>
                 <input type="number" class="form-control form-control-lg" required placeholder="PhoneNumber" name="PhoneNumber"
                        id="phoneNumber">
+                <p id="phoneNumberError" class="text-dark"></p>
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" class="form-control form-control-lg" required placeholder="Password" name="password"
                        id="password">
+                <p id="passwordError" class="text-dark"></p>
             </div>
 
             <input type="submit" value="Register" class="btn btn-primary btn-block " >
@@ -213,5 +217,53 @@
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+
+
+<script>
+    function validateForm() {
+        // Reset error messages
+        document.getElementById('firstNameError').innerText = '';
+        document.getElementById('lastNameError').innerText = '';
+        document.getElementById('phoneNumberError').innerText = '';
+        document.getElementById('passwordError').innerText = '';
+
+        // Get form inputs
+        var firstName = document.getElementById('firstName').value;
+        var lastName = document.getElementById('lastName').value;
+        var phoneNumber= document.getElementById('phoneNumber').value;
+        var password = document.getElementById('password').value;
+
+
+
+        var isValid = true;
+
+        // Validate first name
+        if (firstName.trim() === '') {
+            document.getElementById('firstNameError').innerText = 'First Name is required';
+            isValid = false;
+        }
+
+        // Validate last name
+        if (lastName.trim() === '') {
+            document.getElementById('lastNameError').innerText = 'Last Name is required';
+            isValid = false;
+        }
+
+        if (phoneNumber.trim() === '') {
+            document.getElementById('phoneNumberError').innerText = 'Phone number is required';
+            isValid = false;
+        }
+        if (password.trim() === '') {
+            document.getElementById('passwordError').innerText = 'Password is required';
+            isValid = false;
+        }
+
+        // Add other validation logic for different fields
+
+        return isValid;
+    }
+</script>
+
 </body>
 </html>

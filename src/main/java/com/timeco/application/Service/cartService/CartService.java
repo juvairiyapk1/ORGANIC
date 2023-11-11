@@ -10,6 +10,8 @@ import com.timeco.application.model.cart.CartItem;
 import com.timeco.application.model.product.Product;
 import com.timeco.application.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -198,23 +200,40 @@ public class CartService {
 
     public double calculateTotalAmount(List<CartItem> cartItems, double discount, double shippingCost) {
         // Calculate sub-total first as a double
-        double subTotal = calculateSubTotal(cartItems);
+        double totalPrice = calculateSubTotal(cartItems);
 
         // Apply discount if provided
         if (discount > 0) {
-            subTotal -= discount;
+            totalPrice -= discount;
         }
 
         // Add shipping cost if provided
         if (shippingCost > 0) {
-            subTotal += shippingCost;
+            totalPrice += shippingCost;
         }
 
-        return subTotal;
+        return totalPrice;
     }
+
+//    public int getCartItemCount(Principal principal) {
+//        if (principal != null)
+//        {
+//            String user=principal.getName();
+//            Cart cart=user.getCart();
+//            if (cart != null)
+//            {
+//                return cart.getCartItems().size();
+//            }
+//
+//
+//        }
+//
+//    return 0;
+//    }
+}
 
 
 //    public void deleteAllProduct(User user) {
 //        cartItemRepository.deleteByUser(user);
 //    }
-}
+

@@ -6,10 +6,12 @@ import com.timeco.application.Service.purchaseOrder.PurchaseOrderService;
 import com.timeco.application.model.order.OrderItem;
 import com.timeco.application.model.order.PaymentMethod;
 import com.timeco.application.model.order.PurchaseOrder;
+import com.timeco.application.model.product.Product;
 import com.timeco.application.model.user.Address;
 import com.timeco.application.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,10 +48,17 @@ public class OrderController {
     @Autowired
     private PurchaseOrderRepository purchaseOrderRepository;
 
+    @Autowired
+    private CartItemRepository cartItemRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
+
     @GetMapping("/success")
     public String success(){
         return "success";
     }
+
 
     @PostMapping("/placeOrder")
     public String addPurchaseOrder(@RequestParam("addressId") Long addressId, @RequestParam("paymentMethodId") Long paymentMethodId,@RequestParam("totalAmount") double totalAmount, Principal principal, RedirectAttributes redirectAttributes)
@@ -57,8 +66,6 @@ public class OrderController {
         LocalDate currentDate=LocalDate.now();
         Address address= addressRepository.findById(addressId).orElse(null);
         PaymentMethod method=paymentMethodRepository.findById(paymentMethodId).orElse(null);
-        System.out.println(address);
-        System.out.println(method);
 
         if(address==null || method==null)
         {
@@ -77,11 +84,22 @@ public class OrderController {
         // Save the PurchaseOrder to the database
         purchaseOrderService.addPurchaseOrder(purchaseOrder);
 
-        List<OrderItem>orderItems=purchaseOrderService.convertPurchaseOrderToOrderItems(user,purchaseOrder);
 
+        List<OrderItem>orderItems=purchaseOrderService.convertPurchaseOrderToOrderItems(user,purchaseOrder);
         for (OrderItem orderItem : orderItems) {
             orderItemRepository.save(orderItem);
+
+            Product product = orderItem.getProduct();
+            int orderedQuantity = orderItem.getOrderItemCount();
+            if (product.getQuantity() >= orderedQuantity) {
+                System.out.println(product.getQuantity());
+                product.setQuantity(product.getQuantity() - orderedQuantity);
+                productRepository.save(product);
+            }
         }
+
+               cartItemRepository.deleteAll();
+
 
         return "success";
     }

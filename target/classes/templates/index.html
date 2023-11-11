@@ -83,6 +83,9 @@
                 <a class="btn-sm-square bg-white rounded-circle ms-3" th:href="@{/cart}">
                     <small class="fa fa-shopping-bag text-body"></small>
                 </a>
+                <span th:if="${cartItemCount > 0}" class="badge bg-danger rounded-circle">
+                  <small th:text="${cartItemCount}"></small>
+                </span>
             </div>
         </div>
     </nav>

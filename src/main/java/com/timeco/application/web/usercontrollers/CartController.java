@@ -97,6 +97,8 @@ public ResponseEntity<String> addToCart(@RequestBody ProductDto productDTO, Prin
         double deliveryCharge=100;
         double total = cartService.calculateTotalAmount(cartItems,discount,deliveryCharge);
         double subTotal=cartService.calculateSubTotal(cartItems);
+//        int cartItemCount=cartService.getCartItemCount(principal);
+//        model.addAttribute("cartItemCount",cartItemCount);
         model.addAttribute("cartItems", cartItems);
         model.addAttribute("totalPrice",total);
         model.addAttribute("subTotal",subTotal);
