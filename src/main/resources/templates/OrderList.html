@@ -175,6 +175,16 @@
             <!--            </li>-->
 
             <li class="nav-item menu-items">
+                <a class="nav-link" data-toggle="collapse" th:href="@{/admin/couponList}" aria-expanded="false" aria-controls="ui-basic">
+              <span class="menu-icon">
+                <i class="mdi mdi-laptop"></i>
+              </span>
+                    <span class="menu-title">Coupon Management</span>
+                    <i class="menu-arrow"></i>
+                </a>
+            </li>
+
+            <li class="nav-item menu-items">
                 <a class="nav-link" data-toggle="collapse" th:href="@{/login?logout}" aria-expanded="false" aria-controls="ui-basic">
 
               <span class="menu-icon">
@@ -239,17 +249,6 @@
                </form>
                </td>
             </tr>
-
-<!--            <tr>-->
-<!--                <td></td>-->
-<!--                <td></td>-->
-<!--                <td th:text="'Total Amount:' + ${totalOrderAmount}"></td>-->
-<!--                <td th:text="'Total Ordered Quantity:' + ${totalOrderedQuantity}"></td>-->
-<!--                <td></td>-->
-<!--                <td></td>-->
-<!--                <td></td>-->
-<!--            </tr>-->
-
         </table>
     </div>
 

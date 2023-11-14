@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Corona Admin</title>
-    <!-- plugins:css -->
+    <meta charset="UTF-8">
+    <title>Coupon List</title>
+
     <link rel="stylesheet" href="/assets/vendors/mdi/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="/assets/vendors/css/vendor.bundle.base.css">
     <!-- endinject -->
@@ -21,24 +19,9 @@
     <link rel="stylesheet" href="/assets/css/admin.css">
     <!-- End layout styles -->
     <link rel="shortcut icon" href="/assets/img/favicon.png" />
-    <!--  <link href="/https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">-->
-    <script>
-        function toggleBlockUnblock(button) {
-            const confirmation = confirm('Are you sure you want to toggle the block/unblock for this user?');
-            if (confirmation) {
-                if (button.innerText === "Block") {
-                    button.innerText = "Unblock";
-                    button.classList.remove("btn-primary");
-                    button.classList.add("btn-danger");
-                } else {
-                    button.innerText = "Block";
-                    button.classList.remove("btn-danger");
-                    button.classList.add("btn-primary");
-                }
-            }
-            return false;
-        }
-    </script>
+
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">-->
+
     <style>
         .action-buttons {
             display: flex;
@@ -151,7 +134,7 @@
               <span class="menu-icon">
                 <i class="mdi mdi-table-large"></i>
               </span>
-                    <span class="menu-title">CategroyManagement</span>
+                    <span class="menu-title">CategoryManagement</span>
                 </a>
             </li>
 
@@ -164,6 +147,7 @@
                     <span class="menu-title">Order Management</span>
                 </a>
             </li>
+
             <!--            <li class="nav-item menu-items">-->
             <!--                <a class="nav-link" data-toggle="collapse" th:href="@{/admin/SubCategory-list}" aria-expanded="false" aria-controls="ui-basic">-->
 
@@ -180,7 +164,7 @@
                 <i class="mdi mdi-laptop"></i>
               </span>
                     <span class="menu-title">Coupon Management</span>
-                    <i class="menu-arrow"></i>
+<!--                    <i class="menu-arrow"></i>-->
                 </a>
             </li>
 
@@ -211,69 +195,162 @@
             <div class="card">
                 <div class="card-body">
                     <div>
-                        <h4 class="card-title">ORDER MANAGEMENT</h4>
-<!--                        <a class="btn btn-primary" >Add</a>-->
+                        <h4 class="card-title">COUPON MANAGEMENT</h4>
+<!--                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">-->
+<!--                            Add new coupon-->
+<!--                        </button>-->
+
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            add
+                        </button>
+
+
+                        <!--                        <a class="btn btn-primary" >Add</a>-->
                     </div>
                     <!--        <p class="card-description"> Add class <code>.table-striped</code>-->
                     </p>
                     <div class="table-responsive">
                         <table class="table table-striped">
-            <tr>
-                <th>Product Name</th>
-                <th>Ordered Date</th>
-                <th>Amount</th>
-                <th>Payment Method</th>
-                <th>Status</th>
-                <th>Manage</th>
+                            <tr>
+                                <th>Coupon Code</th>
+                                <th>Description</th>
+                                <th>Expiry Date</th>
+                                <th>Percentage</th>
+                                <th>Minimum purchase amount</th>
+                                <th>Usage Count</th>
+                                <th>Action</th>
 
-            </tr>
+                            </tr>
 
-            <tr th:each="order:${orderItems}">
-                <td th:text="${order.product.productName}"></td>
-                <td th:text="${order.order.orderedDate}"></td>
-                <td th:text="${order.orderItemCount * order.product.price}"></td>
-                <td th:text="${order.order.paymentMethod.paymentMethodName}"></td>
-                <td th:text="${order.orderStatus}"></td>
+                            <tr th:each="coupon:${coupons}">
+                                <td th:text="${coupon.couponCode}"></td>
+                                <td th:text="${coupon.description}"></td>
+                                <td th:text="${coupon.expiryDate}"></td>
+                                <td th:text="${coupon.percentage}"></td>
+                                <td th:text="${coupon.minimumPurchaseAmount}"></td>
+                                <td th:text="${coupon.usageCount}"></td>
+                                <td>
+                                    <a th:href="@{/admin/unblockCoupon/{id}(id=${coupon.couponId})}" data-method="put" class="btn bg-gradient-warning font-weight-bold text-xs mb-0" data-toggle="tooltip" th:if="${coupon.isActive}">
+                                        Unblock
+                                    </a>
+                                    <a th:href="@{/admin/blockCoupon/{id}(id=${coupon.couponId})}" data-method="put" class="btn bg-gradient-danger font-weight-bold text-xs mb-0 ms-2 me-0" data-toggle="tooltip" th:if="${!coupon.isActive}">
+                                        Block
+                                    </a>
 
-               <td> <form th:action="@{/admin/updateOrderStatus}" method="post" >
-                   <input type="hidden" name="orderItemId" th:value="${order.OrderItemId}" />
-                   <select name="newStatus">
-                       <option value="pending">Pending</option>
-                       <option value="shipped">Shipped</option>
-                       <option value="delivered">Delivered</option>
-                       <option value="cancel">Cancel</option>
+                                </td>
 
-                       <!-- add other status options as needed -->
-                   </select>
-                   <button type="submit">Update Status</button>
-               </form>
-               </td>
-            </tr>
-        </table>
+                           </tr>
+                        </table>
+                    </div>
+
+                    <!-- page-body-wrapper ends -->
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- page-body-wrapper ends -->
-</div>
-<!-- container-scroller -->
-<!-- plugins:js -->
-<script src="/assets/vendors/js/vendor.bundle.base.js"></script>
-<!-- endinject -->
-<!-- Plugin js for this page -->
-<script src="/assets/vendors/chart.js/Chart.min.js"></script>
-<script src="/assets/vendors/progressbar.js/progressbar.min.js"></script>
-<script src="/assets/vendors/jvectormap/jquery-jvectormap.min.js"></script>
-<script src="/assets/vendors/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
-<script src="/assets/vendors/owl-carousel-2/owl.carousel.min.js"></script>
-<!-- End plugin js for this page -->
-<!-- inject:js -->
-<script src="/assets/js/off-canvas.js"></script>
-<script src="/assets/js/hoverable-collapse.js"></script>
-<script src="/assets/js/misc.js"></script>
-<script src="/assets/js/settings.js"></script>
-<script src="/assets/js/todolist.js"></script>
-<!-- endinject -->
-<!-- Custom js for this page -->
-<script src="/assets/js/dashboard.js"></script>
-<!-- End custom js for this page -->
+
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                            <div class="modal-body">
+                            <form th:action="@{/admin/add/couponList}" method="post" th:object="${coupon}" >
+                                <div class="col-md-6">
+                                <label for="couponCode" class="form-label">Coupon Code </label>
+                                <input type="text" class="form-control" id="couponCode" name="couponCode">
+                                </div>
+
+                                <div class="col-md-6">
+                                <label for="description" class="form-label">Description </label>
+                                <input type="text" class="form-control" id="description"  name="description" >
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="expiryDate" class="form-label">Expiry Date</label>
+                                    <input type="date" class="form-control" id="expiryDate"  name="expiryDate" >
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="percentage" class="form-label">Percentage</label>
+                                    <input type="number" class="form-control" id="percentage"  name="percentage" >
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="minimumPurchaseAmount" class="form-label">Minimum purchase amount</label>
+                                    <input type="number" class="form-control" id="minimumPurchaseAmount"  name="minimumPurchaseAmount" >
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="usageCount" class="form-label">Usage count</label>
+                                    <input type="number" class="form-control" id="usageCount"  name="usageCount" >
+                                </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+
+                            </form>
+                            </div>
+                    </div>
+                </div>
+            </div>
+
+    <script>
+        $(document).ready(function () {
+            $(".btn-unblock, .btn-block").on("click", function (e) {
+                e.preventDefault();
+
+                var couponId = $(this).data("coupon-id");
+                var url = $(this).hasClass("btn-unblock")
+                    ? "/admin/unblockCoupon/" + couponId
+                    : "/admin/blockCoupon/" + couponId;
+
+                $.ajax({
+                    url: url,
+                    type: "PUT",
+                    success: function () {
+                        // Assuming the request was successful, update the UI as needed.
+                        location.reload(); // You can customize this part based on your requirements.
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error: " + error);
+                    }
+                });
+            });
+        });
+    </script>
+
+
+
+
+    <!-- container-scroller -->
+                <!-- plugins:js -->
+                <script src="/assets/vendors/js/vendor.bundle.base.js"></script>
+                <!-- endinject -->
+                <!-- Plugin js for this page -->
+                <script src="/assets/vendors/chart.js/Chart.min.js"></script>
+                <script src="/assets/vendors/progressbar.js/progressbar.min.js"></script>
+                <script src="/assets/vendors/jvectormap/jquery-jvectormap.min.js"></script>
+                <script src="/assets/vendors/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+                <script src="/assets/vendors/owl-carousel-2/owl.carousel.min.js"></script>
+                <!-- End plugin js for this page -->
+                <!-- inject:js -->
+                <script src="/assets/js/off-canvas.js"></script>
+                <script src="/assets/js/hoverable-collapse.js"></script>
+                <script src="/assets/js/misc.js"></script>
+                <script src="/assets/js/settings.js"></script>
+                <script src="/assets/js/todolist.js"></script>
+                <!-- endinject -->
+                <!-- Custom js for this page -->
+                <script src="/assets/js/dashboard.js"></script>
+
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+                <!-- End custom js for this page -->
+
 </body>
 </html>

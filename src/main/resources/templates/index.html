@@ -81,11 +81,16 @@
                     <small class="fa fa-user text-body"></small>
                 </a>
                 <a class="btn-sm-square bg-white rounded-circle ms-3" th:href="@{/cart}">
-                    <small class="fa fa-shopping-bag text-body"></small>
+                    <!-- Icon -->
+                    <small class="fa fa-shopping-bag text-body position-relative"></small>
+
+                    <!-- Cart count badge -->
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary" th:text="${cartItemCount}" th:if="${cartItemCount > 0}"></span>
+
+                    <span class="visually-hidden">New alerts</span>
                 </a>
-                <span th:if="${cartItemCount > 0}" class="badge bg-danger rounded-circle">
-                  <small th:text="${cartItemCount}"></small>
-                </span>
+
+
             </div>
         </div>
     </nav>
@@ -947,6 +952,8 @@
 
 <!-- Template Javascript -->
 <script src="../static/js/main.js"></script>
+
+
 </body>
 
 </html>

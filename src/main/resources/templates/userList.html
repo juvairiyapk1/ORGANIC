@@ -24,23 +24,7 @@
 <!--  <link href="/https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">-->
 
 
-<!--  <script>-->
-<!--    function toggleBlockUnblock(button) {-->
-<!--      const confirmation = confirm('Are you sure you want to toggle the block/unblock for this user?');-->
-<!--      if (confirmation) {-->
-<!--        if (button.innerText === "Block") {-->
-<!--          button.innerText = "Unblock";-->
-<!--          button.classList.remove("btn-primary");-->
-<!--          button.classList.add("btn-danger");-->
-<!--        } else {-->
-<!--          button.innerText = "Block";-->
-<!--          button.classList.remove("btn-danger");-->
-<!--          button.classList.add("btn-primary");-->
-<!--        }-->
-<!--      }-->
-<!--      return false;-->
-<!--    }-->
-<!--  </script>-->
+
   <script>
     // Select the Block and Unblock buttons by their IDs
     var blockButton = document.querySelectorAll(".block-button");
@@ -161,15 +145,15 @@
           <span class="menu-title">CategroyManagement</span>
         </a>
       </li>
-      <li class="nav-item menu-items">
-        <a class="nav-link" data-toggle="collapse" th:href="@{/admin/SubCategory-list}" aria-expanded="false" aria-controls="ui-basic">
+<!--      <li class="nav-item menu-items">-->
+<!--        <a class="nav-link" data-toggle="collapse" th:href="@{/admin/SubCategory-list}" aria-expanded="false" aria-controls="ui-basic">-->
 
-              <span class="menu-icon">
-                <i class="mdi mdi-table-large"></i>
-              </span>
-          <span class="menu-title">SubCategroy</span>
-        </a>
-      </li>
+<!--              <span class="menu-icon">-->
+<!--                <i class="mdi mdi-table-large"></i>-->
+<!--              </span>-->
+<!--          <span class="menu-title">SubCategroy</span>-->
+<!--        </a>-->
+<!--      </li>-->
 
       <li class="nav-item menu-items">
         <a class="nav-link" data-toggle="collapse"  aria-expanded="false" aria-controls="ui-basic">
@@ -178,6 +162,16 @@
                 <i class="mdi mdi-table-large"></i>
               </span>
           <span class="menu-title">Order Management</span>
+        </a>
+      </li>
+
+      <li class="nav-item menu-items">
+        <a class="nav-link" data-toggle="collapse" th:href="@{/admin/couponList}" aria-expanded="false" aria-controls="ui-basic">
+              <span class="menu-icon">
+                <i class="mdi mdi-laptop"></i>
+              </span>
+          <span class="menu-title">Coupon Management</span>
+          <i class="menu-arrow"></i>
         </a>
       </li>
 

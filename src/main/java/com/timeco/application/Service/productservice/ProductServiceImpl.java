@@ -38,7 +38,7 @@ public class ProductServiceImpl implements ProductService{
     @Override
     @Transactional
     public void updateProductById(Long id, ProductDto products) {
-        System.out.println(id);
+
         // Retrieve the existing Product from the database
         Product product = productRepository.findById(id).orElse(null);
 

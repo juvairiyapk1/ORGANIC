@@ -25,6 +25,11 @@ public class PurchaseOrder {
     @ManyToOne
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "coupon_id")
+    private Coupon coupon;
+
+
     private LocalDate orderedDate;
 
 //    private String orderStatus;
@@ -52,6 +57,10 @@ public class PurchaseOrder {
         this.orderAmount = orderAmount;
         this.transcationId = transcationId;
         this.possibleOrderStatuses = possibleOrderStatuses;
+    }
+
+    public PurchaseOrder(Coupon coupon) {
+        this.coupon = coupon;
     }
 
     public PurchaseOrder() {
@@ -105,13 +114,7 @@ public class PurchaseOrder {
         this.orderedDate = orderedDate;
     }
 
-//    public String getOrderStatus() {
-//        return orderStatus;
-//    }
 
-//    public void setOrderStatus(String orderStatus) {
-//        this.orderStatus = orderStatus;
-//    }
 
     public Double getOrderAmount() {
         return orderAmount;
@@ -136,5 +139,13 @@ public class PurchaseOrder {
 
     public void setPossibleOrderStatuses(Set<OrderStatus> possibleOrderStatuses) {
         this.possibleOrderStatuses = possibleOrderStatuses;
+    }
+
+    public Coupon getCoupon() {
+        return coupon;
+    }
+
+    public void setCoupon(Coupon coupon) {
+        this.coupon = coupon;
     }
 }

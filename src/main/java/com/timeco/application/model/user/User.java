@@ -1,13 +1,11 @@
 package com.timeco.application.model.user;
 
 import com.timeco.application.model.cart.Cart;
+import com.timeco.application.model.order.Coupon;
 import com.timeco.application.model.role.Role;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
+import java.util.*;
 
 
 @Entity
@@ -49,6 +47,14 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Address> address = new ArrayList<>();
 
+    @ManyToMany
+    @JoinTable(
+            name = "user_coupons",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "coupon_id"))
+    private Set<Coupon> coupons = new HashSet<>();
+
+
     public User() {
 
     }
@@ -76,6 +82,10 @@ public class User {
         this.roles = roles;
         this.cart = cart;
         this.address=address;
+    }
+
+    public User(Set<Coupon> coupons) {
+        this.coupons = coupons;
     }
 
     public Long getId() {
@@ -160,5 +170,11 @@ public class User {
 
     }
 
+    public Set<Coupon> getCoupons() {
+        return coupons;
+    }
 
+    public void setCoupons(Set<Coupon> coupons) {
+        this.coupons = coupons;
+    }
 }

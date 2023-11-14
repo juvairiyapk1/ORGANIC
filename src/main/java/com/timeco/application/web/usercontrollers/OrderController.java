@@ -2,6 +2,7 @@ package com.timeco.application.web.usercontrollers;
 
 import com.timeco.application.Repository.*;
 import com.timeco.application.Service.cartService.CartService;
+import com.timeco.application.Service.payment.PaymentService;
 import com.timeco.application.Service.purchaseOrder.PurchaseOrderService;
 import com.timeco.application.model.order.OrderItem;
 import com.timeco.application.model.order.PaymentMethod;
@@ -54,6 +55,9 @@ public class OrderController {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private PaymentService paymentService;
+
     @GetMapping("/success")
     public String success(){
         return "success";
@@ -99,6 +103,7 @@ public class OrderController {
         }
 
                cartItemRepository.deleteAll();
+
 
 
         return "success";
