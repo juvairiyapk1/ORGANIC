@@ -209,7 +209,7 @@
                     </div>
                     <!--        <p class="card-description"> Add class <code>.table-striped</code>-->
                     </p>
-                    <div class="table-responsive">
+                    <div class="table-responsive mx-auto text-center">
                         <table class="table table-striped">
                             <tr>
                                 <th>Coupon Code</th>
@@ -219,6 +219,7 @@
                                 <th>Minimum purchase amount</th>
                                 <th>Usage Count</th>
                                 <th>Action</th>
+                                <th></th>
 
                             </tr>
 
@@ -232,6 +233,7 @@
 
                                 <td> <a  th:href="@{/admin/editCoupon/{id}(id=${coupon.couponId})}" class="btn btn-warning btn-fw custom-small-button">edit</a></td>
 
+
                                 <td>
                                     <a th:href="@{/admin/unblockCoupon/{id}(id=${coupon.couponId})}" data-method="put" class="btn bg-gradient-warning font-weight-bold text-xs mb-0" data-toggle="tooltip" th:if="${coupon.isActive}">
                                         Unblock
@@ -242,15 +244,17 @@
 
                                 </td>
 
-                           </tr>
+
+
+                            </tr>
                         </table>
                     </div>
 
                     <!-- page-body-wrapper ends -->
                 </div>
             </div>
-        </div>
-    </div>
+
+
 
 
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

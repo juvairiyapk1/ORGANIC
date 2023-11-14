@@ -55,10 +55,5 @@ public class AdminCouponController {
         return "redirect:/admin/couponList";
     }
 
-    @PostMapping("/editCoupon/{id}")
-    public String editCoupon(@ModelAttribute CouponDto editCoupon, @PathVariable Integer couponId) {
-        couponService.editCouponById(couponId,editCoupon);
 
-        return "redirect:/admin/listProducts";
-    }
 }

@@ -2,13 +2,11 @@ package com.timeco.application.Service.coupon;
 
 import com.timeco.application.Dto.CouponDto;
 import com.timeco.application.Repository.CouponRepository;
-import com.timeco.application.model.category.Category;
 import com.timeco.application.model.order.Coupon;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -26,10 +24,6 @@ public class CouponServiceImpl implements CouponService{
         return couponRepository.findById(couponId).orElse(null);
     }
 
-//    @Override
-//    public void saveCoupon(Coupon coupon) {
-//        couponRepository.save(coupon);
-//    }
 
     @Override
     @Transactional
@@ -44,7 +38,6 @@ public class CouponServiceImpl implements CouponService{
         coupon.setUsageCount(couponDto.getUsageCount());
         couponRepository.save(coupon);
     }
-
     @Override
     public void lockCoupon(Integer couponId) {
         Coupon lockCoupon = couponRepository.findById(couponId).get();
@@ -61,17 +54,21 @@ public class CouponServiceImpl implements CouponService{
         couponRepository.save(lockCoupon);
 
     }
-
     @Override
-    public void editCouponById(Integer couponId, CouponDto editCoupon) {
+    public Coupon updateCoupon(Coupon coupon) {
 
-        Coupon coupon=couponRepository.findById(couponId).orElse(null);
-        if(coupon != null)
-        {
-            coupon.setCouponCode(editCoupon.getCouponCode());
-            coupon.setDescription(editCoupon.getDescription());
-            coupon.setExpiryDate(editCoupon.getPercentage());
-        }
+//		write logic for editing the coupon
+        Coupon editCoupon = couponRepository.findById(coupon.getCouponId()).get();
+//        editCoupon.setCartItemsCount(coupon.getCartItemsCount());
+        editCoupon.setCouponCode(coupon.getCouponCode());
+        editCoupon.setDescription(coupon.getDescription());
+        editCoupon.setExpiryDate(coupon.getExpiryDate());
+//        editCoupon.setIsActive(coupon.getIsActive());
+        editCoupon.setUsageCount(coupon.getUsageCount());
+        editCoupon.setMinimumPurchaseAmount(coupon.getMinimumPurchaseAmount());
+        editCoupon.setPercentage(coupon.getPercentage());
+        couponRepository.save(editCoupon);
+        return coupon;
     }
 
 

@@ -28,7 +28,7 @@ public class Coupon {
 
     private Double minimumPurchaseAmount;
 
-    private Boolean isActive;
+    private boolean isActive;
 
     private Integer cartItemsCount;
 
@@ -42,7 +42,7 @@ public class Coupon {
 
 
     public Coupon(String couponCode, String description, LocalDate expiryDate, Double percentage,
-                  Double minimumPurchaseAmount, Boolean isActive, Integer cartItemsCount) {
+                  Double minimumPurchaseAmount, boolean isActive, Integer cartItemsCount) {
         super();
         this.couponCode = couponCode;
         this.description = description;
@@ -105,11 +105,12 @@ public class Coupon {
         this.minimumPurchaseAmount = minimumPurchaseAmount;
     }
 
-    public Boolean isActive() {
-        return isActive;
+
+    public boolean isActive() {
+        return isActive ;
     }
 
-    public void setActive(Boolean active) {
+    public void setActive(boolean active) {
         isActive = active;
     }
 
