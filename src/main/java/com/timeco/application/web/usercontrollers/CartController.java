@@ -72,70 +72,20 @@ public ResponseEntity<String> addToCart(@RequestBody ProductDto productDTO, Prin
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Please log in.");
     }
 }
-//    @PostMapping("/decrementQuantity")
-//    public ResponseEntity<Integer> decrementQuantity(@RequestParam Long cartItemId) {
-//        int newQuantity = cartService.decrementQuantity(cartItemId);
-//        return ResponseEntity.ok(newQuantity);
-//    }
-//
-//    @PostMapping("/incrementQuantity")
-//    public ResponseEntity<Integer> incrementQuantity(@RequestParam Long cartItemId) {
-//        int newQuantity = cartService.incrementQuantity(cartItemId);
-//        return ResponseEntity.ok(newQuantity);
-//    }
-//    @PostMapping("/updateTotal")
-//    public ResponseEntity<Double> updateTotal(@RequestParam Long cartItemId) {
-//        double updatedPrice = cartService.updateTotal(cartItemId);
-//
-//        return ResponseEntity.ok(updatedPrice);
-//    }
-//
+
     @GetMapping("/cart")
     public String showCartPage(Model model, Principal principal) {
         List<CartItem> cartItems = cartService.getCartItemsForUser(principal);
-        double discount=50;
+//        double discount=50;
         double deliveryCharge=100;
-        double total = cartService.calculateTotalAmount(cartItems,discount,deliveryCharge);
+        double total = cartService.calculateTotalAmount(cartItems,deliveryCharge);
         double subTotal=cartService.calculateSubTotal(cartItems);
-//        int cartItemCount=cartService.getCartItemCount(principal);
-//        model.addAttribute("cartItemCount",cartItemCount);
         model.addAttribute("cartItems", cartItems);
         model.addAttribute("totalPrice",total);
         model.addAttribute("subTotal",subTotal);
 
         return "cart"; // Return the view name for the cart page (cart.html)
     }
-//    @PostMapping("/updateQuantity")
-//    public ResponseEntity<String> updateQuantity(@RequestParam int quantity,Long cartItemId) {
-//        // Assume you have a CartItem class and a CartItemRepository
-//        CartItem cartItem = cartService.getCartItemById(cartItemId);
-//
-//        if (cartItem != null) {
-//            int currentQuantity = cartItem.getQuantity();
-//            int newQuantity = currentQuantity + quantity;
-//
-//            // Ensure the quantity doesn't go below 1
-//            if (newQuantity < 1) {
-//                newQuantity = 1;
-//            }
-//
-//            cartItem.setQuantity(newQuantity);
-//
-//            // Calculate the updated total price
-//            double totalPrice = cartItem.getPrice() * newQuantity;
-//
-//            // Save the updated cart item to the repository
-//            cartService.saveCartItem(cartItem);
-//
-//            // Calculate the total price for the cart
-//            double totalCartPrice = cartService.calculateTotalCartPrice();
-//
-//            // You can return the updated quantity and total price as JSON
-//            return ResponseEntity.ok("{ \"updatedQuantity\": " + newQuantity + ", \"totalPrice\": " + totalPrice + " }");
-//        } else {
-//            return ResponseEntity.badRequest().body("Cart item not found");
-//        }
-//    }
 
     @GetMapping("/updateCartItemQuantity/{cartItemId}")
     @ResponseBody

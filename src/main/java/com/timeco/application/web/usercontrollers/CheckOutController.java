@@ -1,5 +1,6 @@
 package com.timeco.application.web.usercontrollers;
 
+import com.razorpay.RazorpayClient;
 import com.timeco.application.Dto.AddressDto;
 import com.timeco.application.Repository.AddressRepository;
 import com.timeco.application.Repository.PaymentMethodRepository;
@@ -12,10 +13,12 @@ import com.timeco.application.model.order.PaymentMethod;
 import com.timeco.application.model.order.PurchaseOrder;
 import com.timeco.application.model.user.Address;
 import com.timeco.application.model.user.User;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
@@ -50,9 +53,9 @@ public class CheckOutController {
         User user = userRepository.findByEmail(userName);
         List<Address> addresses = addressRepository.findByUser(user);
         List<CartItem> cartItems = cartService.getCartItemsForUser(principal);
-        double discount=50;
+//        double discount=50;
         double deliveryCharge=100;
-        double total = cartService.calculateTotalAmount(cartItems,discount,deliveryCharge);
+        double total = cartService.calculateTotalAmount(cartItems,deliveryCharge);
         double subTotal=cartService.calculateSubTotal(cartItems);
         model.addAttribute("addresses", addresses);
         model.addAttribute("total",total);
@@ -67,6 +70,7 @@ public class CheckOutController {
 
         return "redirect:/checkOut"; // Redirect to the user's profile page
     }
+
 
 
 }

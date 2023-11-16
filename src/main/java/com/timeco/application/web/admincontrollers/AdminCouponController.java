@@ -1,5 +1,6 @@
 package com.timeco.application.web.admincontrollers;
 
+import com.timeco.application.Dto.AddressDto;
 import com.timeco.application.Dto.CouponDto;
 import com.timeco.application.Dto.ProductDto;
 import com.timeco.application.Repository.CouponRepository;
@@ -55,5 +56,12 @@ public class AdminCouponController {
         return "redirect:/admin/couponList";
     }
 
+    @PostMapping("/editCoupon/{couponId}")
+    public String updateCoupon(@PathVariable Integer couponId,@ModelAttribute("coupon") CouponDto couponDto)
+    {
+        couponService.updateCoupon(couponId,couponDto);
+
+        return "redirect:/admin/couponList";
+    }
 
 }

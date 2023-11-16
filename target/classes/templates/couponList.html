@@ -20,7 +20,7 @@
     <!-- End layout styles -->
     <link rel="shortcut icon" href="/assets/img/favicon.png" />
 
-<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">-->
+    <!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">-->
 
     <style>
         .action-buttons {
@@ -164,7 +164,7 @@
                 <i class="mdi mdi-laptop"></i>
               </span>
                     <span class="menu-title">Coupon Management</span>
-<!--                    <i class="menu-arrow"></i>-->
+                    <!--                    <i class="menu-arrow"></i>-->
                 </a>
             </li>
 
@@ -196,9 +196,9 @@
                 <div class="card-body">
                     <div>
                         <h4 class="card-title">COUPON MANAGEMENT</h4>
-<!--                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">-->
-<!--                            Add new coupon-->
-<!--                        </button>-->
+                        <!--                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">-->
+                        <!--                            Add new coupon-->
+                        <!--                        </button>-->
 
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                             add
@@ -224,6 +224,7 @@
                             </tr>
 
                             <tr th:each="coupon:${coupons}">
+
                                 <td th:text="${coupon.couponCode}"></td>
                                 <td th:text="${coupon.description}"></td>
                                 <td th:text="${coupon.expiryDate}"></td>
@@ -231,20 +232,74 @@
                                 <td th:text="${coupon.minimumPurchaseAmount}"></td>
                                 <td th:text="${coupon.usageCount}"></td>
 
-                                <td> <a  th:href="@{/admin/editCoupon/{id}(id=${coupon.couponId})}" class="btn btn-warning btn-fw custom-small-button">edit</a></td>
-
-
-                                <td>
-                                    <a th:href="@{/admin/unblockCoupon/{id}(id=${coupon.couponId})}" data-method="put" class="btn bg-gradient-warning font-weight-bold text-xs mb-0" data-toggle="tooltip" th:if="${coupon.isActive}">
-                                        Unblock
-                                    </a>
-                                    <a th:href="@{/admin/blockCoupon/{id}(id=${coupon.couponId})}" data-method="put" class="btn bg-gradient-danger font-weight-bold text-xs mb-0 ms-2 me-0" data-toggle="tooltip" th:if="${!coupon.isActive}">
-                                        Block
-                                    </a>
-
+                                <td> <button type="button" class="btn btn-primary" data-bs-toggle="modal"  th:attr="data-bs-target='#modal_' + ${coupon.couponId}">
+                                    edit
+                                </button>
                                 </td>
 
 
+                                <td>
+                                    <a th:href="@{/admin/unblockCoupon/{id}(id=${coupon.couponId})}" data-method="put" class="btn bg-gradient-warning font-weight-bold text-xs mb-0" data-toggle="tooltip" th:if="${coupon.isActive != null and coupon.isActive}">
+                                        Unblock
+                                    </a>
+                                    <a th:href="@{/admin/blockCoupon/{id}(id=${coupon.couponId})}" data-method="put" class="btn bg-gradient-danger font-weight-bold text-xs mb-0 ms-2 me-0" data-toggle="tooltip" th:if="${coupon.isActive == null or !coupon.isActive}">
+                                        Block
+                                    </a>
+
+
+                                </td>
+
+                                <!--edit coupon-->
+                                <!-- Modal -->
+                                <div class="modal fade" th:id="'modal_' + ${coupon.couponId}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel-1">Modal title</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form th:action="@{'/admin/editCoupon/'+${coupon.couponId}}" method="post" th:object="${coupon}" >
+                                                    <div class="col-md-6">
+                                                        <label for="couponCode" class="form-label">Coupon Code </label>
+                                                        <input type="text" class="form-control"  name="couponCode" th:value="${coupon.couponCode}">
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <label for="description" class="form-label">Description </label>
+                                                        <input type="text" class="form-control" th:value="${coupon.description}"  name="description" >
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <label for="expiryDate" class="form-label">Expiry Date</label>
+                                                        <input type="date" class="form-control" th:value="${coupon.expiryDate}"  name="expiryDate" >
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <label for="percentage" class="form-label">Percentage</label>
+                                                        <input type="number" class="form-control" th:value="${coupon.percentage}"  name="percentage" >
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <label for="minimumPurchaseAmount" class="form-label">Minimum purchase amount</label>
+                                                        <input type="number" class="form-control" th:value="${coupon.minimumPurchaseAmount}" name="minimumPurchaseAmount" >
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <label for="usageCount" class="form-label">Usage count</label>
+                                                        <input type="number" class="form-control" th:value="${coupon.usageCount}"  name="usageCount" >
+                                                    </div>
+
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-primary">Save</button>
+                                                    </div>
+
+                                                </form>
+
+                                            </div>
+                                        </div>
+                                    </div>
 
                             </tr>
                         </table>
@@ -256,7 +311,7 @@
 
 
 
-
+<!--add coupon-->
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -264,16 +319,16 @@
                             <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                            <div class="modal-body">
+                        <div class="modal-body">
                             <form th:action="@{/admin/add/couponList}" method="post" th:object="${coupon}" >
                                 <div class="col-md-6">
-                                <label for="couponCode" class="form-label">Coupon Code </label>
-                                <input type="text" class="form-control" id="couponCode" name="couponCode">
+                                    <label for="couponCode" class="form-label">Coupon Code </label>
+                                    <input type="text" class="form-control" id="couponCode" name="couponCode">
                                 </div>
 
                                 <div class="col-md-6">
-                                <label for="description" class="form-label">Description </label>
-                                <input type="text" class="form-control" id="description"  name="description" >
+                                    <label for="description" class="form-label">Description </label>
+                                    <input type="text" class="form-control" id="description"  name="description" >
                                 </div>
 
                                 <div class="col-md-6">
@@ -296,68 +351,91 @@
                                     <input type="number" class="form-control" id="usageCount"  name="usageCount" >
                                 </div>
 
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save</button>
-                        </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                </div>
 
                             </form>
-                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-    <script>
-        $(document).ready(function () {
-            $(".btn-unblock, .btn-block").on("click", function (e) {
-                e.preventDefault();
 
-                var couponId = $(this).data("coupon-id");
-                var url = $(this).hasClass("btn-unblock")
-                    ? "/admin/unblockCoupon/" + couponId
-                    : "/admin/blockCoupon/" + couponId;
+            <script>
+                $(document).ready(function () {
+                    $(".btn-unblock, .btn-block").on("click", function (e) {
+                        e.preventDefault();
 
-                $.ajax({
-                    url: url,
-                    type: "PUT",
-                    success: function () {
-                        // Assuming the request was successful, update the UI as needed.
-                        location.reload(); // You can customize this part based on your requirements.
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("Error: " + error);
-                    }
+                        var couponId = $(this).data("coupon-id");
+                        var url = $(this).hasClass("btn-unblock")
+                            ? "/admin/unblockCoupon/" + couponId
+                            : "/admin/blockCoupon/" + couponId;
+
+                        $.ajax({
+                            url: url,
+                            type: "PUT",
+                            success: function () {
+                                // Assuming the request was successful, update the UI as needed.
+                                location.reload(); // You can customize this part based on your requirements.
+                            },
+                            error: function (xhr, status, error) {
+                                console.error("Error: " + error);
+                            }
+                        });
+                    });
                 });
-            });
-        });
-    </script>
+            </script>
+
+            <script>
+            var options = {
+            key: 'rzp_test_bgyWOWhe1pDEcz',
+            amount: 50000, // amount in paise
+            currency: 'INR',
+            name: 'Your Company Name',
+            description: 'Payment for your order',
+            handler: function(response) {
+            // Handle the success response from Razorpay
+            alert('Payment successful! Payment ID: ' + response.razorpay_payment_id);
+            },
+            };
+
+            var rzp = new Razorpay(options);
+            document.getElementById('payment-button').onclick = function() {
+            rzp.open();
+            }
+            </script>
 
 
 
 
-    <!-- container-scroller -->
-                <!-- plugins:js -->
-                <script src="/assets/vendors/js/vendor.bundle.base.js"></script>
-                <!-- endinject -->
-                <!-- Plugin js for this page -->
-                <script src="/assets/vendors/chart.js/Chart.min.js"></script>
-                <script src="/assets/vendors/progressbar.js/progressbar.min.js"></script>
-                <script src="/assets/vendors/jvectormap/jquery-jvectormap.min.js"></script>
-                <script src="/assets/vendors/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
-                <script src="/assets/vendors/owl-carousel-2/owl.carousel.min.js"></script>
-                <!-- End plugin js for this page -->
-                <!-- inject:js -->
-                <script src="/assets/js/off-canvas.js"></script>
-                <script src="/assets/js/hoverable-collapse.js"></script>
-                <script src="/assets/js/misc.js"></script>
-                <script src="/assets/js/settings.js"></script>
-                <script src="/assets/js/todolist.js"></script>
-                <!-- endinject -->
-                <!-- Custom js for this page -->
-                <script src="/assets/js/dashboard.js"></script>
+            <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-                <!-- End custom js for this page -->
+
+            <!-- container-scroller -->
+            <!-- plugins:js -->
+            <script src="/assets/vendors/js/vendor.bundle.base.js"></script>
+            <!-- endinject -->
+            <!-- Plugin js for this page -->
+            <script src="/assets/vendors/chart.js/Chart.min.js"></script>
+            <script src="/assets/vendors/progressbar.js/progressbar.min.js"></script>
+            <script src="/assets/vendors/jvectormap/jquery-jvectormap.min.js"></script>
+            <script src="/assets/vendors/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+            <script src="/assets/vendors/owl-carousel-2/owl.carousel.min.js"></script>
+            <!-- End plugin js for this page -->
+            <!-- inject:js -->
+            <script src="/assets/js/off-canvas.js"></script>
+            <script src="/assets/js/hoverable-collapse.js"></script>
+            <script src="/assets/js/misc.js"></script>
+            <script src="/assets/js/settings.js"></script>
+            <script src="/assets/js/todolist.js"></script>
+            <!-- endinject -->
+            <!-- Custom js for this page -->
+            <script src="/assets/js/dashboard.js"></script>
+
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+            <!-- End custom js for this page -->
 
 </body>
 </html>

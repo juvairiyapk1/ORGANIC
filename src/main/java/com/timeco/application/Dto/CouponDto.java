@@ -20,13 +20,13 @@ public class CouponDto {
 
     private Double minimumPurchaseAmount;
 
-    private boolean isActive;
+    private Boolean isActive;
 
     private Integer cartItemsCount;
 
     private Integer usageCount=0;
 
-    public CouponDto(String couponCode, String description, LocalDate expiryDate, Double percentage, Double minimumPurchaseAmount, boolean isActive, Integer cartItemsCount, Integer usageCount) {
+    public CouponDto(String couponCode, String description, LocalDate expiryDate, Double percentage, Double minimumPurchaseAmount, Boolean isActive, Integer cartItemsCount, Integer usageCount) {
         this.couponCode = couponCode;
         this.description = description;
         this.expiryDate = expiryDate;
@@ -85,11 +85,11 @@ public class CouponDto {
         this.minimumPurchaseAmount = minimumPurchaseAmount;
     }
 
-    public boolean isActive() {
+    public Boolean isActive() {
         return isActive;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         isActive = active;
     }
 

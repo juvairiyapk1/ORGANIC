@@ -65,17 +65,24 @@ public class OrderController {
 
 
     @PostMapping("/placeOrder")
-    public String addPurchaseOrder(@RequestParam("addressId") Long addressId, @RequestParam("paymentMethodId") Long paymentMethodId,@RequestParam("totalAmount") double totalAmount, Principal principal, RedirectAttributes redirectAttributes)
+    public String addPurchaseOrder(@RequestParam("addressId") Long addressId,
+                                   @RequestParam("paymentMethodId") Long paymentMethodId,
+                                   @RequestParam("totalAmount") double totalAmount,
+                                   Principal principal,
+                                   RedirectAttributes redirectAttributes)
     {
         LocalDate currentDate=LocalDate.now();
         Address address= addressRepository.findById(addressId).orElse(null);
         PaymentMethod method=paymentMethodRepository.findById(paymentMethodId).orElse(null);
 
+
         if(address==null || method==null)
         {
-            redirectAttributes.addFlashAttribute("error","Address and payment method not found");
+            redirectAttributes.addFlashAttribute("error","Address or payment method  not found");
             return "redirect:/checkout";
         }
+
+
 
         PurchaseOrder purchaseOrder=new PurchaseOrder();
         purchaseOrder.setAddress(address);
@@ -102,7 +109,7 @@ public class OrderController {
             }
         }
 
-               cartItemRepository.deleteAll();
+        cartItemRepository.deleteAll();
 
 
 

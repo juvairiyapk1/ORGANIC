@@ -24,4 +24,6 @@ public interface PurchaseOrderService  {
   void updateOrderStatus(Long orderItemId, String newStatus);
 
     void cancelOrderItem(Long orderItemId);
+
+//    double calculateOrderTotal(String couponCode, double orderAmount);
 }

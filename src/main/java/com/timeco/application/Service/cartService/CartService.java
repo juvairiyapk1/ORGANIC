@@ -198,14 +198,14 @@ public class CartService {
         return subTotal;
     }
 
-    public double calculateTotalAmount(List<CartItem> cartItems, double discount, double shippingCost) {
+    public double calculateTotalAmount(List<CartItem> cartItems, double shippingCost) {
         // Calculate sub-total first as a double
         double totalPrice = calculateSubTotal(cartItems);
 
-        // Apply discount if provided
-        if (discount > 0) {
-            totalPrice -= discount;
-        }
+//        // Apply discount if provided
+//        if (discount > 0) {
+//            totalPrice -= discount;
+//        }
 
         // Add shipping cost if provided
         if (shippingCost > 0) {

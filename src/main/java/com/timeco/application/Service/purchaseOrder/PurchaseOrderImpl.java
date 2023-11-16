@@ -1,13 +1,12 @@
 package com.timeco.application.Service.purchaseOrder;
 
-import com.timeco.application.Repository.CartItemRepository;
-import com.timeco.application.Repository.OrderItemRepository;
-import com.timeco.application.Repository.ProductRepository;
-import com.timeco.application.Repository.PurchaseOrderRepository;
+import com.timeco.application.Repository.*;
 import com.timeco.application.Service.cartService.CartService;
+import com.timeco.application.Service.coupon.CouponService;
 import com.timeco.application.Service.productservice.ProductService;
 import com.timeco.application.model.cart.Cart;
 import com.timeco.application.model.cart.CartItem;
+import com.timeco.application.model.order.Coupon;
 import com.timeco.application.model.order.OrderItem;
 import com.timeco.application.model.order.PurchaseOrder;
 import com.timeco.application.model.product.Product;
@@ -40,6 +39,13 @@ public class PurchaseOrderImpl implements PurchaseOrderService{
 
     @Autowired
     private ProductRepository productRepository ;
+
+    @Autowired
+    private CouponService couponService;
+
+
+    @Autowired
+    private CouponRepository couponRepository;
 
     @Override
     @Transactional
@@ -101,5 +107,16 @@ public class PurchaseOrderImpl implements PurchaseOrderService{
             productRepository.save(product);
         }
     }
+
+//    @Override
+//    public double calculateOrderTotal(String couponCode, double orderAmount){
+//        double total=orderAmount;
+//        if(couponService.isCouponValid(couponCode,orderAmount)){
+//            Coupon coupon=couponRepository.findByCode(couponCode);
+//            total = total * (1 - coupon.getPercentage() / 100);
+//
+//        }
+//        return total;
+//    }
 
 }

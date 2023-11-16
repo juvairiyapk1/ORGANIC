@@ -52,6 +52,13 @@
         .coupon-card .card-body {
             padding: 20px;
         }
+
+
+        .card {
+            border-radius: 15px; /* Adjust the radius as needed */
+            overflow: hidden;
+        }
+
     </style>
 </head>
 <body>
@@ -141,18 +148,18 @@
             <!-- Coupon Cards -->
             <div class="col-md-9">
                 <div class="row">
-                    <div th:each="coupon : ${coupons}" class="col-md-4">
-                        <div class="card mb-3">
+                    <div th:each="coupon : ${couponCode}" class="col-md-4">
+                        <div class="card mb-3 ">
                             <div class="card-body">
                                 <h5 class="card-title" th:text="${coupon.couponCode}"></h5>
                                 <p class="card-text">
-                                    Discount: <span th:text="${coupon.discountAmount}"></span>
+                                     <span th:text="${coupon.minimumPurchaseAmount}"></span>
                                     <br>
-                                    Expiry Date: <span th:text="${#dates.format(coupon.expiryDate, 'yyyy-MM-dd')}"></span>
+                                    Expiry Date <span th:text="${coupon.expiryDate}"></span>
                                     <br>
-                                    Coupon Criteria: <span th:text="${coupon.couponCriteria}"></span>
+                                     <span th:text="${coupon.description}"></span>
                                 </p>
-                                <a href="#" class="btn btn-warning edit-button">Edit</a>
+<!--                                <a href="#" class="btn btn-warning edit-button">Edit</a>-->
                             </div>
                         </div>
                     </div>
