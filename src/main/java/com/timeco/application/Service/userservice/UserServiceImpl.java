@@ -75,6 +75,7 @@ public class UserServiceImpl implements UserService {
                 registrationDto.getLastName(), registrationDto.getEmail(),
                 registrationDto.getPhoneNumber(), passwordEncoder.encode(registrationDto.getPassword()),
                 Arrays.asList(new Role("ROLE_USER")));
+
         return user;
 
     }
@@ -113,11 +114,10 @@ public class UserServiceImpl implements UserService {
                 existingUser.setEmail(updatedUser.getEmail());
                 System.out.println(updatedUser.getFirstName());
                 existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
-
                 // Save the updated user
                 userRepository.save(existingUser);
 
-                return true; // Successful update
+                return true;
             }
             return false;
         }catch (Exception e) {

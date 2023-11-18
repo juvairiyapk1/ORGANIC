@@ -1,9 +1,6 @@
 package com.timeco.application.model.category;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name="Category")

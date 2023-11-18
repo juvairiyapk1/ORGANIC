@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CouponServiceImpl implements CouponService{
@@ -49,7 +50,7 @@ public class CouponServiceImpl implements CouponService{
 
     @Override
     @Transactional
-    public void addCoupon(CouponDto couponDto) {
+    public void addCoupon(CouponDto couponDto,Long userId) {
 
         Coupon coupon=new Coupon();
         coupon.setCouponCode(couponDto.getCouponCode());
@@ -59,6 +60,8 @@ public class CouponServiceImpl implements CouponService{
         coupon.setMinimumPurchaseAmount(couponDto.getMinimumPurchaseAmount());
         coupon.setUsageCount(couponDto.getUsageCount());
         couponRepository.save(coupon);
+
+
     }
     @Override
     public void lockCoupon(Integer couponId) {
@@ -120,6 +123,9 @@ public class CouponServiceImpl implements CouponService{
         return couponDiscount;
 
     }
+
+
+
 //    @Override
 //    public Boolean isCouponValid(String couponCode, double orderAmount)
 //    {

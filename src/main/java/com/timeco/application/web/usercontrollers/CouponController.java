@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Controller
 public class CouponController {
@@ -62,20 +63,33 @@ public class CouponController {
         if (coupon != null) {
             String userName = principal.getName();
             User user = userRepository.findByEmail(userName);
+
+            // Check if the user has already used the coupon
+            if (user.getCoupons().contains(coupon)) {
+                response.put("valid", false);
+                response.put("message", "Coupon has already been used by this user.");
+                return ResponseEntity.ok(response);
+            }
+
             Cart cart = cartRepository.findByUser(user);
             List<CartItem> cartItems = cartItemRepository.findByCart(cart);
             double couponDiscount = couponService.findByDiscount(couponCode, principal);
             double total = cartService.calculateTotalAmount(cartItems, deliveryCharge);
 
+
+
+
             if (!coupon.isActive() && total >= coupon.getMinimumPurchaseAmount() && currentDate.isBefore(coupon.getExpiryDate())) {
-
-                System.out.println("2222222222222222222222222222222"+coupon.isActive());
                 double discountedTotal = total - couponDiscount;
-
                 // Add the coupon details to the response
                 response.put("valid", true);
                 response.put("discountedTotal", discountedTotal);
                 response.put("discountAmount", couponDiscount);
+                user.getCoupons().add(coupon);
+                coupon.getUsers().add(user);
+
+                userRepository.save(user);
+                couponRepository.save(coupon);
 
                 return ResponseEntity.ok(response);
             } else {
@@ -91,6 +105,8 @@ public class CouponController {
             return ResponseEntity.ok(response);
         }
     }
+
+
 
 
 

@@ -106,7 +106,7 @@
 </div>
 <!-- Page Header End -->
 
-<!-- Product Start -->
+<!--product start-->
 <div class="container-xxl py-5">
     <div class="container">
         <div class="row g-0 gx-5 align-items-end">
@@ -119,64 +119,138 @@
             <div class="col-lg-6 text-start text-lg-end wow slideInRight" data-wow-delay="0.1s">
                 <ul class="nav nav-pills d-inline-flex justify-content-end mb-5">
                     <li class="nav-item me-2">
-                        <a class="btn btn-outline-primary border-2 active" data-bs-toggle="pill" href="#tab-1">Vegetable</a>
+                        <a class="btn btn-outline-primary border-2 " data-bs-toggle="pill" href="#tab-1" >All Products</a>
                     </li>
                     <li class="nav-item me-2">
-                        <a class="btn btn-outline-primary border-2" data-bs-toggle="pill" href="#tab-2">Fruits </a>
+                        <a class="btn btn-outline-primary border-2" data-bs-toggle="pill" href="#tab-2">Vegetables</a>
                     </li>
                     <li class="nav-item me-0">
-                        <a class="btn btn-outline-primary border-2" data-bs-toggle="pill" href="#tab-3">Fresh</a>
+                        <a class="btn btn-outline-primary border-2" data-bs-toggle="pill" href="#tab-3">Fruits</a>
+                    </li>
+                    <li class="nav-item me-0">
+                        <a class="btn btn-outline-primary border-2" data-bs-toggle="pill" href="#tab-4">Fresh</a>
                     </li>
                 </ul>
             </div>
         </div>
-        <div  class="tab-pane fade show p-0">
-            <div class="container">
+        <div class="tab-content">
+            <div id="tab-1" class="tab-pane fade show p-0 active">
                 <div class="row g-4">
-                    <div class="d-flex align-content-center flex-wrap">
-                        <!-- The following div should be placed within the th:each loop -->
-                        <div th:each="product : ${productsWithImages}" th:if="${!product.category.isListed}" class="col-xl-3 col-md-4 col-sm-6" >
-                            <!-- Check if 'product' is set and not null -->
-                               <div class="product-item">
-                                   <a th:href="@{'/user/products/' + ${product.id}}">
-                                   <img class="img-fluid w-100" th:src="${product.productImages}" alt="Product Images">
-                                   </a>
-                                    <!-- ...Oth<div class="position-relative bg-light overflow-hidden">er product details go here... -->
-<!--                                    <p th:if="${product.category == 'fruits'}">Category: Fruits</p>-->
-<!--                                    <p th:if="${product.category == 'vegetables'}">Category: Vegetables</p>-->
-<!--                                    <p th:if="${product.category == 'fresh'}">Category: Fresh</p>-->
-<!--                                    <p th:if="${product.subcategory == 'import'}">Subcategory: Import</p>-->
-<!--                                    <p th:if="${product.subcategory == 'domestic'}">Subcategory: Domestic</p>-->
-
-                                    <div class="text-center p-4">
-                                        <a class="d-block h5 mb-2" th:href="@{'/user/products/' + ${product.id}}">[[${product.productName}]]</a>
-<!--                                        <span class="text-primary me-1" th:text="${'$', #numbers.formatDecimal(product.price, 2)}"></span>-->
-<!--                                        <span class="text-body text-decoration-line-through" th:text="${'$', #numbers.formatDecimal(product.discountedPrice, 2)}"></span>-->
-
-                                    </div>
-
-                                    <div class="d-flex border-top">
-                                        <small class="w-50 text-center border-end py-2">
-                                            <a class="text-body" th:href="@{'/user/product-single/' + ${product.id}}">
-                                                <i class="fa fa-eye text-primary me-2"></i>View detail
-                                            </a>
-                                        </small>
-
-                                        <small class="w-50 text-center py-2">
-                                            <a class="text-body" th:href="@{'/add-to-cart/' + ${product.id}}">
-                                                <i class="fa fa-shopping-bag text-primary me-2"></i>Add to cart
-                                            </a>
-                                        </small>
-                                    </div>
-                                </div>
+                    <div th:each="product : ${productsWithImages}" th:if="${!product.category.isListed}" class="col-xl-3 col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="product-item">
+                            <div class="position-relative bg-light overflow-hidden">
+                                <a th:href="@{'/user/products/' + ${product.id}}">
+                                <img class="img-fluid w-100" th:src="${product.productImages}" alt="Product Images">
+                                </a>
+                                <div class="bg-secondary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">New</div>
                             </div>
+                            <div class="text-center p-4">
+                                <a class="d-block h5 mb-2" th:href="@{'/user/products/' + ${product.id}}">[[${product.productName}]]</a>
+                                <span class="text-primary me-1" th:text="${product.price}">$19.00</span>
+                            </div>
+                            <div class="d-flex border-top">
+                                <small class="w-50 text-center border-end py-2">
+                                    <a class="text-body" th:href="@{'/user/products/' + ${product.id}}"><i class="fa fa-eye text-primary me-2"></i>View detail</a>
+                                </small>
+                                <small class="w-50 text-center py-2">
+                                    <a class="text-body" href=""><i class="fa fa-shopping-bag text-primary me-2"></i>Add to cart</a>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div id="tab-2" class="tab-pane fade  p-0">
+                <div class="row g-4">
+                    <div th:each="vegetable : ${vegetables}" th:if="${vegetable != null}" class="col-xl-3 col-lg-4 col-md-6" >
+                        <div class="product-item">
+
+                            <div class="position-relative bg-light overflow-hidden">
+                                <a th:href="@{'/user/products/' + ${vegetable.id}}">
+                                <img class="img-fluid w-100" th:src="${vegetable.productImages}" alt="vegetable Images">
+                                </a>
+                                <div class="bg-secondary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">New</div>
+                            </div>
+                            <div class="text-center p-4">
+                                <a class="d-block h5 mb-2" th:href="@{'/user/products/' + ${vegetable.id}}">[[${vegetable.productName}]]</a>
+                                <span class="text-primary me-1" th:text="${vegetable.price}">$19.00</span>
+
+                            </div>
+                            <div class="d-flex border-top">
+                                <small class="w-50 text-center border-end py-2">
+                                    <a class="text-body"  th:href="@{'/user/products/' + ${vegetable.id}}"><i class="fa fa-eye text-primary me-2"></i>View detail</a>
+                                </small>
+                                <small class="w-50 text-center py-2">
+                                    <a class="text-body" href=""><i class="fa fa-shopping-bag text-primary me-2"></i>Add to cart</a>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div id="tab-3" class="tab-pane fade show p-0">
+                <div class="row g-4">
+                    <div th:each="fruit : ${fruits}"th:if="${fruit != null}" class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="product-item">
+                            <div class="position-relative bg-light overflow-hidden">
+                                <a th:href="@{'/user/products/' + ${fruit.id}}">
+                                <img class="img-fluid w-100" th:src="${fruit.productImages}" alt="Product Images">
+                                </a>
+                                <div class="bg-secondary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">New</div>
+                            </div>
+                            <div class="text-center p-4">
+                                <a class="d-block h5 mb-2" th:href="@{'/user/products/' + ${fruit.id}}">[[${fruit.productName}]]</a>
+                                <span class="text-primary me-1" th:text="${fruit.price}">$19.00</span>
+                            </div>
+                            <div class="d-flex border-top">
+                                <small class="w-50 text-center border-end py-2">
+                                    <a class="text-body" th:href="@{'/user/products/' + ${fruit.id}}"><i class="fa fa-eye text-primary me-2"></i>View detail</a>
+                                </small>
+                                <small class="w-50 text-center py-2">
+                                    <a class="text-body" href=""><i class="fa fa-shopping-bag text-primary me-2"></i>Add to cart</a>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+<!--        </div>-->
+
+        <div id="tab-4" class="tab-pane fade show p-0">
+            <div class="row g-4">
+                <div th:each="freshProduct : ${fresh}" th:if="${freshProduct!= null}" class="col-xl-3 col-lg-4 col-md-6">
+                    <div class="product-item">
+                        <div class="position-relative bg-light overflow-hidden">
+                            <a th:href="@{'/user/products/' + ${freshProduct.id}}">
+                                <img class="img-fluid w-100" th:src="${freshProduct.productImages}" alt="Product Images">
+                            </a>
+                            <div class="bg-secondary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">New</div>
+                        </div>
+                        <div class="text-center p-4">
+                            <a class="d-block h5 mb-2" th:href="@{'/user/products/' + ${freshProduct.id}}">[[${freshProduct.productName}]]</a>
+                            <span class="text-primary me-1" th:text="${freshProduct.price}">$19.00</span>
+                        </div>
+                        <div class="d-flex border-top">
+                            <small class="w-50 text-center border-end py-2">
+                                <a class="text-body" th:href="@{'/user/products/' + ${freshProduct.id}}"><i class="fa fa-eye text-primary me-2"></i>View detail</a>
+                            </small>
+                            <small class="w-50 text-center py-2">
+                                <a class="text-body" href=""><i class="fa fa-shopping-bag text-primary me-2"></i>Add to cart</a>
+                            </small>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        </div>
     </div>
-<!--Product End-->
+</div>
+<!-- Product End -->
+
+
 
 
     <!-- Firm Visit Start -->
@@ -309,8 +383,41 @@
     </div>
     <!-- Footer End -->
 
+<!--<script>-->
+<!--    $(document).ready(function() {-->
+<!--        $('.nav-pills a').on('click', function(e) {-->
+<!--            e.preventDefault();-->
 
-    <!-- Back to Top -->
+<!--            // Get the selected category from the data-category attribute-->
+<!--            var selectedCategory = $(this).data('category');-->
+
+<!--            // Make an AJAX request to the server to fetch products based on the selected category-->
+<!--            $.ajax({-->
+<!--                url: '/use/products', // Replace with your actual API endpoint-->
+<!--                method: 'GET',-->
+<!--                data: { category: selectedCategory },-->
+<!--                success: function(response) {-->
+<!--                    // Update the tab content with the new products-->
+<!--                    if (selectedCategory === 'all') {-->
+<!--                        $('#tab-1').html(response);-->
+<!--                    } else if (selectedCategory === 'vegitables') {-->
+<!--                        $('#tab-2').html(response);-->
+<!--                    } else if (selectedCategory === 'fruits') {-->
+<!--                        $('#tab-3').html(response);-->
+<!--                    } else if (selectedCategory === 'fresh') {-->
+<!--                        $('#tab-4').html(response);-->
+<!--                    }-->
+<!--                },-->
+<!--                error: function(error) {-->
+<!--                    console.error('Error fetching products:', error);-->
+<!--                }-->
+<!--            });-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
+
+
+<!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"><i class="bi bi-arrow-up"></i></a>
 
 

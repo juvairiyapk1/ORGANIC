@@ -158,8 +158,20 @@ public class User {
         this.address = address;
     }
 
-    public User(Long id, String firstName, String lastName, String email, String phoneNumber, String password, boolean isBlocked, Collection<Role> roles) {
-        this.id = id;
+//    public User(Long id, String firstName, String lastName, String email, String phoneNumber, String password, boolean isBlocked, Collection<Role> roles) {
+//        this.id = id;
+//        this.firstName = firstName;
+//        this.lastName = lastName;
+//        this.email = email;
+//        this.phoneNumber = phoneNumber;
+//        this.password = password;
+//        this.isBlocked = isBlocked;
+//        this.roles = roles;
+//
+//    }
+
+
+    public User(String firstName, String lastName, String email, String phoneNumber, String password, boolean isBlocked, Collection<Role> roles, Cart cart, List<Address> address, Set<Coupon> coupons) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -167,7 +179,9 @@ public class User {
         this.password = password;
         this.isBlocked = isBlocked;
         this.roles = roles;
-
+        this.cart = cart;
+        this.address = address;
+        this.coupons = coupons;
     }
 
     public Set<Coupon> getCoupons() {
@@ -177,4 +191,6 @@ public class User {
     public void setCoupons(Set<Coupon> coupons) {
         this.coupons = coupons;
     }
+
+
 }

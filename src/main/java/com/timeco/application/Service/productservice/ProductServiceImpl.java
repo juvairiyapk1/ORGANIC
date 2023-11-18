@@ -1,6 +1,5 @@
 package com.timeco.application.Service.productservice;
 
-import antlr.TokenStreamRewriteEngine;
 import com.timeco.application.Dto.ProductDto;
 import com.timeco.application.Repository.CartItemRepository;
 import com.timeco.application.Repository.CategoryRepository;
@@ -8,15 +7,12 @@ import com.timeco.application.Repository.ProductRepository;
 import com.timeco.application.model.cart.CartItem;
 import com.timeco.application.model.category.Category;
 import com.timeco.application.model.product.Product;
-import org.aspectj.apache.bcel.generic.InstructionList;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class ProductServiceImpl implements ProductService{
@@ -136,9 +132,22 @@ public class ProductServiceImpl implements ProductService{
         return false;
     }
 
-//    @Override
-//    public void save(Product product) {
-//        productRepository.save(product);
-//    }
+
+
+    @Override
+    public List<Product> getFirstCategory(Category category) {
+        return productRepository.findByCategory(category);
+    }
+
+    @Override
+    public List<Product> getSecondCategory(Category category) {
+        return productRepository.findByCategory(category);
+    }
+
+    @Override
+    public List<Product> getThirdCategory(Category category) {
+        return productRepository.findByCategory(category);
+    }
+
 
 }

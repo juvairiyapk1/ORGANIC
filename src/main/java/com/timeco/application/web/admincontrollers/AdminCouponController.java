@@ -32,10 +32,10 @@ public class AdminCouponController {
     }
 
     @PostMapping("/add/couponList")
-    public String addCoupon(@ModelAttribute("coupon") CouponDto couponDto)
+    public String addCoupon(@ModelAttribute("coupon") CouponDto couponDto,Long userId)
     {
         System.out.println("55555555555555"+couponDto.getPercentage());
-        couponService.addCoupon(couponDto);
+        couponService.addCoupon(couponDto,userId);
 
         return "redirect:/admin/couponList";
     }

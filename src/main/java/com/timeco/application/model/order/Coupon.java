@@ -21,6 +21,7 @@ public class Coupon {
 
     private String description;
 
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate expiryDate;
 
@@ -51,6 +52,19 @@ public class Coupon {
         this.minimumPurchaseAmount = minimumPurchaseAmount;
         this.isActive = isActive;
         this.cartItemsCount = cartItemsCount;
+    }
+
+    public Coupon(String couponCode, String description, LocalDate expiryDate, Double percentage, Double minimumPurchaseAmount, Boolean isActive, Integer cartItemsCount, Integer usageCount, List<PurchaseOrder> ordersList, Set<User> users) {
+        this.couponCode = couponCode;
+        this.description = description;
+        this.expiryDate = expiryDate;
+        this.percentage = percentage;
+        this.minimumPurchaseAmount = minimumPurchaseAmount;
+        this.isActive = isActive;
+        this.cartItemsCount = cartItemsCount;
+        this.usageCount = usageCount;
+        this.ordersList = ordersList;
+        this.users = users;
     }
 
     public Coupon() {
@@ -145,4 +159,6 @@ public class Coupon {
     public void setUsers(Set<User> users) {
         this.users = users;
     }
+
+
 }

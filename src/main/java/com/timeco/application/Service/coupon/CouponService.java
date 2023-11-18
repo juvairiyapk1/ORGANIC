@@ -20,7 +20,7 @@ public interface CouponService {
 
 
     @Transactional
-    void addCoupon(CouponDto couponDto);
+    void addCoupon(CouponDto couponDto,Long userId);
 
     void lockCoupon(Integer id);
 
@@ -30,6 +30,9 @@ public interface CouponService {
     Coupon updateCoupon(Integer couponId, CouponDto couponDto);
 
     double findByDiscount(String couponCode, Principal principal);
+
+
+
 
 //    Boolean isCouponValid(String couponCode, double orderAmount);
 
