@@ -76,20 +76,18 @@ public class CouponController {
             double couponDiscount = couponService.findByDiscount(couponCode, principal);
             double total = cartService.calculateTotalAmount(cartItems, deliveryCharge);
 
-
-
-
             if (!coupon.isActive() && total >= coupon.getMinimumPurchaseAmount() && currentDate.isBefore(coupon.getExpiryDate())) {
                 double discountedTotal = total - couponDiscount;
                 // Add the coupon details to the response
                 response.put("valid", true);
                 response.put("discountedTotal", discountedTotal);
                 response.put("discountAmount", couponDiscount);
-                user.getCoupons().add(coupon);
-                coupon.getUsers().add(user);
-
-                userRepository.save(user);
-                couponRepository.save(coupon);
+                response.put("couponCode",couponCode);
+//                user.getCoupons().add(coupon);
+//                coupon.getUsers().add(user);
+//
+//                userRepository.save(user);
+//                couponRepository.save(coupon);
 
                 return ResponseEntity.ok(response);
             } else {
@@ -105,7 +103,6 @@ public class CouponController {
             return ResponseEntity.ok(response);
         }
     }
-
 
 
 

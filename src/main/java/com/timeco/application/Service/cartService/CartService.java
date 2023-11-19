@@ -208,7 +208,7 @@ public class CartService {
 //        }
 
         // Add shipping cost if provided
-        if (shippingCost > 0) {
+        if (!cartItems.isEmpty() && shippingCost > 0) {
             totalPrice += shippingCost;
         }
 

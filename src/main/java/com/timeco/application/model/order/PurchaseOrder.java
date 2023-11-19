@@ -32,11 +32,11 @@ public class PurchaseOrder {
 
     private LocalDate orderedDate;
 
-//    private String orderStatus;
+    private String orderStatus;
 
     private Double orderAmount;
 
-    private String transcationId;
+    private String transactionId;
 
 //    private Integer orderedQuantity;
 
@@ -46,16 +46,19 @@ public class PurchaseOrder {
             inverseJoinColumns = @JoinColumn(name = "order_status_id"))
     private Set<OrderStatus> possibleOrderStatuses = new HashSet<>();
 
-    public PurchaseOrder(Long orderId, Address address, List<OrderItem> orderItems, PaymentMethod paymentMethod, User user, LocalDate orderedDate, Double orderAmount, String transcationId, Set<OrderStatus> possibleOrderStatuses) {
+
+
+    public PurchaseOrder(Long orderId, Address address, List<OrderItem> orderItems, PaymentMethod paymentMethod, User user, Coupon coupon, LocalDate orderedDate, String orderStatus, Double orderAmount, String transactionId, Set<OrderStatus> possibleOrderStatuses) {
         this.orderId = orderId;
         this.address = address;
         this.orderItems = orderItems;
         this.paymentMethod = paymentMethod;
         this.user = user;
+        this.coupon = coupon;
         this.orderedDate = orderedDate;
-//        this.orderStatus = orderStatus;
+        this.orderStatus = orderStatus;
         this.orderAmount = orderAmount;
-        this.transcationId = transcationId;
+        this.transactionId = transactionId;
         this.possibleOrderStatuses = possibleOrderStatuses;
     }
 
@@ -124,12 +127,12 @@ public class PurchaseOrder {
         this.orderAmount = orderAmount;
     }
 
-    public String getTranscationId() {
-        return transcationId;
+    public String getTransactionId() {
+        return transactionId;
     }
 
-    public void setTranscationId(String transcationId) {
-        this.transcationId = transcationId;
+    public void setTransactionId(String transcationId) {
+        this.transactionId = transcationId;
     }
 
 
@@ -147,5 +150,13 @@ public class PurchaseOrder {
 
     public void setCoupon(Coupon coupon) {
         this.coupon = coupon;
+    }
+
+    public String getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
     }
 }

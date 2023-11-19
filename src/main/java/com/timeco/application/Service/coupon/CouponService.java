@@ -2,6 +2,7 @@ package com.timeco.application.Service.coupon;
 
 import com.timeco.application.Dto.CouponDto;
 import com.timeco.application.model.order.Coupon;
+import com.timeco.application.model.user.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +31,6 @@ public interface CouponService {
     Coupon updateCoupon(Integer couponId, CouponDto couponDto);
 
     double findByDiscount(String couponCode, Principal principal);
-
 
 
 

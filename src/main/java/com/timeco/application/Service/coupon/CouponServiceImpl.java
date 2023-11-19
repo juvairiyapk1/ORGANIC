@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -123,7 +124,6 @@ public class CouponServiceImpl implements CouponService{
         return couponDiscount;
 
     }
-
 
 
 //    @Override
