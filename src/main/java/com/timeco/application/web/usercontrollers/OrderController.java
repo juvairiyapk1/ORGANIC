@@ -71,6 +71,9 @@ public class OrderController {
     @Autowired
     private WalletRepository walletRepository;
 
+    @Autowired
+    private WalletTransactionRepository walletTransactionRepository;
+
     @GetMapping("/success")
     public String success(){
         return "success";
@@ -108,9 +111,10 @@ public class OrderController {
         purchaseOrder.setOrderAmount(totalAmount);
         User user = userRepository.findByEmail(principal.getName());
         purchaseOrder.setUser(user);
-
-        // Save the PurchaseOrder to the database
         purchaseOrderService.addPurchaseOrder(purchaseOrder);
+
+
+
 
 
         List<OrderItem> orderItems = purchaseOrderService.convertPurchaseOrderToOrderItems(user, purchaseOrder);
@@ -130,6 +134,8 @@ public class OrderController {
             // Set success response
             response.put("isValid", true);
             response.put("message", "Order placed successfully");
+            purchaseOrderService.addPurchaseOrder(purchaseOrder);
+            cartItemRepository.deleteAll();
             response.put("redirectUrl", "/success");}
 
         else if (paymentMethodId == 2) {
@@ -152,49 +158,53 @@ public class OrderController {
             assert address != null;
             response.put("username", address.getFirstName());
             response.put("contact", address.getPhoneNumber());
+            cartItemRepository.deleteAll();
 
         }
-//        else if (paymentMethodId==3) {
-//            Wallet userWallet = walletRepository.findByUser(user);
-//
-//            if (userWallet != null) {
-//                double walletBalance = userWallet.getBalance();
-//
-//                if (walletBalance >= orderAmount) {
-//                    // Sufficient funds in the wallet
-//                    userWallet.withdraw(orderAmount);
-//
-//                    // Record the wallet transaction
-//                    WalletTransaction walletTransaction = new WalletTransaction();
-//                    walletTransaction.setWallet(userWallet);
-//                    walletTransaction.setAmount(orderAmount);
-//                    walletTransaction.setTransactionType("DEBIT"); // Assuming 'DEBIT' for deduction, adjust accordingly
-//                    walletTransaction.setTransactionTime(LocalDateTime.now());
-//                    walletTransactionRepository.save(walletTransaction);
-//
-//                    // Continue with the rest of the order placement logic
-//                    response.put("isValid", true);
-//                    response.put("orderId", "Wallet payment"); // Adjust accordingly for wallet transactions
-//                    response.put("amount", orderAmount);
-//                    response.put("purchaseId", purchaseOrder.getOrderId());
-//                    response.put("email", username);
-//                    response.put("username", selectedAddress.getUserName());
-//                    response.put("contact", selectedAddress.getMobile());
-//                } else {
-//                    // Insufficient funds in the wallet
-//                    response.put("isValid", true);
-//                    response.put("error", "Insufficient funds in the wallet");
-//                }
-//            }
-//           else {
-//                // User doesn't have a wallet
-//                response.put("isValid", true);
-//                response.put("error", "User does not have a wallet");
-//            }
+        else if (paymentMethodId==3) {
+            Wallet userWallet = walletRepository.findByUser(user);
 
-//        }
+            if (userWallet != null) {
+                double walletBalance = userWallet.getWalletAmount();
+
+                if (walletBalance >= totalAmount) {
+                    // Sufficient funds in the wallet
+                    userWallet.withdraw(totalAmount);
+
+                    // Record the wallet transaction
+                    WalletTransaction walletTransaction = new WalletTransaction();
+                    walletTransaction.setWallet(userWallet);
+                    walletTransaction.setAmount(totalAmount);
+                    walletTransaction.setTransactionType("DEBIT"); // Assuming 'DEBIT' for deduction, adjust accordingly
+                    walletTransaction.setTransactionTime(LocalDateTime.now());
+                    walletTransactionRepository.save(walletTransaction);
+
+                    // Continue with the rest of the order placement logic
+                    response.put("isValid", true);
+                    response.put("orderId", "Wallet payment"); // Adjust accordingly for wallet transactions
+                    response.put("amount", totalAmount);
+                    response.put("purchaseId", purchaseOrder.getOrderId());
+                    response.put("email", username);
+                    assert address != null;
+                    response.put("username", address.getEmail());
+                    response.put("contact", address.getPhoneNumber());
+                    cartItemRepository.deleteAll();
+                } else {
+                    // Insufficient funds in the wallet
+                    response.put("isValid", false);
+                    response.put("error", "Insufficient funds in the wallet");
 
 
+                }
+            } else {
+                // User doesn't have a wallet
+                response.put("isValid", true);
+                response.put("error", "User does not have a wallet");
+                return ResponseEntity.ok(response.toString());
+
+            }
+
+        }
 
 
         if (couponCode != null) {
@@ -208,7 +218,7 @@ public class OrderController {
 
             }
         }
-        cartItemRepository.deleteAll();
+
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             String jsonResponse = objectMapper.writeValueAsString(response);
@@ -220,9 +230,6 @@ public class OrderController {
 
 
         }
-
-
-
     }
 
     @PostMapping("/verifyPayment")
@@ -232,6 +239,7 @@ public class OrderController {
                                                  @RequestParam("paymentId") String paymentId,
                                                  @RequestParam("purchaseId") Long purchaseOrderId,
                                                  Principal principal) throws RazorpayException {
+                        System.out.println("777777777"+purchaseOrderId);
 
         RazorpayClient razorpay = new RazorpayClient("rzp_test_bgyWOWhe1pDEcz", "4mkCzKfIfbIXXJsHBnyuVTDI");
 
@@ -245,6 +253,7 @@ public class OrderController {
         boolean status =  Utils.verifyPaymentSignature(options, secret);
         if(status)
         {
+            System.out.println("8888888888888888");
             PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(purchaseOrderId).orElse(null);
             if(purchaseOrder != null)
             {

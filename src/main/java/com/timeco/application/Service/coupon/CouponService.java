@@ -5,6 +5,7 @@ import com.timeco.application.model.order.Coupon;
 import com.timeco.application.model.user.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
 import java.util.List;
@@ -32,6 +33,8 @@ public interface CouponService {
 
     double findByDiscount(String couponCode, Principal principal);
 
+
+    double newTotal(@RequestParam("couponCode") String couponCode, Principal principal);
 
 
 //    Boolean isCouponValid(String couponCode, double orderAmount);

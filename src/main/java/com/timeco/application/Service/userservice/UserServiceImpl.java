@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
         User user = new User(registrationDto.getFirstName(),
                 registrationDto.getLastName(), registrationDto.getEmail(),
                 registrationDto.getPhoneNumber(), passwordEncoder.encode(registrationDto.getPassword()),
-                Arrays.asList(new Role("ROLE_USER")));
+                (Collection<Role>) Arrays.asList(new Role("ROLE_USER")));
 
         return user;
 

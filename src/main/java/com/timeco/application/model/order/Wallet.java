@@ -13,12 +13,17 @@ public class Wallet {
     private Double walletAmount;
 
     @OneToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     public Wallet(Long walletId, Double walletAmount, User user) {
         this.walletId = walletId;
         this.walletAmount = walletAmount;
         this.user = user;
+    }
+
+    public Wallet() {
+
     }
 
     public Long getWalletId() {
@@ -43,5 +48,14 @@ public class Wallet {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public void withdraw(double totalAmount) {
+        if (totalAmount > 0 && totalAmount <= walletAmount) {
+            walletAmount -= totalAmount;
+            System.out.println("Withdrawal successful. Remaining balance: " + walletAmount);
+        } else {
+            System.out.println("Insufficient funds or invalid withdrawal amount.");
+        }
     }
 }

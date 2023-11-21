@@ -13,12 +13,10 @@ import com.timeco.application.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpSession;
 import java.security.Principal;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CouponServiceImpl implements CouponService{
@@ -123,6 +121,22 @@ public class CouponServiceImpl implements CouponService{
 
         return couponDiscount;
 
+    }
+
+    @Override
+    public double newTotal(@RequestParam("couponCode") String couponCode, Principal principal) {
+        double shippingCost = 100;
+        Cart cart = cartRepository.findByUser(userRepository.findByEmail(principal.getName()));
+
+        if (cart != null) {
+            List<CartItem> cartItems = cartItemRepository.findByCart(cart);
+            double cartTotal = cartService.calculateTotalAmount(cartItems, shippingCost);
+            double couponDiscount = findByDiscount(couponCode, principal);
+            cartTotal -= couponDiscount;
+            return cartTotal;
+        }
+
+        return 0.0;
     }
 
 

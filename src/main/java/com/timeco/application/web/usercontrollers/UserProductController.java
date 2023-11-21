@@ -6,6 +6,8 @@ import com.timeco.application.Service.productservice.ProductService;
 import com.timeco.application.model.category.Category;
 import com.timeco.application.model.product.Product;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -54,6 +56,16 @@ public class UserProductController {
             return "redirect:/user/Userproduct";
         }
 
+    }
+
+    @GetMapping("/searchProduct")
+    public String searchProducts(@RequestParam("searchTerm") String searchTerm, Model model) {
+        List<Product> products = productService.searchProducts(searchTerm);
+        model.addAttribute("productsWithImages", products);
+        for (Product product:products){
+            System.out.println("555555555555555555555555555555555555555555555555555"+product);
+        }
+        return "Userproduct";
     }
 
 

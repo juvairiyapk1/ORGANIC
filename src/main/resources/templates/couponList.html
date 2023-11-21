@@ -259,30 +259,40 @@
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                <form th:action="@{'/admin/editCoupon/'+${coupon.couponId}}" method="post" th:object="${coupon}" >
+                                                <form th:action="@{'/admin/editCoupon/'+${coupon.couponId}}" method="post" th:object="${coupon}" onsubmit="return validateCouponEditForm()">
                                                     <div class="col-md-6">
                                                         <label for="couponCode" class="form-label">Coupon Code </label>
                                                         <input type="text" class="form-control"  name="couponCode" th:value="${coupon.couponCode}">
+                                                        <span id="couponCodeError1" class="text-danger"></span>
+
                                                     </div>
 
                                                     <div class="col-md-6">
                                                         <label for="description" class="form-label">Description </label>
                                                         <input type="text" class="form-control" th:value="${coupon.description}"  name="description" >
+                                                        <span id="descriptionError1" class="text-danger"></span>
+
                                                     </div>
 
                                                     <div class="col-md-6">
                                                         <label for="expiryDate" class="form-label">Expiry Date</label>
                                                         <input type="date" class="form-control" th:value="${coupon.expiryDate}"  name="expiryDate" >
+                                                        <span id="expiryDateError1" class="text-danger"></span>
+
                                                     </div>
 
                                                     <div class="col-md-6">
                                                         <label for="percentage" class="form-label">Percentage</label>
                                                         <input type="number" class="form-control" th:value="${coupon.percentage}"  name="percentage" >
+                                                        <span id="percentageError1" class="text-danger"></span>
+
                                                     </div>
 
                                                     <div class="col-md-6">
                                                         <label for="minimumPurchaseAmount" class="form-label">Minimum purchase amount</label>
                                                         <input type="number" class="form-control" th:value="${coupon.minimumPurchaseAmount}" name="minimumPurchaseAmount" >
+                                                        <span id="minimumPurchaseAmountError1" class="text-danger"></span>
+
                                                     </div>
 
                                                     <div class="col-md-6">
@@ -320,35 +330,46 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form th:action="@{/admin/add/couponList}" method="post" th:object="${coupon}" >
+                            <form th:action="@{/admin/add/couponList}" method="post" th:object="${coupon}" onsubmit="return validateCouponForm()" >
                                 <div class="col-md-6">
                                     <label for="couponCode" class="form-label">Coupon Code </label>
                                     <input type="text" class="form-control" id="couponCode" name="couponCode">
+                                    <span id="couponCodeError" class="text-danger"></span>
                                 </div>
 
                                 <div class="col-md-6">
                                     <label for="description" class="form-label">Description </label>
                                     <input type="text" class="form-control" id="description"  name="description" >
+                                    <span id="descriptionError" class="text-danger"></span>
+
                                 </div>
 
                                 <div class="col-md-6">
                                     <label for="expiryDate" class="form-label">Expiry Date</label>
                                     <input type="date" class="form-control" id="expiryDate"  name="expiryDate" >
+                                    <span id="expiryDateError" class="text-danger"></span>
+
                                 </div>
 
                                 <div class="col-md-6">
                                     <label for="percentage" class="form-label">Percentage</label>
                                     <input type="number" class="form-control" id="percentage"  name="percentage" >
+                                    <span id="percentageError" class="text-danger"></span>
+
                                 </div>
 
                                 <div class="col-md-6">
                                     <label for="minimumPurchaseAmount" class="form-label">Minimum purchase amount</label>
                                     <input type="number" class="form-control" id="minimumPurchaseAmount"  name="minimumPurchaseAmount" >
+                                    <span id="minimumPurchaseAmountError" class="text-danger"></span>
+
                                 </div>
 
                                 <div class="col-md-6">
                                     <label for="usageCount" class="form-label">Usage count</label>
                                     <input type="number" class="form-control" id="usageCount"  name="usageCount" >
+                                    <span id="usageCountError" class="text-danger"></span>
+
                                 </div>
 
                                 <div class="modal-footer">
@@ -405,6 +426,112 @@
             document.getElementById('payment-button').onclick = function() {
             rzp.open();
             }
+            </script>
+
+            <script>
+                function validateCouponForm() {
+                    var couponCode = document.getElementById('couponCode').value;
+                    var description = document.getElementById('description').value;
+                    var expiryDate = document.getElementById('expiryDate').value;
+                    var percentage = document.getElementById('percentage').value;
+                    var minimumPurchaseAmount = document.getElementById('minimumPurchaseAmount').value;
+                    var usageCount = document.getElementById('usageCount').value;
+
+                    // Reset error messages
+                    document.getElementById('couponCodeError').innerText = '';
+                    document.getElementById('descriptionError').innerText = '';
+                    document.getElementById('expiryDateError').innerText = '';
+                    document.getElementById('percentageError').innerText = '';
+                    document.getElementById('minimumPurchaseAmountError').innerText = '';
+                    document.getElementById('usageCountError').innerText = '';
+
+                    var isValid = true;
+
+                    if (couponCode.trim() === '') {
+                        document.getElementById('couponCodeError').innerText = 'Coupon Code is required';
+                        isValid = false;
+                    }
+
+                    if (description.trim() === '') {
+                        document.getElementById('descriptionError').innerText = 'Description is required';
+                        isValid = false;
+                    }
+
+                    if (expiryDate.trim() === '') {
+                        document.getElementById('expiryDateError').innerText = 'Expiry Date is required';
+                        isValid = false;
+                    }
+
+                    if (percentage.trim() === '') {
+                        document.getElementById('percentageError').innerText = 'Percentage is required';
+                        isValid = false;
+                    }
+
+                    if (minimumPurchaseAmount.trim() === '') {
+                        document.getElementById('minimumPurchaseAmountError').innerText = 'Minimum purchase amount is required';
+                        isValid = false;
+                    }
+
+                    if (usageCount.trim() === '') {
+                        document.getElementById('usageCountError').innerText = 'Usage count is required';
+                        isValid = false;
+                    }
+
+                    return isValid;
+                }
+            </script>
+
+            <script>
+                function validateCouponEditForm() {
+                    var couponCode = document.getElementById('couponCode').value;
+                    var description = document.getElementById('description').value;
+                    var expiryDate = document.getElementById('expiryDate').value;
+                    var percentage = document.getElementById('percentage').value;
+                    var minimumPurchaseAmount = document.getElementById('minimumPurchaseAmount').value;
+                    var usageCount = document.getElementById('usageCount').value;
+
+                    // Reset error messages
+                    document.getElementById('couponCodeError1').innerText = '';
+                    document.getElementById('descriptionError1').innerText = '';
+                    document.getElementById('expiryDateError1').innerText = '';
+                    document.getElementById('percentageError1').innerText = '';
+                    document.getElementById('minimumPurchaseAmountError1').innerText = '';
+                    document.getElementById('usageCountError1').innerText = '';
+
+                    var isValid = true;
+
+                    if (couponCode.trim() === '') {
+                        document.getElementById('couponCodeError').innerText = 'Coupon Code is required';
+                        isValid = false;
+                    }
+
+                    if (description.trim() === '') {
+                        document.getElementById('descriptionError').innerText = 'Description is required';
+                        isValid = false;
+                    }
+
+                    if (expiryDate.trim() === '') {
+                        document.getElementById('expiryDateError').innerText = 'Expiry Date is required';
+                        isValid = false;
+                    }
+
+                    if (percentage.trim() === '') {
+                        document.getElementById('percentageError').innerText = 'Percentage is required';
+                        isValid = false;
+                    }
+
+                    if (minimumPurchaseAmount.trim() === '') {
+                        document.getElementById('minimumPurchaseAmountError').innerText = 'Minimum purchase amount is required';
+                        isValid = false;
+                    }
+
+                    if (usageCount.trim() === '') {
+                        document.getElementById('usageCountError').innerText = 'Usage count is required';
+                        isValid = false;
+                    }
+
+                    return isValid;
+                }
             </script>
 
 

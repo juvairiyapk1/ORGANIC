@@ -104,6 +104,37 @@ public class CouponController {
         }
     }
 
+    @PostMapping("/removeCoupon")
+    public ResponseEntity<Map<String, Object>> removeCoupon(@RequestParam("couponCode") String couponCode, Principal principal) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            String userName = principal.getName();
+            User user = userRepository.findByEmail(userName);
+
+            // Find the coupon by code
+            Coupon coupon = couponRepository.findCouponByCouponCode(couponCode);
+
+            if (coupon != null && user.getCoupons().contains(coupon)) {
+                // Remove the specific coupon from the user
+                user.getCoupons().remove(coupon);
+                userRepository.save(user);
+
+                response.put("success", true);
+                response.put("message", "Coupon removed successfully");
+                response.put("newTotal", couponService.newTotal(couponCode,principal));
+
+            } else {
+                response.put("success", false);
+                response.put("message", "Coupon not found or not associated with the user");
+            }
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Error removing coupon, please try again");
+        }
+
+        return ResponseEntity.ok(response);
+    }
 
 
 

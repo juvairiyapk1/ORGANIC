@@ -2,6 +2,7 @@ package com.timeco.application.model.user;
 
 import com.timeco.application.model.cart.Cart;
 import com.timeco.application.model.order.Coupon;
+import com.timeco.application.model.order.Wallet;
 import com.timeco.application.model.role.Role;
 
 import javax.persistence.*;
@@ -55,11 +56,26 @@ public class User {
     private Set<Coupon> coupons = new HashSet<>();
 
 
+    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
+    private Wallet wallet;
     public User() {
 
     }
 
-
+    public User(Long id, String firstName, String lastName, String email, String phoneNumber, String password, boolean isBlocked, Collection<Role> roles, Cart cart, List<Address> address, Set<Coupon> coupons, Wallet wallet) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.password = password;
+        this.isBlocked = isBlocked;
+        this.roles = roles;
+        this.cart = cart;
+        this.address = address;
+        this.coupons = coupons;
+        this.wallet = wallet;
+    }
     public User(String firstName, String lastName, String email, String phoneNumber, String password, Collection<Role> roles) {
         super();
         this.firstName = firstName;
@@ -72,21 +88,24 @@ public class User {
 
     }
 
-    public User(String firstName, String lastName, String email, String phoneNumber, String password, boolean isBlocked, Collection<Role> roles, Cart cart,List<Address> address) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.password = password;
-        this.isBlocked = isBlocked;
-        this.roles = roles;
-        this.cart = cart;
-        this.address=address;
-    }
+//    public User(String firstName, String lastName, String email, String phoneNumber, String password, boolean isBlocked, Collection<Role> roles, Cart cart,List<Address> address) {
+//        this.firstName = firstName;
+//        this.lastName = lastName;
+//        this.email = email;
+//        this.phoneNumber = phoneNumber;
+//        this.password = password;
+//        this.isBlocked = isBlocked;
+//        this.roles = roles;
+//        this.cart = cart;
+//        this.address=address;
+//    }
 
     public User(Set<Coupon> coupons) {
         this.coupons = coupons;
     }
+
+//    public <T> User(String firstName, String lastName, String email, String phoneNumber, String encode, List<T> roleUser) {
+//    }
 
     public Long getId() {
         return id;
@@ -192,6 +211,11 @@ public class User {
         this.coupons = coupons;
     }
 
+    public Wallet getWallet() {
+        return wallet;
+    }
 
-
+    public void setWallet(Wallet wallet) {
+        this.wallet = wallet;
+    }
 }

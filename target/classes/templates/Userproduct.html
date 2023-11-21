@@ -75,10 +75,14 @@
                 <a href="contact.html" class="nav-item nav-link">Contact Us</a>
             </div>
             <div class="d-none d-lg-flex ms-2">
-                <a class="btn-sm-square bg-white rounded-circle ms-3" href="">
-                    <small class="fa fa-search text-body"></small>
+                <a class="btn btn-light rounded-circle ms-3" href="#" id="searchIcon">
+                    <span class="fa fa-search text-body"></span>
                 </a>
-                <a class="btn-sm-square bg-white rounded-circle ms-3" th:href="@{/userProfile}">
+                <form th:action="@{/user/searchProduct}" method="get"><input type="text" class="form-control search-input" id="searchTerm" placeholder="Type to search..." style="display: none;" name="searchTerm"></form>
+
+
+
+            <a class="btn-sm-square bg-white rounded-circle ms-3" th:href="@{/userProfile}">
                     <small class="fa fa-user text-body"></small>
                 </a>
                 <a class="btn-sm-square bg-white rounded-circle ms-3" th:href="@{/cart}">
@@ -382,7 +386,17 @@
         </div>
     </div>
     <!-- Footer End -->
-
+<script>
+        document.getElementById('searchIcon').addEventListener('click', function() {
+        var searchInput = document.getElementById('searchTerm');
+        if (searchInput.style.display === 'none') {
+        searchInput.style.display = 'block';
+        searchInput.focus(); // Set focus to the input field
+        } else {
+        searchInput.style.display = 'none';
+        }
+        });
+</script>
 <!--<script>-->
 <!--    $(document).ready(function() {-->
 <!--        $('.nav-pills a').on('click', function(e) {-->

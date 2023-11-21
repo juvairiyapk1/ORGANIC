@@ -6,6 +6,7 @@ import com.timeco.application.Repository.UserRepository;
 import com.timeco.application.Service.otpservice.OtpService;
 import com.timeco.application.Service.userservice.UserService;
 import com.timeco.application.model.cart.Cart;
+import com.timeco.application.model.order.Wallet;
 import com.timeco.application.model.user.LoginDto;
 import com.timeco.application.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,6 +102,9 @@ public class UserRegistrationController {
                 Cart cart = new Cart();
                 cart.setUser(verifyCustomer);
                 verifyCustomer.setCart(cart);
+                Wallet wallet=new Wallet();
+                wallet.setUser(verifyCustomer);
+                verifyCustomer.setWallet(wallet);
                 userRepository.save(verifyCustomer);
 
                 return "redirect:/";
