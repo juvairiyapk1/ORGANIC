@@ -10,4 +10,5 @@ import java.util.List;
 public interface SubCategoryRepository extends JpaRepository<Subcategory,Long> {
 
 
+    List<Subcategory> findByIsListed(boolean blocked);
 }

@@ -196,81 +196,56 @@
       <div class="card-body">
         <h4 class="card-title">Basic form elements</h4>
         <p class="card-description"> Basic form elements </p>
-        <form class="forms-sample" th:action="@{/admin/addProducts}" method="post" th:object="${product}"  enctype="multipart/form-data" >
+        <form class="productAddForm" th:action="@{/admin/addProducts}" method="post" th:object="${product}" enctype="multipart/form-data" onsubmit="return productAddForm()">
           <div class="form-group">
             <label for="exampleInputName1">Name</label>
-            <input type="text" class="form-control" id="exampleInputName1" placeholder="Name" th:field="*{productName}">
+            <input type="text" class="form-control" id="exampleInputName1" placeholder="Name" th:field="*{productName}" name="exampleInputName1">
+            <span id="exampleInputName1Error" class="text-danger"></span>
           </div>
           <div class="form-group">
             <label for="exampleInputQuantity">Quantity</label>
             <input type="number" name="quantityValue" class="form-control" id="exampleInputQuantity" placeholder="Quantity" th:field="*{quantity}">
-            <label>
-              <select name="quantityUnit">
-                <option value="kg">kg</option>
-              </select>
-            </label>
+            <span id="exampleInputQuantityError" class="text-danger"></span>
           </div>
           <div class="form-group">
             <label for="exampleInputPrice">Price</label>
             <input type="number" class="form-control" id="exampleInputPrice" placeholder="Price" th:field="*{price}">
+            <span id="exampleInputPriceError" class="text-danger"></span>
           </div>
-<!--          <div class="form-group">-->
-<!--            <label for="exampleInputPrice">Status</label>-->
-<!--            <input type="text" class="form-control" id="exampleInputCurrentStatus" placeholder="status" th:field="*{current_state}">-->
-<!--          </div>-->
-<!--          <div class="form-group">-->
-<!--            <label for="exampleSelectCategory">Category</label>-->
-<!--            <select class="form-control" id="exampleSelectCategory" name="categoryId" th:field="*{categoryId}">-->
-<!--              <option value="">Select a Category</option>-->
-<!--              <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>-->
-<!--            </select>-->
-<!--          </div>-->
-<!--          <div class="form-group">-->
-<!--            <label for="exampleSelectCategory">Category</label>-->
-<!--            <select class="form-control" id="exampleSelectCategory" name="categoryId" th:field="*{categoryId}">-->
-<!--              <option value="">Select a Category</option>-->
-<!--              <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>-->
-<!--            </select>-->
-<!--          </div>-->
 
-<!--          <div class="form-group">-->
-<!--            <label for="exampleSelectSubcategory">Subcategory</label>-->
-<!--            <select class="form-control" id="exampleSelectSubcategory" name="subcategoryId" th:field="*{subcategoryId}">-->
-<!--              <option value="">Select a Subcategory</option>-->
-<!--              <option th:each="subcategory : ${subcategories}" th:value="${subcategory.id}" th:text="${subcategory.name}"></option>-->
-<!--            </select>-->
-<!--          </div>-->
-
-
-
-
-<!--          now-->
           <div class="form-group">
             <label for="categorySelect">Category</label>
             <select class="form-control" id="categorySelect" name="categoryId" th:field="*{categoryId}">
               <option value="">Select a Category</option>
               <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
             </select>
+            <span id="categorySelectError" class="text-danger"></span>
           </div>
 
-          <div class="form-group">
-            <label for="subcategorySelect">Subcategory</label>
-            <select class="form-control" id="subcategorySelect" name="subcategoryId" th:field="*{subcategoryId}">
-              <option th:each="subcategory : ${subcategories}"  th:value="${subcategory.id}" th:text="${subcategory.name}">Select a Subcategory</option>
-            </select>
-          </div>
-
+<!--          <div class="form-group">-->
+<!--            <label for="subcategorySelect">Subcategory</label>-->
+<!--            <select class="form-control" id="subcategorySelect" name="subcategoryId" th:field="*{subcategoryId}">-->
+<!--              <option value="">Select a Subcategory</option>-->
+<!--              <option th:each="subcategory : ${subcategories}" th:value="${subcategory.id}" th:text="${subcategory.name}"></option>-->
+<!--            </select>-->
+<!--            <span id="subcategorySelectError" class="text-danger"></span>-->
+<!--          </div>-->
 
           <div class="form-group">
             <label for="exampleTextarea1">Description</label>
-            <textarea class="form-control" id="exampleTextarea1" rows="4" th:field="*{description}"></textarea>
+            <textarea class="form-control" id="exampleTextarea1" rows="4" th:field="*{description}" name="description"></textarea>
+            <span id="exampleTextarea1Error" class="text-danger"></span>
           </div>
+
           <div class="form-group">
-            <label for="images">Images (Separate with commas)</label>
-            <input type="text" class="form-control" id="images" name="images" placeholder="Upload images" th:field="*{productImages}">
+            <label for="images">Images (Select multiple images)</label>
+            <input type="file" class="form-control" id="images" name="file" accept="image/*" multiple onchange="handleFileSelect(event)">
+            <span id="imagesError" class="text-danger"></span>
+            <div id="selectedImages"></div>
           </div>
+
           <button type="submit" class="btn btn-primary mr-2">Submit</button>
-          <button class="btn btn-dark">Cancel</button>
+<!--          <button class="btn btn-dark" th:href="@{/admin/productList}">Cancel</button>-->
         </form>
 
       </div>
@@ -365,34 +340,95 @@
 <!-- End custom js for this page -->
 
 
-<!--<script>-->
-<!--  // Function to update subcategories based on the selected category-->
-<!--  // Function to update subcategories based on the selected category-->
-<!--  function updateSubcategories() {-->
-<!--    var categoryId = $("#categorySelect").val(); // Get the selected category ID-->
-<!--    var subcategorySelect = $("#subcategorySelect"); // Subcategory select element-->
+<script>
+  function productAddForm() {
+    // Get form inputs
+    var name = document.getElementById('exampleInputName1').value;
+    var quantity = document.getElementById('exampleInputQuantity').value;
+    var price = document.getElementById('exampleInputPrice').value;
+    var categoryId = document.getElementById('categorySelect').value;
+    var subcategoryId = document.getElementById('subcategorySelect').value;
+    var description = document.getElementById('exampleTextarea1').value;
+    var images = document.getElementById('images').value;
 
-<!--    // Clear existing options in the subcategory select-->
-<!--    subcategorySelect.empty();-->
-<!--    subcategorySelect.append('<option value="">Select a Subcategory</option>');-->
+    // Reset error messages
+    document.getElementById('exampleInputName1Error').innerText = '';
+    document.getElementById('exampleInputQuantityError').innerText = '';
+    document.getElementById('exampleInputPriceError').innerText = '';
+    document.getElementById('categorySelectError').innerText = '';
+    document.getElementById('subcategorySelectError').innerText = '';
+    document.getElementById('exampleTextarea1Error').innerText = '';
+    document.getElementById('imagesError').innerText = '';
 
-<!--    // Check if a category is selected-->
-<!--    if (categoryId !== "") {-->
-<!--      // Perform an AJAX request to fetch subcategories based on the selected category-->
-<!--      $.get("/admin/admin/getSubcategories?categoryId=" + categoryId, function (data) {-->
-<!--        // Populate the subcategory select with fetched subcategories-->
-<!--        $.each(data, function (index, subcategory) {-->
-<!--          subcategorySelect.append('<option value="' + subcategory.id + '">' + subcategory.name + '</option>');-->
-<!--        });-->
-<!--      });-->
-<!--    }-->
-<!--  }-->
+    // Flag to track if the form is valid
+    var isValid = true;
 
-<!--  // Attach the updateSubcategories function to the change event of the category select-->
-<!--  $(document).ready(function () {-->
-<!--    $("#categorySelect").on("change", updateSubcategories);-->
-<!--  });-->
-<!--</script>-->
+    // Validate Name
+    if (name.trim() === '') {
+      document.getElementById('exampleInputName1Error').innerText = 'Name is required';
+      isValid = false;
+    }
+
+    // Validate Quantity
+    if (quantity.trim() === '') {
+      document.getElementById('exampleInputQuantityError').innerText = 'Quantity is required';
+      isValid = false;
+    }
+
+    // Validate Price
+    if (price.trim() === '') {
+      document.getElementById('exampleInputPriceError').innerText = 'Price is required';
+      isValid = false;
+    }
+
+    // Validate Category
+    if (categoryId.trim() === '') {
+      document.getElementById('categorySelectError').innerText = 'Category is required';
+      isValid = false;
+    }
+
+    // Validate Subcategory
+    if (subcategoryId.trim() === '') {
+      document.getElementById('subcategorySelectError').innerText = 'Subcategory is required';
+      isValid = false;
+    }
+
+    // Validate Description
+    if (description.trim() === '') {
+      document.getElementById('exampleTextarea1Error').innerText = 'Description is required';
+      isValid = false;
+    }
+
+    // Validate Images
+    if (images.trim() === '') {
+      document.getElementById('imagesError').innerText = 'Images are required';
+      isValid = false;
+    }
+
+    // Return whether the form is valid or not
+    return isValid;
+  }
+</script>
+
+<script>
+  function handleFileSelect(event) {
+    const files = event.target.files;
+
+    // Display selected images
+    const selectedImagesDiv = document.getElementById('selectedImages');
+    selectedImagesDiv.innerHTML = '';
+
+    for (const file of files) {
+      const img = document.createElement('img');
+      img.src = URL.createObjectURL(file);
+      img.alt = 'Selected Image';
+      img.style.maxWidth = '100px';
+      img.style.maxHeight = '100px';
+      selectedImagesDiv.appendChild(img);
+    }
+  }
+</script>
+
 
 </body>
 </html>

@@ -51,4 +51,11 @@ public class PaymentMethod {
     public void setOrders(List<PurchaseOrder> orders) {
         this.orders = orders;
     }
+
+    public PaymentMethod(Long paymentMethodId, boolean isEnable, String paymentMethodName, List<PurchaseOrder> orders) {
+        this.paymentMethodId = paymentMethodId;
+        this.isEnable = isEnable;
+        this.paymentMethodName = paymentMethodName;
+        this.orders = orders;
+    }
 }

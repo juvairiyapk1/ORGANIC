@@ -44,7 +44,7 @@ public class CartService {
         if (user != null) {
             Product product = productService.getProductById(productDTO.getId());
 
-            if (product !=null) {
+            if (product != null) {
                 Cart cart = user.getCart();
                 if (cart != null) {
                     for (CartItem item : cart.getCartItems()) {
@@ -85,12 +85,12 @@ public class CartService {
     public void addProductToCart(ProductDto productDTO, Principal principal) {
         User user = userRepository.findByEmail(principal.getName());
         if (user != null) {
-                if(user != null){
-                    Cart cart =user.getCart();
+            if (user != null) {
+                Cart cart = user.getCart();
 
 
                 if (cart == null) {
-                    cart= new Cart();
+                    cart = new Cart();
                     cart.setUser(user);
                     user.setCart(cart);
                 }
@@ -125,12 +125,11 @@ public class CartService {
 
 
     public int getProductCountInCart(ProductDto productDTO, Principal principal) {
-        if (principal != null)
-        {
-            String userName=principal.getName();
-            User user=userRepository.findByEmail(userName);
-            Cart cart=cartRepository.findByUser(user);
-            List<CartItem>cartItems=cartItemRepository.findByCart(cart);
+        if (principal != null) {
+            String userName = principal.getName();
+            User user = userRepository.findByEmail(userName);
+            Cart cart = cartRepository.findByUser(user);
+            List<CartItem> cartItems = cartItemRepository.findByCart(cart);
             if (cartItems != null) {
                 Set<Long> uniqueProductIds = new HashSet<>();
 
@@ -148,11 +147,10 @@ public class CartService {
     }
 
     public void deleteProduct(Long cartItemId) {
-      Optional<CartItem> cartItem=cartItemRepository.findById(cartItemId);
-      if (cartItem.isPresent())
-      {
-          cartItemRepository.deleteById(cartItemId);
-      }
+        Optional<CartItem> cartItem = cartItemRepository.findById(cartItemId);
+        if (cartItem.isPresent()) {
+            cartItemRepository.deleteById(cartItemId);
+        }
 
     }
 
@@ -166,9 +164,9 @@ public class CartService {
             int currentQuantity = cartItem.getQuantity();
             int updatedQuantity = currentQuantity + quantityChange;
 
-            int pQuantity=cartItem.getProduct().getQuantity();
+            int pQuantity = cartItem.getProduct().getQuantity();
 
-            if (updatedQuantity >= 1 && updatedQuantity<=pQuantity) {
+            if (updatedQuantity >= 1 && updatedQuantity <= pQuantity) {
                 cartItem.setQuantity(updatedQuantity);
                 cartItemRepository.save(cartItem);
 
@@ -176,9 +174,9 @@ public class CartService {
                 response.put("success", true);
                 response.put("updatedQuantity", updatedQuantity);
                 response.put("updatedTotalPrice", cartItem.getPrice() * updatedQuantity);
-                // Calculate and update sub-total and total amounts
+//                 Calculate and update sub-total and total amounts
                 response.put("subTotal", calculateSubTotal(cartItems));
-        //        response.put("totalAmount", calculateTotalAmount(cartItems,));
+//                        response.put("totalAmount", calculateTotalAmount(cartItems,));
             } else {
                 response.put("success", false);
             }
@@ -215,25 +213,7 @@ public class CartService {
         return totalPrice;
     }
 
-//    public int getCartItemCount(Principal principal) {
-//        if (principal != null)
-//        {
-//            String user=principal.getName();
-//            Cart cart=user.getCart();
-//            if (cart != null)
-//            {
-//                return cart.getCartItems().size();
-//            }
-//
-//
-//        }
-//
-//    return 0;
-//    }
+    public List<CartItem> findCartItem(User user) {
+        return cartItemRepository.findByCart_user(user);
+    }
 }
-
-
-//    public void deleteAllProduct(User user) {
-//        cartItemRepository.deleteByUser(user);
-//    }
-

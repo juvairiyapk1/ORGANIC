@@ -58,6 +58,7 @@ public class CouponServiceImpl implements CouponService{
         coupon.setPercentage(couponDto.getPercentage());
         coupon.setMinimumPurchaseAmount(couponDto.getMinimumPurchaseAmount());
         coupon.setUsageCount(couponDto.getUsageCount());
+        coupon.setActive(true);
         couponRepository.save(coupon);
 
 
@@ -137,6 +138,17 @@ public class CouponServiceImpl implements CouponService{
         }
 
         return 0.0;
+    }
+
+    @Override
+    public Coupon couponById(Integer couponId) {
+       return couponRepository.findById(couponId).orElse(null);
+    }
+
+    @Override
+    public Coupon findCouponByCouponCode(String couponCode) {
+        return couponRepository.findCouponByCouponCode(couponCode);
+
     }
 
 

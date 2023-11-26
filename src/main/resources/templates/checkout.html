@@ -124,6 +124,7 @@
 		<!-- .col-md-8 -->
 
     <section class="ftco-section">
+		<form id="placeOrderForm" th:action="@{/placeOrder}" th:object="${purchaseOrder}" method="post" >
 
 		<div style="display: flex; justify-content: right;">
 			<div class="col-md-4">
@@ -143,7 +144,6 @@
 
 
 		<div class="container">
-	  <form id="placeOrderForm" th:action="@{/placeOrder}" th:object="${purchaseOrder}" method="post" >
 
 		  <div class="row justify-content-center">
 			<div class="col-xl-7 ftco-animate">
@@ -215,14 +215,14 @@
 									<div class="form-group">
 										<div class="col-md-12">
 											<div class="radio">
-											   <label><input type="radio" name="paymentMethodId" value="1" class="mr-2" checked> Cash On Delivery</label>
+											   <label><input type="radio" name="paymentMethod" value="1" class="mr-2" checked> Cash On Delivery</label>
 											</div>
 										</div>
 									</div>
 									<div class="form-group">
 										<div class="col-md-12">
 											<div class="radio">
-											   <label><input type="radio" name="paymentMethodId" value="2" class="mr-2"> Online Payment</label>
+											   <label><input type="radio" name="paymentMethod" value="2" class="mr-2"> Online Payment</label>
 											</div>
 										</div>
 									</div>
@@ -230,7 +230,7 @@
 									<div class="form-group">
 										<div class="col-md-12">
 											<div class="radio">
-												<label><input type="radio" name="paymentMethodId" value="3" class="mr-2"> Wallet</label>
+												<label><input type="radio" name="paymentMethod" value="3" class="mr-2"> Wallet</label>
 											</div>
 										</div>
 									</div>
@@ -252,8 +252,9 @@
           </div>
 		<!-- .col-md-8 -->
         </div>
+		</div>
 		  </form>
-      </div>
+
     </section> <!-- .section -->
 
 		<section class="ftco-section ftco-no-pt ftco-no-pb py-5 bg-light">
@@ -467,7 +468,7 @@
 		<script src="../static/lib/easing/easing.min.js"></script>
 		<script src="../static/lib/waypoints/waypoints.min.js"></script>
 		<script src="../static/lib/owlcarousel/owl.carousel.min.js"></script>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<!--<script src="https://checkout.razorpay.com/v1/checkout.js"></script>-->
 
 
 		<!-- Template Javascript -->
@@ -543,13 +544,16 @@
         });
 
         $("#removeCouponBtn").on("click", function() {
+        var couponCode = $("#couponCode").val();
+        console.log(couponCode)
     // Make an AJAX request for removing the coupon
     $.ajax({
         url: "/removeCoupon",
         method: "POST",
-        data: { couponCode: $("#couponCode").val() },  // Pass the couponCode here
+        data: { couponCode: couponCode },  // Pass the couponCode here
         success: function(response) {
             console.log(response);
+            console.log("hi"+couponCode);
 
             if (response.success) {
                 $("#totalAmount").text(response.newTotal);
@@ -572,88 +576,73 @@
 
     });
 </script>
+<script>
+		function handleSubmitForm() {
+		$.ajax({
+		url: '/placeOrder',
+		method: 'post',
+		data: $("#placeOrderForm").serialize(),
+		success: (response) => {
+		var responseData = JSON.parse(response);
+		console.log(responseData.isValid);
+		if (responseData.isValid === true) {
+		window.location.href = "/success";
+		}
+		if (responseData.orderId) {
+		console.log(responseData.orderId);
+		var options = {
+		"key": "rzp_test_bgyWOWhe1pDEcz",
+		"amount": responseData.amount,
+		"currency": "INR",
+		"name": "ORGANIC",
+		"description": "Test Transaction",
+<!--		"image": "/img/logo/logo.png",-->
+		"order_id": responseData.orderId,
+		"handler": function (response) {
+		verifyPayment(response, responseData.purchaseId);
+		},
+		"prefill": {
+		"name": responseData.username,
+		"email": responseData.email,
+		"contact": responseData.contact
+		},
+		"notes": {
+		"address": "Razorpay Corporate Office"
+		},
+		"theme": {
+		"color": "#fc1808"
+		}
+		};
+		var rzp1 = new Razorpay(options);
+		rzp1.on('payment.failed', function (response) {
+		// Handle payment failure
+		});
+		rzp1.open();
+		}
+		}
+		});
+		}
 
-  <script>
-	  function handleSubmitForm() {
-	      event.preventDefault();
+		function verifyPayment(data, purchaseId) {
+		let orderId = data.razorpay_order_id;
+		let signature = data.razorpay_signature;
+		let paymentId = data.razorpay_payment_id;
+		alert("function called..");
+		$.ajax({
+		url: "/verifyPayment",
+		method: "post",
+		data: { orderId, signature, paymentId, purchaseId },
+		success: (response) => {
+		if (response) {
+		window.location.href = "/success";
+		}
+		alert("something went wrong");
+		}
+		});
+		}
+</script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-    $.ajax({
-        url: '/placeOrder',
-        method: 'post',
-        data: $("#placeOrderForm").serialize(),
-        success: (response) => {
-            var responseData = JSON.parse(response);
-            console.log(responseData.isValid);
-            if (responseData.isValid === true) {
-                window.location.href = "/success";
-
-                console.log("Form submitted"); // Check if the form submission is triggered
-				console.log(responseData.isValid);
-				console.log(responseData.orderId);
-            }
-            else {
-                // Check for wallet-related error
-                if (responseData.error && responseData.error === "Insufficient funds in the wallet") {
-                    // Display wallet error message to the user
-                    alert(responseData.error);
-                }
-            }
-            if (responseData.orderId) {
-                console.log(responseData.orderId);
-                var options = {
-                    "key": "rzp_test_bgyWOWhe1pDEcz",
-                    "amount": responseData.amount,
-                    "currency": "INR",
-                    "name": "ORGANIC-ECOMMERCE",
-                    "description": "Test Transaction",
-<!--                    "image": "/img/logo/logo.png",-->
-                    "order_id": responseData.orderId,
-                    "handler": function (response) {
-                        verifyPayment(response, responseData.purchaseOrderId);
-                    },
-                    "prefill": {
-                        "name": responseData.username,
-                        "email": responseData.email,
-                        "contact": responseData.contact
-                    },
-                    "notes": {
-                        "address": "Razorpay Corporate Office"
-                    },
-                    "theme": {
-                        "color": "#fc1808"
-                    }
-                };
-                var rzp1 = new Razorpay(options);
-                rzp1.on('payment.failed', function (response) {
-                    // Handle payment failure
-                });
-                rzp1.open();
-            }
-        }
-    });
-}
-
-    function verifyPayment(data, purchaseOrderId) {
-    let orderId = data.razorpay_order_id;
-    let signature = data.razorpay_signature;
-    let paymentId = data.razorpay_payment_id;
-    alert("function called..");
-    $.ajax({
-    url: "/verifyPayment",
-    method: "post",
-    data: { orderId, signature, paymentId, purchaseOrderId },
-    success: (response) => {
-    if (response) {
-    console.log(response)
-   window.location.href = "/success";
-}
-    alert("something went wrong");
-}
-});
-}
-
-
-  </script>
 
 
 

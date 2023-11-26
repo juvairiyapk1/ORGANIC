@@ -128,7 +128,7 @@
 			<div class="col-lg-6">
 				<div class="col-lg-6">
 					<div class="image-container">
-						<img id="zoom-image" th:src="${product.productImages}" class="img-fluid" alt="Product Image">
+						<img id="zoom-image" th:src="@{'/img/' + ${product.productImages}}" class="img-fluid" alt="Product Image">
 					</div>
 				</div>
 
@@ -177,7 +177,7 @@
 						<!-- Check if the user is authenticated and render accordingly -->
 						<a class="btn_3 btn-primary py-2 px-5" style="cursor:pointer" id="addToCartButton" th:if="${#authorization.expression('isAuthenticated()')}" th:attr="data-id=${product.id}">Add to Cart</a>
 						<a href="/login" style="cursor:pointer" class="btn_3 btn-primary py-2 px-5" th:if="${not #authorization.expression('isAuthenticated()')}">Add to Cart</a>
-						<a href="" class="btn_3 btn-primary py-2 px-5" th:if="${#authorization.expression('isAuthenticated()')}">Add to Wishlist</a>
+						<a th:href="@{/wishList(id=${product.id})}" class="btn_3 btn-primary py-2 px-5" th:if="${#authorization.expression('isAuthenticated()')}">Add to Wishlist</a>
 					</div>
 
 				</div>
@@ -435,12 +435,12 @@
         console.log(id);
 
         // Show a SweetAlert while the request is being processed
-        Swal.fire({
-            position: 'top-end',
-            icon: 'info',
-            title: 'Adding to cart...',
-            showConfirmButton: false
-        });
+<!--        Swal.fire({-->
+<!--            position: 'center',-->
+<!--            icon: 'info',-->
+<!--            title: 'Adding to cart...',-->
+<!--            showConfirmButton: false-->
+<!--        });-->
 
         $.ajax({
             type: "POST",
@@ -450,7 +450,7 @@
             success: function(data) {
                 if (data === "Product is already in the cart.") {
                     Swal.fire({
-                        position: 'top-end',
+                        position: 'center',
                         icon: 'warning',
                         title: 'Product is already in the cart',
                         showConfirmButton: false,
@@ -458,7 +458,7 @@
                     });
                 } else if (data === "Product added to cart.") {
                     Swal.fire({
-                        position: 'top-end',
+                        position: 'center',
                         icon: 'success',
                         title: 'Product added to cart successfully',
                         showConfirmButton: false,
@@ -468,7 +468,7 @@
                     // Implement code to update the cart UI as needed
                 } else if (data === "Product limit reached. You cannot add more of this product.") {
                     Swal.fire({
-                        position: 'top-end',
+                        position: 'center',
                         icon: 'info', // You can change the icon as needed
                         title: 'Product limit reached. You cannot add more of this product.',
                         showConfirmButton: false,

@@ -108,15 +108,7 @@ public class PurchaseOrderImpl implements PurchaseOrderService{
         }
     }
 
-//    @Override
-//    public double calculateOrderTotal(String couponCode, double orderAmount){
-//        double total=orderAmount;
-//        if(couponService.isCouponValid(couponCode,orderAmount)){
-//            Coupon coupon=couponRepository.findByCode(couponCode);
-//            total = total * (1 - coupon.getPercentage() / 100);
-//
-//        }
-//        return total;
-//    }
+
+
 
 }

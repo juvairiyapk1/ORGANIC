@@ -8,8 +8,11 @@ import com.razorpay.RazorpayException;
 import com.razorpay.Utils;
 import com.timeco.application.Repository.*;
 import com.timeco.application.Service.cartService.CartService;
+import com.timeco.application.Service.coupon.CouponService;
 import com.timeco.application.Service.payment.PaymentService;
 import com.timeco.application.Service.purchaseOrder.PurchaseOrderService;
+import com.timeco.application.model.cart.Cart;
+import com.timeco.application.model.cart.CartItem;
 import com.timeco.application.model.order.*;
 import com.timeco.application.model.product.Product;
 import com.timeco.application.model.user.Address;
@@ -66,10 +69,16 @@ public class OrderController {
     private PaymentService paymentService;
 
     @Autowired
+    private CartRepository cartRepository;
+
+    @Autowired
     private CouponRepository couponRepository;
 
     @Autowired
     private WalletRepository walletRepository;
+
+    @Autowired
+    private CouponService couponService;
 
     @Autowired
     private WalletTransactionRepository walletTransactionRepository;
@@ -82,196 +91,124 @@ public class OrderController {
 
 
 
-    @PostMapping("/placeOrder")
-    @Transactional
-    public ResponseEntity<String> addPurchaseOrder(@RequestParam("addressId") Long addressId,
-                                                  @RequestParam("paymentMethodId") Long paymentMethodId,
-                                                  @RequestParam("totalAmount") double totalAmount,
-                                                  @RequestParam(value = "couponCode")String couponCode,
-                                                  Principal principal) throws RazorpayException {
-        LocalDate currentDate = LocalDate.now();
-        Address address = addressRepository.findById(addressId).orElse(null);
-        PaymentMethod method = paymentMethodRepository.findById(paymentMethodId).orElse(null);
-        Map<String, Object> response = new HashMap<>();
-        String username = principal.getName();
+//    @PostMapping("/placeOrder")
+//    @Transactional
+//    public ResponseEntity<String> addPurchaseOrder(@RequestParam("addressId") Long addressId,
+//                                                   @RequestParam("paymentMethodId") Long paymentMethodId,
+//                                                   @RequestParam("totalAmount") double totalAmount,
+//                                                   @RequestParam(value = "couponCode", required = false) String couponCode,
+//                                                   Principal principal) throws RazorpayException {
+//        Map<String, Object> response = new HashMap<>();
+//        String username = principal.getName();
 //        User user = userRepository.findByEmail(username);
-
-
-//        if(address==null || method==null)
-//        {
-//            redirectAttributes.addFlashAttribute("error","Address or payment method  not found");
-//            return "redirect:/checkout";
+//
+//        try {
+//            // Process Coupon
+//            if (couponCode != null) {
+//                Coupon coupon = couponRepository.findCouponByCouponCode(couponCode);
+//                if (coupon != null) {
+//                    coupon.incrementUsageCount();
+//                    coupon.getUsers().add(user);
+//                    user.getCoupons().add(coupon);
+//
+//                    couponRepository.save(coupon);
+//                    userRepository.save(user);
+//                }
+//            }
+//
+//            // Fetch Cart Items
+//            List<CartItem> cartItems = cartService.findCartItem(user);
+//
+//            // Create Purchase Order
+//            Cart cart = cartRepository.findByUser(user);
+//            PurchaseOrder purchaseOrder = new PurchaseOrder();
+//            Optional<Address> addressOptional = addressRepository.findById(addressId);
+//            addressOptional.ifPresent(purchaseOrder::setAddress);
+//            Address address = addressOptional.orElse(null);
+//
+//            Coupon coupon = couponService.findCouponByCouponCode(couponCode);
+//            if (coupon != null) {
+//                purchaseOrder.setCoupon(coupon);
+//            }
+//
+//            purchaseOrder.setOrderAmount(totalAmount);
+//            purchaseOrder.setOrderedDate(LocalDateTime.now());
+//            purchaseOrder.setUser(user);
+//
+//            PaymentMethod paymentMethod = paymentMethodRepository.findById(paymentMethodId).orElse(null);
+//            if (paymentMethod != null) {
+//                purchaseOrder.setPaymentMethod(paymentMethod);
+//            }
+//            System.out.println("5555555555555555555"+paymentMethodId);
+//            response.put("isValid", true);
+////            purchaseOrder.setOrderStatus("pending");
+//            if(paymentMethodId==1) {
+//                purchaseOrder.setOrderStatus("placed");
+//                purchaseOrderRepository.save(purchaseOrder);
+//                 response.put("isValid", true);
+//
+//            }
+//            // Payment Processing
+//            else if (paymentMethodId == 2) {
+//               paymentService. handleRazorpayPayment(response, totalAmount, purchaseOrder, username, address);
+//            } else if (paymentMethodId == 3) {
+//                paymentService.handleWalletPayment(response, totalAmount, user, purchaseOrder);
+//            }
+//
+//            // Clear Cart Items after successful order placement
+////            cartItemRepository.deleteAll(cartItems);
+//
+//            // Convert Response to JSON
+//            ObjectMapper objectMapper = new ObjectMapper();
+//            String jsonResponse = objectMapper.writeValueAsString(response);
+//            return ResponseEntity.ok(jsonResponse);
+//        } catch (JsonProcessingException e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing JSON response");
 //        }
+//    }
+//
+//    @PostMapping("/verifyPayment")
+//    @ResponseBody
+//    public ResponseEntity<Boolean> verifyPayment(@RequestParam("orderId") String orderId,
+//                                                 @RequestParam("signature") String signature,
+//                                                 @RequestParam("paymentId") String paymentId,
+//                                                 @RequestParam("purchaseId") Long purchaseOrderId,
+//                                                 Principal principal) throws RazorpayException {
+//                        System.out.println("777777777"+purchaseOrderId);
+//
+//        RazorpayClient razorpay = new RazorpayClient("rzp_test_bgyWOWhe1pDEcz", "4mkCzKfIfbIXXJsHBnyuVTDI");
+//
+//        String secret = "4mkCzKfIfbIXXJsHBnyuVTDI";
+//
+//        JSONObject options = new JSONObject();
+//        options.put("razorpay_order_id", orderId);
+//        options.put("razorpay_payment_id", paymentId);
+//        options.put("razorpay_signature", signature);
+//
+//        boolean status =  Utils.verifyPaymentSignature(options, secret);
+//        if(status)
+//        {
+//            System.out.println("8888888888888888");
+//            PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(purchaseOrderId).orElse(null);
+//            if(purchaseOrder != null)
+//            {
+//                purchaseOrder.setOrderStatus("success");
+//                purchaseOrder.setTransactionId(paymentId);
+//                purchaseOrderRepository.save(purchaseOrder);
+//                System.out.println("5555555555555555555555555555555550"+purchaseOrder.getPaymentMethod());
+//                System.out.println(purchaseOrder.getOrderStatus());
+//                System.out.println(purchaseOrder.getTransactionId());
+//
+//            }
+//        }
+//
+//        return ResponseEntity.ok(status);
+//    }
 
 
-        PurchaseOrder purchaseOrder = new PurchaseOrder();
-        purchaseOrder.setAddress(address);
-        purchaseOrder.setPaymentMethod(method);
-        purchaseOrder.setOrderedDate(currentDate);
-        purchaseOrder.setOrderAmount(totalAmount);
-        User user = userRepository.findByEmail(principal.getName());
-        purchaseOrder.setUser(user);
-        purchaseOrderService.addPurchaseOrder(purchaseOrder);
-
-
-
-
-
-        List<OrderItem> orderItems = purchaseOrderService.convertPurchaseOrderToOrderItems(user, purchaseOrder);
-        for (OrderItem orderItem : orderItems) {
-            orderItemRepository.save(orderItem);
-
-            Product product = orderItem.getProduct();
-            int orderedQuantity = orderItem.getOrderItemCount();
-            if (product.getQuantity() >= orderedQuantity) {
-                System.out.println(product.getQuantity());
-                product.setQuantity(product.getQuantity() - orderedQuantity);
-                productRepository.save(product);
-            }
-        }
-        if (paymentMethodId == 1) {
-            // Payment method 1 logic
-            // Set success response
-            response.put("isValid", true);
-            response.put("message", "Order placed successfully");
-            purchaseOrderService.addPurchaseOrder(purchaseOrder);
-            cartItemRepository.deleteAll();
-            response.put("redirectUrl", "/success");}
-
-        else if (paymentMethodId == 2) {
-            RazorpayClient razorpay = new RazorpayClient("rzp_test_bgyWOWhe1pDEcz", "4mkCzKfIfbIXXJsHBnyuVTDI");
-
-            JSONObject orderRequest = new JSONObject();
-            orderRequest.put("amount", totalAmount*100);
-            orderRequest.put("currency", "INR");
-            orderRequest.put("receipt", "receipt#1");
-            JSONObject notes = new JSONObject();
-            notes.put("notes_key_1", "Tea, Earl Grey, Hot");
-            orderRequest.put("notes", notes);
-
-            Order order = razorpay.orders.create(orderRequest);
-            response.put("isValid", false);
-            response.put("orderId", order.get("id")); // Get orderId from Razorpay Order object
-            response.put("amount", order.get("amount"));
-            response.put("purchaseId", purchaseOrder.getOrderId());
-            response.put("email", username);
-            assert address != null;
-            response.put("username", address.getFirstName());
-            response.put("contact", address.getPhoneNumber());
-            cartItemRepository.deleteAll();
-
-        }
-        else if (paymentMethodId==3) {
-            Wallet userWallet = walletRepository.findByUser(user);
-
-            if (userWallet != null) {
-                double walletBalance = userWallet.getWalletAmount();
-
-                if (walletBalance >= totalAmount) {
-                    // Sufficient funds in the wallet
-                    userWallet.withdraw(totalAmount);
-
-                    // Record the wallet transaction
-                    WalletTransaction walletTransaction = new WalletTransaction();
-                    walletTransaction.setWallet(userWallet);
-                    walletTransaction.setAmount(totalAmount);
-                    walletTransaction.setTransactionType("DEBIT"); // Assuming 'DEBIT' for deduction, adjust accordingly
-                    walletTransaction.setTransactionTime(LocalDateTime.now());
-                    walletTransactionRepository.save(walletTransaction);
-
-                    // Continue with the rest of the order placement logic
-                    response.put("isValid", true);
-                    response.put("orderId", "Wallet payment"); // Adjust accordingly for wallet transactions
-                    response.put("amount", totalAmount);
-                    response.put("purchaseId", purchaseOrder.getOrderId());
-                    response.put("email", username);
-                    assert address != null;
-                    response.put("username", address.getEmail());
-                    response.put("contact", address.getPhoneNumber());
-                    cartItemRepository.deleteAll();
-                } else {
-                    // Insufficient funds in the wallet
-                    response.put("isValid", false);
-                    response.put("error", "Insufficient funds in the wallet");
-
-
-                }
-            } else {
-                // User doesn't have a wallet
-                response.put("isValid", true);
-                response.put("error", "User does not have a wallet");
-                return ResponseEntity.ok(response.toString());
-
-            }
-
-        }
-
-
-        if (couponCode != null) {
-            Coupon coupon = couponRepository.findCouponByCouponCode(couponCode);
-            if (coupon != null) {
-                user.getCoupons().add(coupon);
-                coupon.getUsers().add(user);
-
-                userRepository.save(user);
-                couponRepository.save(coupon);
-
-            }
-        }
-
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            String jsonResponse = objectMapper.writeValueAsString(response);
-            return ResponseEntity.ok(jsonResponse);
-        } catch (
-                JsonProcessingException e) {
-            // Handle the exception, e.g., log it and return an error response
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing JSON response");
-
-
-        }
-    }
-
-    @PostMapping("/verifyPayment")
-    @ResponseBody
-    public ResponseEntity<Boolean> verifyPayment(@RequestParam("orderId") String orderId,
-                                                 @RequestParam("signature") String signature,
-                                                 @RequestParam("paymentId") String paymentId,
-                                                 @RequestParam("purchaseId") Long purchaseOrderId,
-                                                 Principal principal) throws RazorpayException {
-                        System.out.println("777777777"+purchaseOrderId);
-
-        RazorpayClient razorpay = new RazorpayClient("rzp_test_bgyWOWhe1pDEcz", "4mkCzKfIfbIXXJsHBnyuVTDI");
-
-        String secret = "4mkCzKfIfbIXXJsHBnyuVTDI";
-
-        JSONObject options = new JSONObject();
-        options.put("razorpay_order_id", orderId);
-        options.put("razorpay_payment_id", paymentId);
-        options.put("razorpay_signature", signature);
-
-        boolean status =  Utils.verifyPaymentSignature(options, secret);
-        if(status)
-        {
-            System.out.println("8888888888888888");
-            PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(purchaseOrderId).orElse(null);
-            if(purchaseOrder != null)
-            {
-                purchaseOrder.setOrderStatus("success");
-                purchaseOrder.setTransactionId(paymentId);
-                purchaseOrderRepository.save(purchaseOrder);
-                System.out.println("5555555555555555555555555555555550"+purchaseOrder.getPaymentMethod());
-                System.out.println(purchaseOrder.getOrderStatus());
-                System.out.println(purchaseOrder.getTransactionId());
-
-            }
-        }
-
-        return ResponseEntity.ok(status);
-    }
 
         @GetMapping("/userOrder")
-    public String showUserOrder(Model model){
+        public String showUserOrder(Model model){
         List<OrderItem>orderItems=orderItemRepository.findAll();
         int orderItemCount = orderItems.size();
         model.addAttribute("orderItems", orderItems);

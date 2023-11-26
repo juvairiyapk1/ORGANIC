@@ -4,6 +4,7 @@ package com.timeco.application.model.product;
 import com.timeco.application.model.cart.CartItem;
 import com.timeco.application.model.category.Category;
 import com.timeco.application.model.category.Subcategory;
+import com.timeco.application.model.order.WishList;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -36,6 +37,9 @@ public class Product {
     private Double price;
 
     private String productImages;
+
+    @ManyToMany(mappedBy = "products")
+    private Set<WishList> wishList = new HashSet<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private Set<CartItem> cartItems = new HashSet<>();
@@ -170,4 +174,14 @@ public class Product {
     public void setCartItems(Set<CartItem> cartItems) {
         this.cartItems = cartItems;
     }
+
+    public Set<WishList> getWishList() {
+        return wishList;
+    }
+
+    public void setWishList(Set<WishList> wishList) {
+        this.wishList = wishList;
+    }
+
+
 }

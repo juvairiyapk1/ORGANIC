@@ -26,8 +26,12 @@ import javax.persistence.Id;
 import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/admin")
@@ -54,6 +58,7 @@ public class AdminProductController {
     @Autowired
     private UserService userService;
 
+    public static final String UPLOAD_DIR = "/home/lenovo/Music/PROJECT/application/ORGANIC/src/main/resources/static/img";
 
     @GetMapping("/listProducts")
     public String productList(Model model){
@@ -73,26 +78,34 @@ public String addproductsForm(Model model) {
     model.addAttribute("product", productDto);
 
     // Retrieve all categories that are listed (you can adjust this query as needed)
-    List<Category> categories = categoryRepository.findAll();
-    model.addAttribute("categories", categories);
+    List<Category>unListedCategories=categoryRepository.findByIsListed(false);
+    model.addAttribute("categories", unListedCategories);
 
     // Retrieve all subcategories that are listed (you can adjust this query as needed)
-    List<Subcategory> subcategories = subCategoryRepository.findAll();
-    model.addAttribute("subcategories", subcategories);
+    List<Subcategory> unListedSubCategories = subCategoryRepository.findByIsListed(false);
+    model.addAttribute("subcategories", unListedSubCategories);
 
     return "add-product";
 }
+
     @PostMapping("/addProducts")
-    public String addProductstoDatabase(@ModelAttribute("product") ProductDto productDto,  RedirectAttributes redirectAttributes) {
+    public String addProductstoDatabase(@ModelAttribute("product") ProductDto productDto,
+                                        @RequestParam("file") MultipartFile file,
+                                        RedirectAttributes redirectAttributes) {
+        Category category = categoryService.getCategoryById(productDto.getCategoryId());
+        Subcategory subcategory = subCategoryService.getSubCategoryById(productDto.getSubcategoryId());
 
-            Category category = categoryService.getCategoryById(productDto.getCategoryId());
-            Subcategory subcategory = subCategoryService.getSubCategoryById(productDto.getSubcategoryId());
 
-            if (category == null) {
-                // Handle the case where the category doesn't exist
-                redirectAttributes.addFlashAttribute("error", "Category not found.");
-                return "redirect:/admin/listProducts";
-            }
+        try {
+            // Handle the file upload
+            byte[] imageBytes = file.getBytes();
+
+            // Save the image to the specified directory
+            String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+            Path filePath = Paths.get(UPLOAD_DIR, fileName);
+            Files.write(filePath, imageBytes);
+
+            // Rest of your code...
 
             // Create a new Product instance and set its properties
             Product product = new Product();
@@ -103,16 +116,15 @@ public String addproductsForm(Model model) {
             product.setPrice(productDto.getPrice());
             product.setCategory(category);
             product.setSubcategory(subcategory);
-            product.setProductImages(productDto.getProductImages());
+            product.setProductImages(fileName);  // Save the file name to the Product entity
 
             // Save the Product entity to the database
             productService.addProduct(product);
 
-
-//        } catch (IOException e) {
-//            // Handle the exception (e.g., log it, show an error message)
-//            redirectAttributes.addFlashAttribute("error", "Failed to add product.");
-//        }
+        } catch (IOException e) {
+            // Handle the exception (e.g., log it, show an error message)
+            redirectAttributes.addFlashAttribute("error", "Failed to add product. " + e.getMessage());
+        }
 
         return "redirect:/admin/listProducts";
     }
@@ -130,7 +142,9 @@ public String addproductsForm(Model model) {
             }
             if (product != null) {
                 // Handle the case where the product doesn't exist
+                productService.relatedOrderItem(id);
                 productService.deleteProductById(id);
+
                 return "redirect:/admin/listProducts";
             }
 
@@ -150,12 +164,13 @@ public String addproductsForm(Model model) {
         model.addAttribute("product",product);
         model.addAttribute("pro",id);
 
+
             return "editProduct";
 
     }
     @PostMapping("/updateProduct/{id}")
-    public String updateProduct(@ModelAttribute ProductDto updatedProduct,@PathVariable Long id) {
-        productService.updateProductById(id,updatedProduct);
+    public String updateProduct(@ModelAttribute ProductDto updatedProduct,@PathVariable Long id,@RequestParam("file") MultipartFile file) throws IOException {
+        productService.updateProductById(id,updatedProduct,file);
 
         return "redirect:/admin/listProducts";
     }

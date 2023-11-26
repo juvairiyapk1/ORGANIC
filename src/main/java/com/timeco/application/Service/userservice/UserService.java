@@ -33,4 +33,6 @@ public interface UserService extends UserDetailsService {
 
     public boolean isCurrentPasswordCorrect(String email, String currentPassword);
     public void updatePassword(String email, String newPassword);
+
+
 }

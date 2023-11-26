@@ -3,6 +3,7 @@ package com.timeco.application.model.user;
 import com.timeco.application.model.cart.Cart;
 import com.timeco.application.model.order.Coupon;
 import com.timeco.application.model.order.Wallet;
+import com.timeco.application.model.order.WishList;
 import com.timeco.application.model.role.Role;
 
 import javax.persistence.*;
@@ -58,6 +59,9 @@ public class User {
 
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     private Wallet wallet;
+
+    @OneToOne(mappedBy = "user",cascade=CascadeType.ALL)
+    private WishList wishlist = new WishList();
     public User() {
 
     }
@@ -217,5 +221,13 @@ public class User {
 
     public void setWallet(Wallet wallet) {
         this.wallet = wallet;
+    }
+
+    public WishList getWishlist() {
+        return wishlist;
+    }
+
+    public void setWishlist(WishList wishlist) {
+        this.wishlist = wishlist;
     }
 }

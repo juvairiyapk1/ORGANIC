@@ -1,5 +1,6 @@
 package com.timeco.application.Service.purchaseOrder;
 
+import com.timeco.application.model.cart.CartItem;
 import com.timeco.application.model.order.OrderItem;
 import com.timeco.application.model.order.PurchaseOrder;
 import com.timeco.application.model.user.User;
@@ -25,5 +26,5 @@ public interface PurchaseOrderService  {
 
     void cancelOrderItem(Long orderItemId);
 
-//    double calculateOrderTotal(String couponCode, double orderAmount);
+
 }

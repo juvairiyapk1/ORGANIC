@@ -4,11 +4,8 @@ import com.timeco.application.model.user.Address;
 import com.timeco.application.model.user.User;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Entity
 public class PurchaseOrder {
@@ -30,7 +27,7 @@ public class PurchaseOrder {
     private Coupon coupon;
 
 
-    private LocalDate orderedDate;
+    private LocalDateTime orderedDate;
 
     private String orderStatus;
 
@@ -48,7 +45,7 @@ public class PurchaseOrder {
 
 
 
-    public PurchaseOrder(Long orderId, Address address, List<OrderItem> orderItems, PaymentMethod paymentMethod, User user, Coupon coupon, LocalDate orderedDate, String orderStatus, Double orderAmount, String transactionId, Set<OrderStatus> possibleOrderStatuses) {
+    public PurchaseOrder(Long orderId, Address address, List<OrderItem> orderItems, PaymentMethod paymentMethod, User user, Coupon coupon, LocalDateTime orderedDate, String orderStatus, Double orderAmount, String transactionId, Set<OrderStatus> possibleOrderStatuses) {
         this.orderId = orderId;
         this.address = address;
         this.orderItems = orderItems;
@@ -109,11 +106,11 @@ public class PurchaseOrder {
         this.user = user;
     }
 
-    public LocalDate getOrderedDate() {
+    public LocalDateTime getOrderedDate() {
         return orderedDate;
     }
 
-    public void setOrderedDate(LocalDate orderedDate) {
+    public void setOrderedDate(LocalDateTime orderedDate) {
         this.orderedDate = orderedDate;
     }
 

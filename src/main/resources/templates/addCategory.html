@@ -186,40 +186,22 @@
   </nav>
 
   <div class="m-5 p-5" id="form">
-    <form th:action="@{/admin/addCategory/{id}(id=${category.id})}" method="post" th:object="${category}" class="custom-form">
+    <form th:action="@{/admin/addCategory/{id}(id=${category.id})}" method="post" th:object="${category}" class="custom-form" onsubmit="return validateCategoryForm()">
       <!-- Input field -->
       <div class="form-group">
         <label for="inputField" class="form-label">Category Name:</label>
         <input type="text" id="inputField" name="inputValue" th:field="*{name}" class="form-control" required>
+        <span id="inputFieldError" class="text-danger"></span>
       </div>
 
       <!-- Submit button -->
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-  </div>
-
-
-
-
-
 
   </div>
+  </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  <!-- partial -->
+<!-- partial -->
   <div class="container-fluid page-body-wrapper">
     <!-- partial:partials/_navbar.html -->
     <nav class="navbar p-0 fixed-top d-flex flex-row">
@@ -304,5 +286,25 @@
 <!-- Custom js for this page -->
 <script src="/assets/js/dashboard.js"></script>
 <!-- End custom js for this page -->
+
+<script>
+  function validateCategoryForm() {
+      var categoryName = document.getElementById('inputField').value;
+      var errorElement = document.getElementById('inputFieldError');
+
+      // Clear previous error messages
+      errorElement.innerText = '';
+
+      // Validate the category name
+      if (categoryName.trim() === '') {
+          errorElement.innerText = 'Please enter a category name.';
+          return false;
+      }
+
+      // Add additional validation if needed
+
+      return true;
+  }
+</script>
 </body>
 </html>

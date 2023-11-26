@@ -161,4 +161,7 @@ public class Coupon {
     }
 
 
+    public void incrementUsageCount() {
+        this.usageCount++;
+    }
 }

@@ -62,32 +62,8 @@ public class UserProductController {
     public String searchProducts(@RequestParam("searchTerm") String searchTerm, Model model) {
         List<Product> products = productService.searchProducts(searchTerm);
         model.addAttribute("productsWithImages", products);
-        for (Product product:products){
-            System.out.println("555555555555555555555555555555555555555555555555555"+product);
-        }
+
         return "Userproduct";
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

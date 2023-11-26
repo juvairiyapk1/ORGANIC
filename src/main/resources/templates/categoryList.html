@@ -278,11 +278,12 @@
                 </button>
                 <ul class="navbar-nav w-100">
                     <li class="nav-item w-100">
-                        <form class="form-inline" th:action="@{/admin/searchCategory}" method="get">
+                        <form class="form-inline" th:action="@{/admin/searchCategory}" method="get" onsubmit="return validateSearchForm()">
                             <div class="row justify-content-end">
                                 <div class="col-md-12 col-lg-12 col-xl-12 d-flex">
                                     <div class="form-group">
                                         <input style="max-width: 300px;" id="searchTerm" type="text" name="searchTerm" required class="form-control form-control-dark text-bg-dark" placeholder="Enter category name">
+                                        <span id="searchError" class="text-danger"></span>
                                     </div>
                                     <button type="submit" class="btn btn-primary">Search</button>
                                 </div>
@@ -358,5 +359,23 @@
 <!-- Custom js for this page -->
 <script src="/assets/js/dashboard.js"></script>
 <!-- End custom js for this page -->
+
+<script>
+    function validateSearchForm() {
+        var searchTerm = document.getElementById('searchTerm').value;
+        var errorElement = document.getElementById('searchError');
+
+        // Clear previous error messages
+        errorElement.innerText = '';
+
+        // Validate the search term
+        if (searchTerm.trim() === '') {
+            errorElement.innerText = 'Please enter a product name.';
+            return false;
+        }
+
+        return true;
+    }
+</script>
 </body>
 </html>

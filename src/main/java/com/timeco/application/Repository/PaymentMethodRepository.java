@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface PaymentMethodRepository extends JpaRepository<PaymentMethod,Long> {
 
 
+    PaymentMethod findByPaymentMethodName(String paymentMethodName);
+
 }

@@ -144,7 +144,7 @@
                         <div class="product-item">
                             <div class="position-relative bg-light overflow-hidden">
                                 <a th:href="@{'/user/products/' + ${product.id}}">
-                                <img class="img-fluid w-100" th:src="${product.productImages}" alt="Product Images">
+                                <img class="img-fluid w-100" th:src="@{'/img/' + ${product.productImages}}" alt="Product Images">
                                 </a>
                                 <div class="bg-secondary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">New</div>
                             </div>
@@ -159,6 +159,7 @@
                                 <small class="w-50 text-center py-2">
                                     <a class="text-body" href=""><i class="fa fa-shopping-bag text-primary me-2"></i>Add to cart</a>
                                 </small>
+
                             </div>
                         </div>
                     </div>
@@ -172,7 +173,7 @@
 
                             <div class="position-relative bg-light overflow-hidden">
                                 <a th:href="@{'/user/products/' + ${vegetable.id}}">
-                                <img class="img-fluid w-100" th:src="${vegetable.productImages}" alt="vegetable Images">
+                                <img class="img-fluid w-100" th:src="@{'/img/'+ ${vegetable.productImages}}" alt="vegetable Images">
                                 </a>
                                 <div class="bg-secondary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">New</div>
                             </div>
@@ -188,6 +189,7 @@
                                 <small class="w-50 text-center py-2">
                                     <a class="text-body" href=""><i class="fa fa-shopping-bag text-primary me-2"></i>Add to cart</a>
                                 </small>
+
                             </div>
                         </div>
                     </div>
@@ -200,7 +202,7 @@
                         <div class="product-item">
                             <div class="position-relative bg-light overflow-hidden">
                                 <a th:href="@{'/user/products/' + ${fruit.id}}">
-                                <img class="img-fluid w-100" th:src="${fruit.productImages}" alt="Product Images">
+                                <img class="img-fluid w-100" th:src="@{'/img/' + ${fruit.productImages}}" alt="Product Images">
                                 </a>
                                 <div class="bg-secondary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">New</div>
                             </div>
@@ -229,7 +231,7 @@
                     <div class="product-item">
                         <div class="position-relative bg-light overflow-hidden">
                             <a th:href="@{'/user/products/' + ${freshProduct.id}}">
-                                <img class="img-fluid w-100" th:src="${freshProduct.productImages}" alt="Product Images">
+                                <img class="img-fluid w-100" th:src="@{'/img/' + ${freshProduct.productImages}}" alt="Product Images">
                             </a>
                             <div class="bg-secondary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">New</div>
                         </div>

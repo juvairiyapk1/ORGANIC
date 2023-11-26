@@ -76,6 +76,10 @@ public class CouponController {
             double couponDiscount = couponService.findByDiscount(couponCode, principal);
             double total = cartService.calculateTotalAmount(cartItems, deliveryCharge);
 
+
+            Boolean isActive = (coupon != null && coupon.isActive() != null) ? coupon.isActive() : false;
+
+
             if (!coupon.isActive() && total >= coupon.getMinimumPurchaseAmount() && currentDate.isBefore(coupon.getExpiryDate())) {
                 double discountedTotal = total - couponDiscount;
                 // Add the coupon details to the response
@@ -107,6 +111,7 @@ public class CouponController {
     @PostMapping("/removeCoupon")
     public ResponseEntity<Map<String, Object>> removeCoupon(@RequestParam("couponCode") String couponCode, Principal principal) {
         Map<String, Object> response = new HashMap<>();
+        System.out.println("5555555555555555555555"+couponCode);
 
         try {
             String userName = principal.getName();
@@ -115,10 +120,10 @@ public class CouponController {
             // Find the coupon by code
             Coupon coupon = couponRepository.findCouponByCouponCode(couponCode);
 
-            if (coupon != null && user.getCoupons().contains(coupon)) {
+            if (couponCode != null) {
                 // Remove the specific coupon from the user
-                user.getCoupons().remove(coupon);
-                userRepository.save(user);
+//                user.getCoupons().remove(coupon);
+//                userRepository.save(user);
 
                 response.put("success", true);
                 response.put("message", "Coupon removed successfully");

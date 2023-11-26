@@ -36,6 +36,10 @@ public interface CouponService {
 
     double newTotal(@RequestParam("couponCode") String couponCode, Principal principal);
 
+    Coupon couponById(Integer couponId);
+
+    Coupon findCouponByCouponCode(String couponCode);
+
 
 //    Boolean isCouponValid(String couponCode, double orderAmount);
 

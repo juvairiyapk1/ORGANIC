@@ -41,11 +41,7 @@ public class CheckOutController {
     @Autowired
     public CartService cartService;
 
-    @Autowired
-    private PurchaseOrderService purchaseOrderService;
 
-    @Autowired
-    private PaymentMethodRepository paymentMethodRepository;
 
     @GetMapping("/checkOut")
     public String showCheckOut(Model model, Principal principal) {
