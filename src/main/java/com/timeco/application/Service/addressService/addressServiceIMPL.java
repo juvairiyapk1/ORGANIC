@@ -3,7 +3,6 @@ package com.timeco.application.Service.addressService;
 import com.timeco.application.Dto.AddressDto;
 import com.timeco.application.Repository.AddressRepository;
 import com.timeco.application.Repository.UserRepository;
-import com.timeco.application.model.cart.CartItem;
 import com.timeco.application.model.user.Address;
 import com.timeco.application.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -65,4 +65,8 @@ public class addressServiceIMPL implements AddressService {
     }
 
 
+    @Override
+    public Address getAddress(Long addressId){
+        return addressRepository.findById(addressId).orElseThrow(()-> new  NoSuchElementException("Address not found with id"+addressId));
+    }
 }

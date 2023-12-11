@@ -23,6 +23,7 @@ public class Wallet {
     }
 
     public Wallet() {
+        this.walletAmount=0.0;
 
     }
 

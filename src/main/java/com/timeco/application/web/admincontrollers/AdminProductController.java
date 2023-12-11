@@ -1,19 +1,18 @@
 package com.timeco.application.web.admincontrollers;
 
 import com.timeco.application.Dto.ProductDto;
-import com.timeco.application.Repository.CartItemRepository;
-import com.timeco.application.Repository.CategoryRepository;
-import com.timeco.application.Repository.ProductRepository;
-import com.timeco.application.Repository.SubCategoryRepository;
+import com.timeco.application.Repository.*;
 import com.timeco.application.Service.categoryservice.CategoryService;
-import com.timeco.application.Service.categoryservice.SubCategoryService;
+//import com.timeco.application.Service.categoryservice.SubCategoryService;
+import com.timeco.application.Service.productservice.ProductOfferService;
 import com.timeco.application.Service.productservice.ProductService;
 import com.timeco.application.Service.userservice.UserService;
 import com.timeco.application.model.cart.CartItem;
 import com.timeco.application.model.category.Category;
-import com.timeco.application.model.category.Subcategory;
+//import com.timeco.application.model.category.Subcategory;
 import com.timeco.application.model.product.Product;
 import com.timeco.application.model.product.ProductImage;
+import com.timeco.application.model.product.ProductOffer;
 import com.timeco.application.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -50,13 +49,19 @@ public class AdminProductController {
 
     @Autowired
     private CategoryService categoryService;
-    @Autowired
-    private SubCategoryRepository subCategoryRepository;
-    @Autowired
-    private SubCategoryService subCategoryService;
+//    @Autowired
+//    private SubCategoryRepository subCategoryRepository;
+//    @Autowired
+//    private SubCategoryService subCategoryService;
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ProductOfferRepository productOfferRepository;
+
+    @Autowired
+    private ProductOfferService productOfferService;
 
     public static final String UPLOAD_DIR = "/home/lenovo/Music/PROJECT/application/ORGANIC/src/main/resources/static/img";
 
@@ -82,8 +87,11 @@ public String addproductsForm(Model model) {
     model.addAttribute("categories", unListedCategories);
 
     // Retrieve all subcategories that are listed (you can adjust this query as needed)
-    List<Subcategory> unListedSubCategories = subCategoryRepository.findByIsListed(false);
-    model.addAttribute("subcategories", unListedSubCategories);
+//    List<Subcategory> unListedSubCategories = subCategoryRepository.findByIsListed(false);
+//    model.addAttribute("subcategories", unListedSubCategories);
+
+    List<ProductOffer>activeProductOffer=productOfferRepository.findByIsActive(false);
+    model.addAttribute("productOffer",activeProductOffer);
 
     return "add-product";
 }
@@ -93,7 +101,8 @@ public String addproductsForm(Model model) {
                                         @RequestParam("file") MultipartFile file,
                                         RedirectAttributes redirectAttributes) {
         Category category = categoryService.getCategoryById(productDto.getCategoryId());
-        Subcategory subcategory = subCategoryService.getSubCategoryById(productDto.getSubcategoryId());
+//        Subcategory subcategory = subCategoryService.getSubCategoryById(productDto.getSubcategoryId());
+
 
 
         try {
@@ -115,7 +124,7 @@ public String addproductsForm(Model model) {
             product.setQuantity(productDto.getQuantity());
             product.setPrice(productDto.getPrice());
             product.setCategory(category);
-            product.setSubcategory(subcategory);
+//            product.setSubcategory(subcategory);
             product.setProductImages(fileName);  // Save the file name to the Product entity
 
             // Save the Product entity to the database
@@ -131,27 +140,21 @@ public String addproductsForm(Model model) {
 
 
 
-    @GetMapping("/deleteProduct/{id}")
-    public String deleteProduct(@PathVariable Long id) {
+    @GetMapping("/blockProduct/{id}")
+    public String listProducr(@PathVariable Long id) {
 
-            Product product = productRepository.findById(id).orElse(null);
-            boolean isExist = productService.isExistOrNot(id);
-            if(isExist)
-            {
-                return "redirect:/admin/listProducts?cantDelete";
-            }
-            if (product != null) {
-                // Handle the case where the product doesn't exist
-                productService.relatedOrderItem(id);
-                productService.deleteProductById(id);
+        productService.lockProduct(id);
 
-                return "redirect:/admin/listProducts";
-            }
-
-            return "redirect:/admin/listProducts?error";
-
+        return "redirect:/admin/listProducts";
     }
 
+    @GetMapping("/unblockProduct/{id}")
+    public String unlistProduct(@PathVariable Long id) {
+
+        productService.unlockProduct(id);
+
+        return "redirect:/admin/listProducts";
+    }
 
 
     @GetMapping("/updateProduct/{id}")

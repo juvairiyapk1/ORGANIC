@@ -124,7 +124,7 @@
 		<!-- .col-md-8 -->
 
     <section class="ftco-section">
-		<form id="placeOrderForm" th:action="@{/placeOrder}" th:object="${purchaseOrder}" method="post" >
+
 
 		<div style="display: flex; justify-content: right;">
 			<div class="col-md-4">
@@ -144,7 +144,7 @@
 
 
 		<div class="container">
-
+			<form id="placeOrderForm" th:object="${purchaseOrder}"  >
 		  <div class="row justify-content-center">
 			<div class="col-xl-7 ftco-animate">
 				<h4>Address</h4>
@@ -252,8 +252,9 @@
           </div>
 		<!-- .col-md-8 -->
         </div>
+			</form>
 		</div>
-		  </form>
+
 
     </section> <!-- .section -->
 
@@ -287,7 +288,7 @@
 					<a class="btn btn-square btn-outline-light rounded-circle me-1" href=""><i class="fab fa-facebook-f"></i></a>
 					<a class="btn btn-square btn-outline-light rounded-circle me-1" href=""><i class="fab fa-youtube"></i></a>
 					<a class="btn btn-square btn-outline-light rounded-circle me-0" href=""><i class="fab fa-linkedin-in"></i></a>
-				</div>
+				</div>placeOrderForm
 			</div>
 			<div class="col-lg-3 col-md-6">
 				<h4 class="text-light mb-4">Address</h4>
@@ -468,6 +469,7 @@
 		<script src="../static/lib/easing/easing.min.js"></script>
 		<script src="../static/lib/waypoints/waypoints.min.js"></script>
 		<script src="../static/lib/owlcarousel/owl.carousel.min.js"></script>
+		<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <!--<script src="https://checkout.razorpay.com/v1/checkout.js"></script>-->
 
 
@@ -577,71 +579,91 @@
     });
 </script>
 <script>
-		function handleSubmitForm() {
-		$.ajax({
-		url: '/placeOrder',
-		method: 'post',
-		data: $("#placeOrderForm").serialize(),
-		success: (response) => {
-		var responseData = JSON.parse(response);
-		console.log(responseData.isValid);
-		if (responseData.isValid === true) {
-		window.location.href = "/success";
-		}
-		if (responseData.orderId) {
-		console.log(responseData.orderId);
-		var options = {
-		"key": "rzp_test_bgyWOWhe1pDEcz",
-		"amount": responseData.amount,
-		"currency": "INR",
-		"name": "ORGANIC",
-		"description": "Test Transaction",
-<!--		"image": "/img/logo/logo.png",-->
-		"order_id": responseData.orderId,
-		"handler": function (response) {
-		verifyPayment(response, responseData.purchaseId);
-		},
-		"prefill": {
-		"name": responseData.username,
-		"email": responseData.email,
-		"contact": responseData.contact
-		},
-		"notes": {
-		"address": "Razorpay Corporate Office"
-		},
-		"theme": {
-		"color": "#fc1808"
-		}
-		};
-		var rzp1 = new Razorpay(options);
-		rzp1.on('payment.failed', function (response) {
-		// Handle payment failure
-		});
-		rzp1.open();
-		}
-		}
-		});
-		}
+	function handleSubmitForm() {
+        event.preventDefault();
 
-		function verifyPayment(data, purchaseId) {
-		let orderId = data.razorpay_order_id;
-		let signature = data.razorpay_signature;
-		let paymentId = data.razorpay_payment_id;
-		alert("function called..");
-		$.ajax({
-		url: "/verifyPayment",
-		method: "post",
-		data: { orderId, signature, paymentId, purchaseId },
-		success: (response) => {
-		if (response) {
-		window.location.href = "/success";
-		}
-		alert("something went wrong");
-		}
-		});
-		}
+  $.ajax({
+      url: '/placeOrder',
+      method: 'post',
+      data: $("#placeOrderForm").serialize(),
+      success: (response) => {
+          var responseData = JSON.parse(response);
+          console.log(responseData.isValid);
+          if (responseData.isValid === true) {
+              window.location.href = "/success";
+
+              console.log("Form submitted"); // Check if the form submission is triggered
+              console.log(responseData.isValid);
+              console.log(responseData.orderId);
+          }
+          else {
+              // Check for wallet-related error
+              if (responseData.error && responseData.error === "Insufficient funds in the wallet") {
+                  // Display wallet error message to the user
+                  alert(responseData.error);
+              }
+          }
+          if (responseData.orderId) {
+              console.log(responseData.orderId);
+              var options = {
+                  "key": "rzp_test_bgyWOWhe1pDEcz",
+                  "amount": responseData.amount,
+                  "currency": "INR",
+                  "name": "ORGANIC-ECOMMERCE",
+                  "description": "Test Transaction",
+<!--                    "image": "/img/logo/logo.png",-->
+                  "order_id": responseData.orderId,
+                  "handler": function (response) {
+                      verifyPayment(response, responseData.purchaseOrderId);
+                      console.log(responseData.purchaseOrderId);
+                  },
+                  "prefill": {
+                      "name": responseData.username,
+                      "email": responseData.email,
+                      "contact": responseData.contact
+                  },
+                  "notes": {
+                      "address": "Razorpay Corporate Office"
+                  },
+                  "theme": {
+                      "color": "#fc1808"
+                  }
+              };
+              var rzp1 = new Razorpay(options);
+              rzp1.on('payment.failed', function (response) {
+                  // Handle payment failure
+              });
+              rzp1.open();
+          }
+      }
+  });
+}
+
+  function verifyPayment(data, purchaseOrderId) {
+  console.log(purchaseOrderId)
+    let orderId = data.razorpay_order_id;
+    let signature = data.razorpay_signature;
+    let paymentId = data.razorpay_payment_id;
+    alert("function called..");
+    $.ajax({
+        url: "/verifyPayment",
+        method: "post",
+        data: { orderId, signature, paymentId, purchaseOrderId },
+        success: (response) => {
+            if (response) {
+                console.log(response)
+                window.location.href = "/success";
+            } else {
+                alert("something went wrong");
+            }
+        }
+    });
+}
+
+
 </script>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+
 
 
 

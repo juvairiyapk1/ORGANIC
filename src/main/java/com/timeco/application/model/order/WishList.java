@@ -4,6 +4,7 @@ import com.timeco.application.model.product.Product;
 import com.timeco.application.model.user.User;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,5 +50,22 @@ public class WishList {
 
     public void setProducts(Set<Product> products) {
         this.products = products;
+    }
+
+
+    public void removeProduct(Product product) {
+        if (products != null) {
+            products.remove(product);
+            product.setWishList(null); // Assuming a bidirectional relationship
+        }
+    }
+
+    public void addProduct(Product product) {
+        if (products == null) {
+            products = new HashSet<>();
+        }
+
+        products.add(product);
+//      product.setWishList();  // Assuming a bidirectional relationship
     }
 }

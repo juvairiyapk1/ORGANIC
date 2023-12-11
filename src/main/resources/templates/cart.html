@@ -120,10 +120,10 @@
     </div>
 
     <section class="ftco-section ftco-cart">
-     <div class="container" >
-	<div class="row">
+     <div class="container" style="min-height:80vh">
+	<div class="row" id="cartAmount">
 		<div class="col-md-12 ftco-animate" id="totalId">
-			<div class="cart-list" >
+			<div class="cart-list" th:if="${not #lists.isEmpty(cartItems)}" >
 						<table class="table">
 							<thead>
 							<tr>
@@ -138,7 +138,12 @@
 							<tr th:each="cartItem : ${cartItems}">
 								<td><img style="width:56px; height:56px;" th:src="@{'/img/' + ${cartItem.product.productImages}}" /></td>
 								<td th:text="${cartItem.product.productName}"></td>
-								<td th:text="${cartItem.price}"></td>
+
+								<td>
+									<span th:if="${cartItem.product.discountedPrice != 0.0}" th:text="${cartItem.product.discountedPrice}">Discounted Price</span>
+									<span th:unless="${cartItem.product.discountedPrice != 0.0}" th:text="${cartItem.price}">Original Price</span>
+								</td>
+
 
 								<td>
 									<!-- Decrement Button -->
@@ -147,7 +152,10 @@
 									<!-- Increment Button -->
 									<button type="button" class="increment-quantity" th:attr="data-cart-item-id=${cartItem.cartItemId}, data-quantity-change=1">+</button>
 								</td>
-								<td th:id="'TotalPrice' + ${cartItem.cartItemId}" name="Total" th:text="'$ ' + (${cartItem.quantity} * ${cartItem.price})"></td>
+								<td th:id="'TotalPrice' + ${cartItem.cartItemId}" name="Total">
+									<span th:if="${cartItem.product.discountedPrice != 0.0}" th:text="'$ ' + (${cartItem.quantity} * ${cartItem.product.discountedPrice})">Discounted Price</span>
+									<span th:unless="${cartItem.product.discountedPrice != 0.0}" th:text="'$ ' + (${cartItem.quantity} * ${cartItem.product.price})">Original Price</span>
+								</td>
 
 
 								<td><form th:action="@{'/deleteCartItem/'+${cartItem.cartItemId}}" th:method="post">
@@ -161,7 +169,7 @@
 							</tbody>
 						</table>
 
-				<div class="cart-total mb-3"  th:object="${cart}">
+				<div class="cart-total mb-3"  th:object="${cart}" >
 					<!-- Subtotal -->
 					<p class="d-flex">
 						<span>Subtotal</span>
@@ -183,6 +191,10 @@
 
 				<p><a th:href="@{/checkOut}" class="btn btn-primary py-3 px-4" th:value="totalSubAmount" >Proceed to Checkout</a></p>
     				</div>
+			<div th:if="${#lists.isEmpty(cartItems)}">
+				<h3 style="color:red">Your cart is empty.</h3>
+			</div>
+
 				</div>
 			</div>
 		</div>
@@ -273,11 +285,11 @@
                          // Update the total price
                             var totalId = 'TotalPrice' + cartItemId;
                              $('#' + totalId).text('$ ' + response.updatedTotalPrice);
-
+<!--                 $('#cartAmount').load('/cart' #cartAmount)-->
                        // Update the subTotal
                 $('#totalSubAmount').text('$ ' + response.subTotal);
                 // Update the total amount
-                $('#totalAmount').text('$ ' + response.totalAmount);
+                   $('#totalAmount').text('$ ' + response.totalAmount);
 
                      // Display success message
                      $('#cartMessage').text('Quantity updated successfully');

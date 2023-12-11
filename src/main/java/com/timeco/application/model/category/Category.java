@@ -1,6 +1,9 @@
 package com.timeco.application.model.category;
 
+import com.timeco.application.model.product.Product;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name="Category")
@@ -14,6 +17,15 @@ public class Category {
     private String name;
     @Column(name = "isListed")
     public boolean isListed;
+
+    @ManyToOne
+    @JoinColumn(name = "category_offer_id")
+    private CategoryOffer categoryOffer;
+
+    @OneToMany(mappedBy = "category")
+    private List<Product> products;
+
+
 
 
 
@@ -43,11 +55,27 @@ public class Category {
         isListed = listed;
     }
 
+    public CategoryOffer getCategoryOffer() {
+        return categoryOffer;
+    }
+
+    public void setCategoryOffer(CategoryOffer categoryOffer) {
+        this.categoryOffer = categoryOffer;
+    }
+
     public Category(Long id, String name, boolean isListed) {
         super();
         this.id = id;
         this.name = name;
         this.isListed = isListed;
+    }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
     }
 
     public Category() {

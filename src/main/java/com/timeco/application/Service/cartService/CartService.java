@@ -59,19 +59,7 @@ public class CartService {
         return false; // Product is not in the cart
     }
 
-//    private Cart createCart(User user) {
-//        // Check if a cart already exists for the user
-//        Cart existingCart = cartRepository.findByUser(user);
-//
-//        if (existingCart != null) {
-//            // A cart already exists, you can return the existing cart
-//            return existingCart;
-//        } else {
-//            // Create a new cart for the user
-//            Cart cart = new Cart(user);
-//            return cartRepository.save(cart);
-//        }
-//    }
+
 
     private double calculateTotalCartPrice(Cart cart) {
         double totalPrice = 0.0;
@@ -170,10 +158,16 @@ public class CartService {
                 cartItem.setQuantity(updatedQuantity);
                 cartItemRepository.save(cartItem);
 
+                double productPrice = cartItem.getProduct().getPrice();
+                double discountPrice = cartItem.getProduct().getDiscountedPrice();
+
+                double price = (discountPrice > 0) ? discountPrice : productPrice;
+
+
 
                 response.put("success", true);
                 response.put("updatedQuantity", updatedQuantity);
-                response.put("updatedTotalPrice", cartItem.getPrice() * updatedQuantity);
+                response.put("updatedTotalPrice", price * updatedQuantity);
 //                 Calculate and update sub-total and total amounts
                 response.put("subTotal", calculateSubTotal(cartItems));
 //                        response.put("totalAmount", calculateTotalAmount(cartItems,));
@@ -190,8 +184,14 @@ public class CartService {
     // Calculate sub-total
     public double calculateSubTotal(List<CartItem> cartItems) {
         double subTotal = 0.0;
+
         for (CartItem cartItem : cartItems) {
-            subTotal += cartItem.getPrice() * cartItem.getQuantity();
+            double productPrice = cartItem.getProduct().getPrice();
+            double discountPrice = cartItem.getProduct().getDiscountedPrice();
+            double price = (discountPrice > 0) ? discountPrice : productPrice;
+
+
+            subTotal += price * cartItem.getQuantity();
         }
         return subTotal;
     }

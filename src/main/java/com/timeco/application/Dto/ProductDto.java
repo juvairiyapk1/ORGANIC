@@ -1,7 +1,8 @@
 package com.timeco.application.Dto;
 
 import com.timeco.application.model.category.Category;
-import com.timeco.application.model.category.Subcategory;
+//import com.timeco.application.model.category.Subcategory;
+import com.timeco.application.model.product.ProductOffer;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.Min;
@@ -19,12 +20,15 @@ public class ProductDto {
     private Long categoryId;
     private Long subcategoryId;
     private String imageName;
+    private  Long productOfferId;
 
     // Add a field to hold the Category object
     private Category category;
-    private Subcategory subcategory;
+//    private Subcategory subcategory;
 
     private String productImages;
+
+    private ProductOffer productOffer;
 
     public Long getId() {
         return id;
@@ -107,13 +111,13 @@ public class ProductDto {
         this.subcategoryId = subcategoryId;
     }
 
-    public Subcategory getSubcategory() {
-        return subcategory;
-    }
-
-    public void setSubcategory(Subcategory subcategory) {
-        this.subcategory = subcategory;
-    }
+//    public Subcategory getSubcategory() {
+//        return subcategory;
+//    }
+//
+//    public void setSubcategory(Subcategory subcategory) {
+//        this.subcategory = subcategory;
+//    }
 
     public ProductDto() {
         super();
@@ -129,24 +133,44 @@ public class ProductDto {
         this.imageName = imageName;
     }
 
-    public ProductDto(String productName, String current_state, String description, Integer quantity, Double price, Long categoryId, Long subcategoryId, String imageName, Category category, Subcategory subcategory) {
+    public ProductDto(String productName, String current_state, String description, Integer quantity, Double price, Long categoryId, String imageName, Category category) {
         this.productName = productName;
         this.current_state = current_state;
         this.description = description;
         this.quantity = quantity;
         this.price = price;
         this.categoryId = categoryId;
-        this.subcategoryId = subcategoryId;
+//        this.subcategoryId = subcategoryId;
         this.imageName = imageName;
         this.category = category;
-        this.subcategory = subcategory;
+//        this.subcategory = subcategory;
     }
 
     public String getProductImages() {
         return productImages;
     }
 
+    public ProductOffer getProductOffer() {
+        return productOffer;
+    }
+
+    public void setProductOffer(ProductOffer productOffer) {
+        this.productOffer = productOffer;
+    }
+
     public void setProductImages(String productImages) {
         this.productImages = productImages;
+    }
+
+    public Long getProductOfferId() {
+        return productOfferId;
+    }
+
+    public void setProductOfferId(Long productOfferId) {
+        this.productOfferId = productOfferId;
+    }
+
+    public ProductDto(Long productOfferId) {
+        this.productOfferId = productOfferId;
     }
 }

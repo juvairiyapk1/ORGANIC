@@ -53,7 +53,6 @@ public ResponseEntity<String> addToCart(@RequestBody ProductDto productDTO, Prin
                 // Product is already in the cart, return a message
                 return ResponseEntity.ok("Product is already in the cart.");
             } else {
-                // Check if the user has reached the limit for this product
                 int productLimit = 5; // Set your limit here
                 int productCountInCart = cartService.getProductCountInCart(productDTO, principal);
 

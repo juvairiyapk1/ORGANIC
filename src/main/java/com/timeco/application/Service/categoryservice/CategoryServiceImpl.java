@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryServiceImpl implements CategoryService{
@@ -72,6 +73,16 @@ public class CategoryServiceImpl implements CategoryService{
     @Override
     public List<Category> searchCategory(String searchTerm) {
         return categoryRepository.findByNameContaining(searchTerm);
+    }
+
+    @Override
+    public List<Category> getAllCategory() {
+        List<Category>allCategory=categoryRepository.findAll();
+
+        return allCategory.stream()
+                .filter(category -> !category.isListed())
+                .collect(Collectors.toList());
+
     }
 
 }

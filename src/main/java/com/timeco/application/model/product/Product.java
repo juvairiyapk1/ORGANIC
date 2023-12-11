@@ -3,8 +3,11 @@ package com.timeco.application.model.product;
 
 import com.timeco.application.model.cart.CartItem;
 import com.timeco.application.model.category.Category;
-import com.timeco.application.model.category.Subcategory;
+import com.timeco.application.model.category.CategoryOffer;
+//import com.timeco.application.model.category.Subcategory;
 import com.timeco.application.model.order.WishList;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -48,9 +51,25 @@ public class Product {
     @JoinColumn(name = "category_id",referencedColumnName = "category_id")
     private Category category;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    @JoinColumn(name = "subcategory_id", referencedColumnName = "subcategory_Id")
-    private Subcategory subcategory; // The subcategory to which this product belongs
+//    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+//    @JoinColumn(name = "subcategory_id", referencedColumnName = "subcategory_Id")
+//    private Subcategory subcategory; // The subcategory to which this product belongs
+
+    @ManyToOne
+    @JoinColumn(name = "product_offer_id")
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
+    private ProductOffer productOffer;
+
+    @ManyToOne
+    @JoinColumn(name = "category_offer_id")
+    private CategoryOffer categoryOffer;
+
+    private Double discountedPrice=0.0;
+
+    @Column(name = "blocked")
+    private Boolean blocked=false;
+
+
 
 
 //    public List<ProductImage> getProductImages() {
@@ -62,7 +81,7 @@ public class Product {
 //    }
 
 
-    public Product(String productName, String current_state, String description, Integer quantity, Double price, String productImages, Set<CartItem> cartItems, Category category, Subcategory subcategory) {
+    public Product(String productName, String current_state, String description, Integer quantity, Double price, String productImages, Set<CartItem> cartItems, Category category) {
         this.productName = productName;
         this.current_state = current_state;
         this.description = description;
@@ -71,7 +90,7 @@ public class Product {
         this.productImages = productImages;
         this.cartItems = cartItems;
         this.category = category;
-        this.subcategory = subcategory;
+//        this.subcategory = subcategory;
     }
 
     public Product(Long id, String productName, String current_state, String description, Integer quantity, Double price, String productImages, Category category) {
@@ -151,9 +170,9 @@ public class Product {
         this.category = category;
     }
 
-    public Subcategory getSubcategory() {
-        return subcategory;
-    }
+//    public Subcategory getSubcategory() {
+//        return subcategory;
+//    }
 
     public String getProductImages() {
         return productImages;
@@ -163,9 +182,9 @@ public class Product {
         this.productImages = productImages;
     }
 
-    public void setSubcategory(Subcategory subcategory) {
-        this.subcategory = subcategory;
-    }
+//    public void setSubcategory(Subcategory subcategory) {
+//        this.subcategory = subcategory;
+//    }
 
     public Set<CartItem> getCartItems() {
         return cartItems;
@@ -181,6 +200,38 @@ public class Product {
 
     public void setWishList(Set<WishList> wishList) {
         this.wishList = wishList;
+    }
+
+    public ProductOffer getProductOffer() {
+        return productOffer;
+    }
+
+    public void setProductOffer(ProductOffer productOffer) {
+        this.productOffer = productOffer;
+    }
+
+    public Double getDiscountedPrice() {
+        return discountedPrice;
+    }
+
+    public CategoryOffer getCategoryOffer() {
+        return categoryOffer;
+    }
+
+    public void setCategoryOffer(CategoryOffer categoryOffer) {
+        this.categoryOffer = categoryOffer;
+    }
+
+    public Boolean getBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(Boolean blocked) {
+        this.blocked = blocked;
+    }
+
+    public void setDiscountedPrice(Double discountedPrice) {
+        this.discountedPrice = discountedPrice;
     }
 
 

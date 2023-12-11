@@ -31,4 +31,5 @@ public interface CategoryService {
 
     List<Category> searchCategory(String searchTerm);
 
+    List<Category> getAllCategory();
 }

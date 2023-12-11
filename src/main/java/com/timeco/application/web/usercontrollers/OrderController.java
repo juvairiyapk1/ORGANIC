@@ -30,10 +30,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 public class OrderController {
@@ -91,129 +88,40 @@ public class OrderController {
 
 
 
-//    @PostMapping("/placeOrder")
-//    @Transactional
-//    public ResponseEntity<String> addPurchaseOrder(@RequestParam("addressId") Long addressId,
-//                                                   @RequestParam("paymentMethodId") Long paymentMethodId,
-//                                                   @RequestParam("totalAmount") double totalAmount,
-//                                                   @RequestParam(value = "couponCode", required = false) String couponCode,
-//                                                   Principal principal) throws RazorpayException {
-//        Map<String, Object> response = new HashMap<>();
-//        String username = principal.getName();
-//        User user = userRepository.findByEmail(username);
-//
-//        try {
-//            // Process Coupon
-//            if (couponCode != null) {
-//                Coupon coupon = couponRepository.findCouponByCouponCode(couponCode);
-//                if (coupon != null) {
-//                    coupon.incrementUsageCount();
-//                    coupon.getUsers().add(user);
-//                    user.getCoupons().add(coupon);
-//
-//                    couponRepository.save(coupon);
-//                    userRepository.save(user);
-//                }
-//            }
-//
-//            // Fetch Cart Items
-//            List<CartItem> cartItems = cartService.findCartItem(user);
-//
-//            // Create Purchase Order
-//            Cart cart = cartRepository.findByUser(user);
-//            PurchaseOrder purchaseOrder = new PurchaseOrder();
-//            Optional<Address> addressOptional = addressRepository.findById(addressId);
-//            addressOptional.ifPresent(purchaseOrder::setAddress);
-//            Address address = addressOptional.orElse(null);
-//
-//            Coupon coupon = couponService.findCouponByCouponCode(couponCode);
-//            if (coupon != null) {
-//                purchaseOrder.setCoupon(coupon);
-//            }
-//
-//            purchaseOrder.setOrderAmount(totalAmount);
-//            purchaseOrder.setOrderedDate(LocalDateTime.now());
-//            purchaseOrder.setUser(user);
-//
-//            PaymentMethod paymentMethod = paymentMethodRepository.findById(paymentMethodId).orElse(null);
-//            if (paymentMethod != null) {
-//                purchaseOrder.setPaymentMethod(paymentMethod);
-//            }
-//            System.out.println("5555555555555555555"+paymentMethodId);
-//            response.put("isValid", true);
-////            purchaseOrder.setOrderStatus("pending");
-//            if(paymentMethodId==1) {
-//                purchaseOrder.setOrderStatus("placed");
-//                purchaseOrderRepository.save(purchaseOrder);
-//                 response.put("isValid", true);
-//
-//            }
-//            // Payment Processing
-//            else if (paymentMethodId == 2) {
-//               paymentService. handleRazorpayPayment(response, totalAmount, purchaseOrder, username, address);
-//            } else if (paymentMethodId == 3) {
-//                paymentService.handleWalletPayment(response, totalAmount, user, purchaseOrder);
-//            }
-//
-//            // Clear Cart Items after successful order placement
-////            cartItemRepository.deleteAll(cartItems);
-//
-//            // Convert Response to JSON
-//            ObjectMapper objectMapper = new ObjectMapper();
-//            String jsonResponse = objectMapper.writeValueAsString(response);
-//            return ResponseEntity.ok(jsonResponse);
-//        } catch (JsonProcessingException e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing JSON response");
-//        }
-//    }
-//
-//    @PostMapping("/verifyPayment")
-//    @ResponseBody
-//    public ResponseEntity<Boolean> verifyPayment(@RequestParam("orderId") String orderId,
-//                                                 @RequestParam("signature") String signature,
-//                                                 @RequestParam("paymentId") String paymentId,
-//                                                 @RequestParam("purchaseId") Long purchaseOrderId,
-//                                                 Principal principal) throws RazorpayException {
-//                        System.out.println("777777777"+purchaseOrderId);
-//
-//        RazorpayClient razorpay = new RazorpayClient("rzp_test_bgyWOWhe1pDEcz", "4mkCzKfIfbIXXJsHBnyuVTDI");
-//
-//        String secret = "4mkCzKfIfbIXXJsHBnyuVTDI";
-//
-//        JSONObject options = new JSONObject();
-//        options.put("razorpay_order_id", orderId);
-//        options.put("razorpay_payment_id", paymentId);
-//        options.put("razorpay_signature", signature);
-//
-//        boolean status =  Utils.verifyPaymentSignature(options, secret);
-//        if(status)
-//        {
-//            System.out.println("8888888888888888");
-//            PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(purchaseOrderId).orElse(null);
-//            if(purchaseOrder != null)
-//            {
-//                purchaseOrder.setOrderStatus("success");
-//                purchaseOrder.setTransactionId(paymentId);
-//                purchaseOrderRepository.save(purchaseOrder);
-//                System.out.println("5555555555555555555555555555555550"+purchaseOrder.getPaymentMethod());
-//                System.out.println(purchaseOrder.getOrderStatus());
-//                System.out.println(purchaseOrder.getTransactionId());
-//
-//            }
-//        }
-//
-//        return ResponseEntity.ok(status);
-//    }
 
 
 
-        @GetMapping("/userOrder")
-        public String showUserOrder(Model model){
-        List<OrderItem>orderItems=orderItemRepository.findAll();
-        int orderItemCount = orderItems.size();
-        model.addAttribute("orderItems", orderItems);
-        return"UserOrder";
+    @GetMapping("/userOrder")
+    public String showUserOrder(Model model, Principal principal) {
+        String userName = principal.getName();
+        User user = userRepository.findByEmail(userName);
+
+        if (user != null) {
+            List<PurchaseOrder> purchaseOrders = purchaseOrderRepository.findByUser(user);
+
+            if (purchaseOrders != null && !purchaseOrders.isEmpty()) {
+                List<OrderItem> allOrderItems = new ArrayList<>();
+
+                for (PurchaseOrder order : purchaseOrders) {
+                    List<OrderItem> orderItems = order.getOrderItems();
+                    allOrderItems.addAll(orderItems);
+                }
+
+                Address address = purchaseOrders.get(0).getAddress(); // Assuming address is the same for all orders
+
+                Collections.reverse(allOrderItems);
+                int orderItemCount = allOrderItems.size();
+                model.addAttribute("orderItems", allOrderItems);
+                model.addAttribute("address", address);
+
+                System.out.println("All Purchase Orders: " + purchaseOrders);
+                System.out.println("All Order Items: " + allOrderItems);
+                System.out.println("Address: " + address);
+            }
+        }
+        return "UserOrder";
     }
+
 
 
     @PostMapping("/cancelOrderItem/{orderItemId}")
@@ -224,6 +132,54 @@ public class OrderController {
     }
 
 
+    @PostMapping("/returnOrderItem/{orderItemId}")
+    public String returnOrderItem(@PathVariable Long orderItemId){
+        OrderItem orderItem=orderItemRepository.findById(orderItemId).orElse(null);
+        if(orderItem != null && "Delivered".equals(orderItem.getOrderStatus()))
+        {
+
+         Product product=orderItem.getProduct();
+         int returnItemQuantity=orderItem.getOrderItemCount();
+         int currentProductCount=product.getQuantity();
+         product.setQuantity(currentProductCount+returnItemQuantity);
+
+            orderItem.setOrderStatus("Returned");
+         User user=orderItem.getOrder().getUser();
+         double productAmount;
+
+         if (product.getDiscountedPrice()==null){
+
+              productAmount=product.getPrice();
+         }
+         else {
+             productAmount=product.getDiscountedPrice();
+         }
+
+
+
+         Wallet useWallet=user.getWallet();
+         if(useWallet != null)
+         {
+             double currentWalletBalance=useWallet.getWalletAmount();
+             useWallet.setWalletAmount(productAmount+currentWalletBalance);
+
+             WalletTransaction walletTransaction=new WalletTransaction();
+             walletTransaction.setWallet(user.getWallet());
+             walletTransaction.setAmount(productAmount);
+             walletTransaction.setTransactionTime(LocalDateTime.now());
+             walletTransaction.setTransactionType("CREDIT");
+             walletTransactionRepository.save(walletTransaction);
+         }
+
+
+
+            productRepository.save(product);
+            orderItemRepository.save(orderItem);
+            userRepository.save(user);
+        }
+
+      return "redirect:/userOrder";
+    }
 
 
 }

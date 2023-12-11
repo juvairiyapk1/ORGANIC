@@ -145,7 +145,8 @@
                 <span class="nav-link">Navigation</span>
             </li>
             <li class="nav-item menu-items">
-                <a class="nav-link"  th:href="@{/admin/adminHome}">
+                <a class="nav-link" data-toggle="collapse" th:href="@{/admin/adminHome}" aria-expanded="false" aria-controls="ui-basic">
+
               <span class="menu-icon">
                 <i class="mdi mdi-speedometer"></i>
               </span>
@@ -153,7 +154,7 @@
                 </a>
             </li>
             <li class="nav-item menu-items">
-                <a class="nav-link" data-toggle="collapse"  th:href="@{/admin/listUsers}" aria-expanded="false" aria-controls="ui-basic">
+                <a class="nav-link" data-toggle="collapse" th:href="@{/admin/listUsers}" aria-expanded="false" aria-controls="ui-basic">
               <span class="menu-icon">
                 <i class="mdi mdi-laptop"></i>
               </span>
@@ -162,7 +163,7 @@
                 </a>
             </li>
             <li class="nav-item menu-items">
-                <a class="nav-link"  th:href="@{/admin/listUsers}">
+                <a class="nav-link" data-toggle="collapse" th:href="@{/admin/listProducts}" aria-expanded="false" aria-controls="ui-basic">
               <span class="menu-icon">
                 <i class="mdi mdi-playlist-play"></i>
               </span>
@@ -170,11 +171,61 @@
                 </a>
             </li>
             <li class="nav-item menu-items">
-                <a class="nav-link" href="/pages/tables/basic-table.html">
+                <a class="nav-link" data-toggle="collapse" th:href="@{/admin/category-list}" aria-expanded="false" aria-controls="ui-basic">
+
               <span class="menu-icon">
                 <i class="mdi mdi-table-large"></i>
               </span>
-                    <span class="menu-title">CategroyManagement</span>
+                    <span class="menu-title">CategoryManagement</span>
+                </a>
+            </li>
+            <!--      <li class="nav-item menu-items">-->
+            <!--        <a class="nav-link" data-toggle="collapse" th:href="@{/admin/SubCategory-list}" aria-expanded="false" aria-controls="ui-basic">-->
+
+            <!--              <span class="menu-icon">-->
+            <!--                <i class="mdi mdi-table-large"></i>-->
+            <!--              </span>-->
+            <!--          <span class="menu-title">SubCategory</span>-->
+            <!--        </a>-->
+            <!--      </li>-->
+
+            <li class="nav-item menu-items">
+                <a class="nav-link" data-toggle="collapse" th:href="@{/admin/orderList}" aria-expanded="false" aria-controls="ui-basic">
+
+              <span class="menu-icon">
+                <i class="mdi mdi-table-large"></i>
+              </span>
+                    <span class="menu-title">Order Management</span>
+                </a>
+            </li>
+
+            <li class="nav-item menu-items">
+                <a class="nav-link" data-toggle="collapse" th:href="@{/admin/couponList}" aria-expanded="false" aria-controls="ui-basic">
+              <span class="menu-icon">
+                <i class="mdi mdi-laptop"></i>
+              </span>
+                    <span class="menu-title">Coupon Management</span>
+                    <i class="menu-arrow"></i>
+                </a>
+            </li>
+            <li class="nav-item menu-items">
+                <a class="nav-link" data-toggle="collapse" th:href="@{/admin/productOfferManagement}"  aria-expanded="false" aria-controls="ui-basic">
+
+              <span class="menu-icon">
+                <i class="mdi mdi-table-large"></i>
+              </span>
+                    <span class="menu-title">Product Offer</span>
+                </a>
+            </li>
+
+
+            <li class="nav-item menu-items">
+                <a class="nav-link" data-toggle="collapse" th:href="@{/login?logout}" aria-expanded="false" aria-controls="ui-basic">
+
+              <span class="menu-icon">
+                <i class="mdi mdi-table-large"></i>
+              </span>
+                    <span class="menu-title">Logout</span>
                 </a>
             </li>
 

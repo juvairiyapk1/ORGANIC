@@ -3,33 +3,40 @@ package com.timeco.application.web.usercontrollers;
 
 import com.timeco.application.Dto.RegistrationDto;
 import com.timeco.application.Repository.UserRepository;
+import com.timeco.application.Repository.WalletRepository;
 import com.timeco.application.Service.otpservice.OtpService;
 import com.timeco.application.Service.userservice.UserService;
+import com.timeco.application.Service.wallet.WalletService;
 import com.timeco.application.model.cart.Cart;
 import com.timeco.application.model.order.Wallet;
 import com.timeco.application.model.user.LoginDto;
 import com.timeco.application.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/registration")
 
 public class UserRegistrationController {
 
+
+    @Autowired
+    private WalletService walletService;
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private WalletRepository walletRepository;
 
     @Autowired
     private OtpService otpService;
@@ -55,7 +62,8 @@ public class UserRegistrationController {
     }
 
     @PostMapping("/Register")
-    public String register(@ModelAttribute("user") RegistrationDto registrationDto, HttpSession session,Model model)
+    public String register(@ModelAttribute("user") RegistrationDto registrationDto, HttpSession session,Model model,
+                           @RequestParam(name ="ref",required = false)String referralCode)
     {
 
         User existingUser = userService.findUserByEmail(registrationDto.getEmail());
@@ -71,6 +79,11 @@ public class UserRegistrationController {
         session.setAttribute("validEmailId", verifyCustomer.getEmail());
         session.setAttribute("verifyCustomer", verifyCustomer);
 
+        if (referralCode != null && !referralCode.isEmpty()) {
+            session.setAttribute("referralCode", referralCode);
+            System.out.println("refefral=============="+referralCode);
+        }
+
         return "redirect:/registration/otpVerification?success";
     }
 
@@ -85,27 +98,46 @@ public class UserRegistrationController {
     }
 
 
+
     @PostMapping("/otpRegistrationValidation")
     public String otpRegistrationValidation (@ModelAttribute("otpBasedLoginAccount") LoginDto LoginAccount, HttpSession session, RedirectAttributes redirectAttributes) {
 
-//        if(LoginAccount.getOtp() == null){
-//            System.out.println("hgddbxvbfgfsfsfsfsfsfdsf");
-//            redirectAttributes.addFlashAttribute("message","Please fill in field");
-//        }
-            String emailId = session.getAttribute("validEmailId").toString();
+      String emailId = session.getAttribute("validEmailId").toString();
             boolean flag = otpService.validateRegistrationOtp(emailId, LoginAccount.getOtp());
 
             int otpTimer = (int) session.getAttribute("otpTimer");
 
             if (flag) {
                 User verifyCustomer = (User) session.getAttribute("verifyCustomer");
+                String referralCode=generateRefferralCode();
+                verifyCustomer.setReferralCode(referralCode);
+
                 Cart cart = new Cart();
                 cart.setUser(verifyCustomer);
                 verifyCustomer.setCart(cart);
+
                 Wallet wallet=new Wallet();
                 wallet.setUser(verifyCustomer);
                 verifyCustomer.setWallet(wallet);
+
+
+
                 userRepository.save(verifyCustomer);
+
+
+                String referral= (String) session.getAttribute("referralCode");
+                User referrer=userRepository.findByReferralCode(referral);
+                if(referral != null && !referral.isEmpty() && referrer != null) {
+
+
+
+                    double referralBonusAmount = 100.0;
+                    walletService.addAmountToWallet(verifyCustomer, referralBonusAmount);
+                    walletService.addAmountToWallet(referrer,referralBonusAmount);
+
+
+                }
+
 
                 return "redirect:/";
             } else {
@@ -122,6 +154,10 @@ public class UserRegistrationController {
             }
 
 
+    }
+
+    private String generateRefferralCode() {
+        return UUID.randomUUID().toString().substring(0,8);
     }
 
 

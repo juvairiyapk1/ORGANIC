@@ -2,6 +2,7 @@ package com.timeco.application.web.usercontrollers;
 
 
 import com.timeco.application.Repository.CategoryRepository;
+import com.timeco.application.Service.categoryservice.CategoryService;
 import com.timeco.application.Service.productservice.ProductService;
 import com.timeco.application.model.category.Category;
 import com.timeco.application.model.product.Product;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/user")
@@ -26,21 +28,8 @@ public class UserProductController {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    @GetMapping("/products")
-    public String listProductsWithImages(Model model) {
-
-        List<Product> productsWithImages = productService.getAllProducts();
-        List<Product>vegitables=productService.getFirstCategory(categoryRepository.findCategoryByName("vegitables"));
-        List<Product>fruits=productService.getSecondCategory(categoryRepository.findCategoryByName("fruits"));
-        List<Product>fresh=productService.getSecondCategory(categoryRepository.findCategoryByName("fresh"));
-
-        model.addAttribute("productsWithImages", productsWithImages);
-        model.addAttribute("vegetables",vegitables);
-        System.out.println(categoryRepository.findCategoryByName("vegetables"));
-        model.addAttribute("fruits",fruits);
-        model.addAttribute("fresh",fresh);
-        return "Userproduct";
-    }
+    @Autowired
+    private CategoryService categoryService;
 
 
     @GetMapping("/products/{productId}")
@@ -58,6 +47,7 @@ public class UserProductController {
 
     }
 
+
     @GetMapping("/searchProduct")
     public String searchProducts(@RequestParam("searchTerm") String searchTerm, Model model) {
         List<Product> products = productService.searchProducts(searchTerm);
@@ -65,5 +55,37 @@ public class UserProductController {
 
         return "Userproduct";
     }
+
+    @GetMapping("/products")
+    public String listProductsWithImages(@RequestParam(name = "category", required = false) Long categoryId, Model model) {
+        List<Product> productsWithImages;
+
+        if (categoryId != null) {
+            Category selectedCategory = categoryService.getCategoryById(categoryId);
+            if (selectedCategory != null) {
+                List<Product> categoryProducts = selectedCategory.getProducts();
+                // Filter out blocked products
+                categoryProducts = categoryProducts.stream()
+                        .filter(product -> !product.getBlocked()) // Assuming a method like isBlocked() is present in your Product entity
+                        .collect(Collectors.toList());
+                model.addAttribute("categoryProducts", categoryProducts);
+                model.addAttribute("selectedCategoryId", categoryId);
+            }
+        } else {
+            // Get all products and filter out blocked ones
+            productsWithImages = productService.getAllProducts().stream()
+                    .filter(product -> !product.getBlocked()) // Assuming a method like isBlocked() is present in your Product entity
+                    .collect(Collectors.toList());
+            model.addAttribute("productsWithImages", productsWithImages);
+        }
+
+        List<Category> categories = categoryService.getAllCategory();
+        model.addAttribute("categories", categories);
+
+        return "Userproduct";
+    }
+
+
+
 
 }

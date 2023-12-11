@@ -1,13 +1,13 @@
 package com.timeco.application.web.admincontrollers;
 
 import com.timeco.application.Dto.CategoryDto;
-import com.timeco.application.Dto.SubCategoryDto;
+//import com.timeco.application.Dto.SubCategoryDto;
 import com.timeco.application.Repository.CategoryRepository;
-import com.timeco.application.Repository.SubCategoryRepository;
+//import com.timeco.application.Repository.SubCategoryRepository;
 import com.timeco.application.Service.categoryservice.CategoryService;
-import com.timeco.application.Service.categoryservice.SubCategoryService;
+//import com.timeco.application.Service.categoryservice.SubCategoryService;
 import com.timeco.application.model.category.Category;
-import com.timeco.application.model.category.Subcategory;
+//import com.timeco.application.model.category.Subcategory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,10 +24,10 @@ public class AdminCategoryController {
     private CategoryRepository categoryRepository;
     @Autowired
     private CategoryService categoryService;
-    @Autowired
-    private SubCategoryRepository subCategoryRepository;
-    @Autowired
-    private SubCategoryService subCategoryService;
+//    @Autowired
+//    private SubCategoryRepository subCategoryRepository;
+//    @Autowired
+//    private SubCategoryService subCategoryService;
 
 
     @GetMapping("/category-list")
@@ -121,90 +121,90 @@ public class AdminCategoryController {
 
 
 
-    @GetMapping("/SubCategory-list")
-    public String subcategoryList(Model model) {
-        List<Subcategory> subcategories = subCategoryRepository.findAll(); // Retrieve all subcategories
-
-        model.addAttribute("subcategories", subcategories); // Subcategories
-
-        return "subcategoryList";
-    }
-
-
-    @GetMapping("/addSubCategory")
-    public String showAddSubCategoryForm(Model model) {
-        List<Category> categories = categoryRepository.findAll(); // Retrieve all categories
-
-        Subcategory subcategory = new Subcategory();
-        model.addAttribute("subcategory", subcategory);
-        return "addSubCategory";
-    }
-    @PostMapping("/addSubCategory")
-    public String addSubCategory(@ModelAttribute("subcategory") SubCategoryDto subcategoryDto, Model model) {
-        // Create a Subcategory object from the DTO
-        Subcategory subcategory = new Subcategory();
-        subcategory.setName(subcategoryDto.getName());
-
-        subCategoryRepository.save(subcategory); // Save the subcategory
-
-        return "redirect:/admin/SubCategory-list";
-    }
+//    @GetMapping("/SubCategory-list")
+//    public String subcategoryList(Model model) {
+//        List<Subcategory> subcategories = subCategoryRepository.findAll(); // Retrieve all subcategories
+//
+//        model.addAttribute("subcategories", subcategories); // Subcategories
+//
+//        return "subcategoryList";
+//    }
 
 
-
-
-    @GetMapping("/updateSubCategory/{id}")
-    public String editSubCategory(@PathVariable(value = "id") Long subCategoryId, Model model) {
-        Optional<Subcategory> optionalSubCategory = subCategoryRepository.findById(subCategoryId);
-
-        System.out.println("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-        if (optionalSubCategory.isPresent()) {
-            Subcategory subcategory = optionalSubCategory.get();
-            model.addAttribute("subcategory", subcategory);
-            model.addAttribute("subcategoryId", subCategoryId);
-            return "updatesubcategory";
-        } else {
-            return "redirect:/admin/category-list?error";
-        }
-    }
+//    @GetMapping("/addSubCategory")
+//    public String showAddSubCategoryForm(Model model) {
+//        List<Category> categories = categoryRepository.findAll(); // Retrieve all categories
+//
+//        Subcategory subcategory = new Subcategory();
+//        model.addAttribute("subcategory", subcategory);
+//        return "addSubCategory";
+//    }
+//    @PostMapping("/addSubCategory")
+//    public String addSubCategory(@ModelAttribute("subcategory") SubCategoryDto subcategoryDto, Model model) {
+//        // Create a Subcategory object from the DTO
+//        Subcategory subcategory = new Subcategory();
+//        subcategory.setName(subcategoryDto.getName());
+//
+//        subCategoryRepository.save(subcategory); // Save the subcategory
+//
+//        return "redirect:/admin/SubCategory-list";
+//    }
 
 
 
-    @PostMapping("/updateSubCategory/{id}")
-    public String editSubCategory(
-            @PathVariable("id") Long subcategoryId,
-            @ModelAttribute("subcategory") SubCategoryDto subcategory
-    ) {
-        subCategoryService.updateSubCategoryById(subcategoryId, subcategory);
-        return "redirect:/admin/SubCategory-list";
-    }
+
+//    @GetMapping("/updateSubCategory/{id}")
+//    public String editSubCategory(@PathVariable(value = "id") Long subCategoryId, Model model) {
+//        Optional<Subcategory> optionalSubCategory = subCategoryRepository.findById(subCategoryId);
+//
+//        System.out.println("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+//        if (optionalSubCategory.isPresent()) {
+//            Subcategory subcategory = optionalSubCategory.get();
+//            model.addAttribute("subcategory", subcategory);
+//            model.addAttribute("subcategoryId", subCategoryId);
+//            return "updatesubcategory";
+//        } else {
+//            return "redirect:/admin/category-list?error";
+//        }
+//    }
 
 
 
-    @GetMapping("/blockSubCategory/{id}")
-    public String listSubCategory(@PathVariable Long id) {
-
-        subCategoryService.lockSubCategory(id);
-
-        return "redirect:/admin/SubCategory-list";
-    }
-
-    @GetMapping("/unblockSubCategory/{id}")
-    public String unlistSubCategory(@PathVariable Long id) {
-
-        subCategoryService.unlockSubCategory(id);
-
-        return "redirect:/admin/SubCategory-list";
-    }
-
-    @GetMapping("/deleteSubCategory/{id}")
-    public String deleteSubCategory(@PathVariable Long id){
-
-        subCategoryService.deleteSubCategoryById(id);
-
-        return "redirect:/admin/SubCategory-list";
-    }
-
+//    @PostMapping("/updateSubCategory/{id}")
+//    public String editSubCategory(
+//            @PathVariable("id") Long subcategoryId,
+//            @ModelAttribute("subcategory") SubCategoryDto subcategory
+//    ) {
+//        subCategoryService.updateSubCategoryById(subcategoryId, subcategory);
+//        return "redirect:/admin/SubCategory-list";
+//    }
+//
+//
+//
+//    @GetMapping("/blockSubCategory/{id}")
+//    public String listSubCategory(@PathVariable Long id) {
+//
+//        subCategoryService.lockSubCategory(id);
+//
+//        return "redirect:/admin/SubCategory-list";
+//    }
+//
+//    @GetMapping("/unblockSubCategory/{id}")
+//    public String unlistSubCategory(@PathVariable Long id) {
+//
+//        subCategoryService.unlockSubCategory(id);
+//
+//        return "redirect:/admin/SubCategory-list";
+//    }
+//
+//    @GetMapping("/deleteSubCategory/{id}")
+//    public String deleteSubCategory(@PathVariable Long id){
+//
+//        subCategoryService.deleteSubCategoryById(id);
+//
+//        return "redirect:/admin/SubCategory-list";
+//    }
+//
 
 }
 

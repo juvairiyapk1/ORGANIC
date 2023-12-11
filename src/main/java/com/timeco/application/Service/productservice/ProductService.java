@@ -18,7 +18,7 @@ public interface ProductService {
 
     public void updateProductById(Long id, ProductDto product, MultipartFile file) throws IOException;
 
-    public void deleteProductById(Long id);
+
     public List<Product> getAllProducts();
 
     List<Product> searchProducts(String searchTerm);
@@ -27,17 +27,15 @@ public interface ProductService {
 
     boolean isExistOrNot(Long id);
 
-//    List<Product> getProductsByCategory(String category);
-
-    List<Product> getFirstCategory(Category category);
-
-    List<Product> getSecondCategory(Category category);
-
-    List<Product> getThirdCategory(Category category);
-
-    void relatedOrderItem(Long id);
 
 
-//    void save(Product product);
+
+
+    void lockProduct(Long id);
+
+    void unlockProduct(Long id);
+
+
+
 }
 

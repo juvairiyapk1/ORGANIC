@@ -90,14 +90,17 @@
                 <a href="contact.html" class="nav-item nav-link">Contact Us</a>
             </div>
             <div class="d-none d-lg-flex ms-2">
-                <a class="btn-sm-square bg-white rounded-circle ms-3" href="">
-                    <small class="fa fa-search text-body"></small>
-                </a>
-                <a class="btn-sm-square bg-white rounded-circle ms-3" href="">
+<!--                <a class="btn-sm-square bg-white rounded-circle ms-3" href="">-->
+<!--                    <small class="fa fa-search text-body"></small>-->
+<!--                </a>-->
+                <a class="btn-sm-square bg-white rounded-circle ms-3" th:href="@{/userProfile}">
                     <small class="fa fa-user text-body"></small>
                 </a>
-                <a class="btn-sm-square bg-white rounded-circle ms-3" href="">
+                <a class="btn-sm-square bg-white rounded-circle ms-3" th:href="@{/cart}">
                     <small class="fa fa-shopping-bag text-body"></small>
+                </a>
+                <a class="btn-sm-square bg-white rounded-circle ms-3" th:href="@{/showWishlist}">
+                    <small class="fa fa-heart text-body"></small>
                 </a>
             </div>
         </div>
@@ -117,10 +120,10 @@
 </div>
 
 <section class="ftco-section ftco-cart">
-    <div class="container" >
+    <div class="container" style="min-height:80vh">
         <div class="row">
             <div class="col-md-12 ftco-animate" id="">
-                <div class="cart-list" >
+                <div class="cart-list"  th:if="${not #lists.isEmpty(wishList)}">
                     <table class="table">
                         <thead>
                         <tr>
@@ -132,24 +135,28 @@
                         </thead>
 
                         <tbody>
-                        <tr th:each="product : ${wishList.products}">
-                            <td><img style="width:56px; height:56px;" th:src="@{'/img/' + ${product.productImages}}" /></td>
+                        <tr th:each="product : ${wishList}">
+                            <td><img style="width:56px; height:56px;" th:src="@{'/img/' + ${product.productImages}}" ></td>
                             <td th:text="${product.productName}"></td>
                             <td th:text="${product.price}"></td>
 
 <!--                            <td th:id="'TotalPrice' + ${product.id}" name="Total" th:text="'$ ' + (${wishItem.quantity} * ${cartItem.price})"></td>-->
 
 
-                            <td><form th:action="@{'/wishList/delete/' + ${product.id}}" th:method="get">
+                            <td><form th:action="@{'/delete/'+${product.id}}" th:method="post">
                                 <button type="submit">Delete</button>
                             </form>
-                                									<span id="cartMessage" style="color: red;"></span>
+
                             </td>
                         </tr>
 
 
                         </tbody>
                     </table>
+                </div>
+
+                <div th:if="${#lists.isEmpty(wishList)}">
+                    <h3 style="color:red">Your wishlist is empty.</h3>
                 </div>
             </div>
         </div>

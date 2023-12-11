@@ -37,7 +37,9 @@ public class UserProfileController {
     {
         String userName=principal.getName();
         User user=userRepository.findByEmail(userName);
+        String referralCode=user.getReferralCode();
         model.addAttribute("user",user);
+        model.addAttribute("referralCode",referralCode);
         boolean editMode = false; // Set it to either true or false based on your logic
         model.addAttribute("editMode", editMode);
 

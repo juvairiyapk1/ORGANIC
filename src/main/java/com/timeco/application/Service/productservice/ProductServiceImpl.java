@@ -7,6 +7,7 @@ import com.timeco.application.Repository.OrderItemRepository;
 import com.timeco.application.Repository.ProductRepository;
 import com.timeco.application.model.cart.CartItem;
 import com.timeco.application.model.category.Category;
+import com.timeco.application.model.order.Coupon;
 import com.timeco.application.model.order.OrderItem;
 import com.timeco.application.model.product.Product;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,13 +81,6 @@ public class ProductServiceImpl implements ProductService{
         // Save the updated Product
     }
 
-    @Transactional
-    @Override
-    public void deleteProductById(Long id) {
-
-        this.productRepository.deleteById(id);
-
-    }
 
     @Override
     public List<Product> getAllProducts(){
@@ -127,27 +121,19 @@ public class ProductServiceImpl implements ProductService{
 
 
     @Override
-    public List<Product> getFirstCategory(Category category) {
-        return productRepository.findByCategory(category);
+    public void lockProduct(Long id) {
+        Product lockProduct = productRepository.findById(id).get();
+        lockProduct.setBlocked(true);
+        productRepository.save(lockProduct);
     }
 
     @Override
-    public List<Product> getSecondCategory(Category category) {
-        return productRepository.findByCategory(category);
+    public void unlockProduct(Long id) {
+        Product unLockProduct=productRepository.findById(id).get();
+        unLockProduct.setBlocked(false);
+        productRepository.save(unLockProduct);
+
     }
-
-    @Override
-    public List<Product> getThirdCategory(Category category) {
-        return productRepository.findByCategory(category);
-    }
-
-    @Override
-    public void relatedOrderItem(Long id) {
-        List<OrderItem> orderItems = orderItemRepository.findByProductId(id);
-        orderItemRepository.deleteAll(orderItems);
-    }
-
-
 
 
 }

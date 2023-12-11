@@ -101,7 +101,8 @@
                         <li><a th:href="@{/userProfile}">Profile</a></li>
                         <li><a th:href="@{/address}">Addresses</a></li>
                         <li><a th:href="@{/userOrder}">Orders</a></li>
-                        <li><a href="/coupons">Coupons</a></li>
+                        <li><a th:href="@{/coupons}">Coupons</a></li>
+                        <li><a th:href="@{/wallet}">Wallet</a></li>
                     </ul>
                     <a th:href="@{/logout}" class="btn mt-5" style="background-color: rgb(93, 93, 93);"><b>Log out</b></a>
                 </div>
@@ -112,29 +113,38 @@
                 <h3>Your Orders</h3>
 
                 <!-- Iterate over user's orders and display details -->
-                <div th:each="order : ${orderItems}">
-                    <div>
+                <div th:if="${orderItems != null && orderItems.size() > 0}">
+                    <div th:each="orderItem : ${orderItems}">
 
-                        <!-- <h3>Order ID: <span th:text="${order.orderId}"></span></h3> -->
-                        <p>Order Date: <span th:text="${order.order.orderedDate}"></span></p>
+                        <!-- <h3>Order ID: <span th:text="${orderItem.order.orderId}"></span></h3> -->
+                        <p>Order Date: <span th:text="${orderItem.order.orderedDate}"></span></p>
 
                         <!-- Display order items -->
                         <ul>
                             <li>
-                                <img style="width:56px; height:56px;" th:src="${order.product.productImages}" />
-
-                                <span th:text="${order.product.productName}"></span> - Quantity: <span th:text="${order.orderItemCount}"></span>
+                                <img style="width:56px; height:56px;" th:src="@{'/img/' + ${orderItem.product.productImages}}" />
+                                <span th:text="${orderItem.product.productName}"></span> - Quantity: <span th:text="${orderItem.orderItemCount}"></span>
                             </li>
                         </ul>
 
+                        <p>Total : $<span th:text="${orderItem.orderItemCount * orderItem.product.price}"></span></p>
+
+                        <p>Order Status: <span th:text="${orderItem.orderStatus}"></span></p>
 
 
-                    <p>Total : $<span th:text="${order.orderItemCount * order.product.price}"></span></p>
-
-                    <p>Order Status: <span th:text="${order.orderStatus}"></span></p>
-                        <form th:action="@{'/cancelOrderItem/'+${order.orderItemId}}" th:method="post">
-                            <button type="submit">Cancel</button>
+                        <form th:action="@{'/cancelOrderItem/' + ${orderItem.orderItemId}}" th:method="post">
+                            <button th:if="${orderItem.orderStatus == 'Canceled' or orderItem.orderStatus == 'Returned'}"
+                                    type="button" disabled>Cancel
+                            </button>
+                            <button th:unless="${orderItem.orderStatus == 'Canceled' or orderItem.orderStatus == 'Delivered' or orderItem.orderStatus == 'Returned'}"
+                                    type="submit">Cancel
+                            </button>
                         </form>
+                        <form th:if="${orderItem.orderStatus == 'Delivered'}"
+                              th:action="@{'/returnOrderItem/' + ${orderItem.orderItemId}}" th:method="post">
+                            <button type="submit">Return</button>
+                        </form>
+
 
                         <hr>
                 </div>

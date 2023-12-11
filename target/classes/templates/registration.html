@@ -103,6 +103,7 @@
         <h3 style="margin-top: 10px">Sign Up Now</h3>
         <p>Please fill out this to register</p>
         <form th:action="@{/registration/Register}" th:object="${user}" method="post" onsubmit="return validateForm()">
+            <input type="hidden" name="ref" th:value="${param.ref}">
             <div class="form-group">
                 <label for="firstName">First Name</label>
                 <input type="text" name="firstName" id="firstName" required placeholder="Your Firstname" class="form-control form-control-lg">

@@ -146,7 +146,8 @@
         <span class="nav-link">Navigation</span>
       </li>
       <li class="nav-item menu-items">
-        <a class="nav-link"  th:href="@{/admin/adminHome}">
+        <a class="nav-link" data-toggle="collapse" th:href="@{/admin/adminHome}" aria-expanded="false" aria-controls="ui-basic">
+
               <span class="menu-icon">
                 <i class="mdi mdi-speedometer"></i>
               </span>
@@ -154,7 +155,7 @@
         </a>
       </li>
       <li class="nav-item menu-items">
-        <a class="nav-link" data-toggle="collapse"  th:href="@{/admin/listUsers}" aria-expanded="false" aria-controls="ui-basic">
+        <a class="nav-link" data-toggle="collapse" th:href="@{/admin/listUsers}" aria-expanded="false" aria-controls="ui-basic">
               <span class="menu-icon">
                 <i class="mdi mdi-laptop"></i>
               </span>
@@ -163,7 +164,7 @@
         </a>
       </li>
       <li class="nav-item menu-items">
-        <a class="nav-link"  th:href="@{/admin/listUsers}">
+        <a class="nav-link" data-toggle="collapse" th:href="@{/admin/listProducts}" aria-expanded="false" aria-controls="ui-basic">
               <span class="menu-icon">
                 <i class="mdi mdi-playlist-play"></i>
               </span>
@@ -171,13 +172,53 @@
         </a>
       </li>
       <li class="nav-item menu-items">
-        <a class="nav-link" href="/pages/tables/basic-table.html">
+        <a class="nav-link" data-toggle="collapse" th:href="@{/admin/category-list}" aria-expanded="false" aria-controls="ui-basic">
+
               <span class="menu-icon">
                 <i class="mdi mdi-table-large"></i>
               </span>
-          <span class="menu-title">CategroyManagement</span>
+          <span class="menu-title">CategoryManagement</span>
         </a>
       </li>
+      <!--      <li class="nav-item menu-items">-->
+      <!--        <a class="nav-link" data-toggle="collapse" th:href="@{/admin/SubCategory-list}" aria-expanded="false" aria-controls="ui-basic">-->
+
+      <!--              <span class="menu-icon">-->
+      <!--                <i class="mdi mdi-table-large"></i>-->
+      <!--              </span>-->
+      <!--          <span class="menu-title">SubCategory</span>-->
+      <!--        </a>-->
+      <!--      </li>-->
+
+      <li class="nav-item menu-items">
+        <a class="nav-link" data-toggle="collapse" th:href="@{/admin/orderList}" aria-expanded="false" aria-controls="ui-basic">
+
+              <span class="menu-icon">
+                <i class="mdi mdi-table-large"></i>
+              </span>
+          <span class="menu-title">Order Management</span>
+        </a>
+      </li>
+
+      <li class="nav-item menu-items">
+        <a class="nav-link" data-toggle="collapse" th:href="@{/admin/couponList}" aria-expanded="false" aria-controls="ui-basic">
+              <span class="menu-icon">
+                <i class="mdi mdi-laptop"></i>
+              </span>
+          <span class="menu-title">Coupon Management</span>
+          <i class="menu-arrow"></i>
+        </a>
+      </li>
+      <li class="nav-item menu-items">
+        <a class="nav-link" data-toggle="collapse" th:href="@{/admin/productOfferManagement}"  aria-expanded="false" aria-controls="ui-basic">
+
+              <span class="menu-icon">
+                <i class="mdi mdi-table-large"></i>
+              </span>
+          <span class="menu-title">Product Offer</span>
+        </a>
+      </li>
+
 
       <div class="collapse" id="auth">
         <ul class="nav flex-column sub-menu">
@@ -342,71 +383,64 @@
 
 <script>
   function productAddForm() {
-    // Get form inputs
-    var name = document.getElementById('exampleInputName1').value;
-    var quantity = document.getElementById('exampleInputQuantity').value;
-    var price = document.getElementById('exampleInputPrice').value;
-    var categoryId = document.getElementById('categorySelect').value;
-    var subcategoryId = document.getElementById('subcategorySelect').value;
-    var description = document.getElementById('exampleTextarea1').value;
-    var images = document.getElementById('images').value;
+      // Reset previous error messages
+      document.getElementById('exampleInputName1Error').innerText = '';
+      document.getElementById('exampleInputQuantityError').innerText = '';
+      document.getElementById('exampleInputPriceError').innerText = '';
+      document.getElementById('categorySelectError').innerText = '';
+      document.getElementById('exampleTextarea1Error').innerText = '';
+      document.getElementById('imagesError').innerText = '';
 
-    // Reset error messages
-    document.getElementById('exampleInputName1Error').innerText = '';
-    document.getElementById('exampleInputQuantityError').innerText = '';
-    document.getElementById('exampleInputPriceError').innerText = '';
-    document.getElementById('categorySelectError').innerText = '';
-    document.getElementById('subcategorySelectError').innerText = '';
-    document.getElementById('exampleTextarea1Error').innerText = '';
-    document.getElementById('imagesError').innerText = '';
+      // Perform validation
+      var isValid = true;
 
-    // Flag to track if the form is valid
-    var isValid = true;
+      // Name validation
+      var productName = document.getElementById('exampleInputName1').value;
+      if (!productName.trim()) {
+          document.getElementById('exampleInputName1Error').innerText = 'Name is required';
+          isValid = false;
+      }
 
-    // Validate Name
-    if (name.trim() === '') {
-      document.getElementById('exampleInputName1Error').innerText = 'Name is required';
-      isValid = false;
-    }
+      // Quantity validation
+      var quantity = document.getElementById('exampleInputQuantity').value;
+      if (isNaN(quantity) || quantity <= 0) {
+          document.getElementById('exampleInputQuantityError').innerText = 'Quantity must be a positive number';
+          isValid = false;
+      }
 
-    // Validate Quantity
-    if (quantity.trim() === '') {
-      document.getElementById('exampleInputQuantityError').innerText = 'Quantity is required';
-      isValid = false;
-    }
+      // Price validation
+      var price = document.getElementById('exampleInputPrice').value;
+      if (isNaN(price) || price <= 0) {
+          document.getElementById('exampleInputPriceError').innerText = 'Price must be a positive number';
+          isValid = false;
+      }
 
-    // Validate Price
-    if (price.trim() === '') {
-      document.getElementById('exampleInputPriceError').innerText = 'Price is required';
-      isValid = false;
-    }
+      // Category validation
+      var categoryId = document.getElementById('categorySelect').value;
+      if (!categoryId) {
+          document.getElementById('categorySelectError').innerText = 'Please select a category';
+          isValid = false;
+      }
 
-    // Validate Category
-    if (categoryId.trim() === '') {
-      document.getElementById('categorySelectError').innerText = 'Category is required';
-      isValid = false;
-    }
+      // Description validation
+      var description = document.getElementById('exampleTextarea1').value;
+      if (!description.trim()) {
+          document.getElementById('exampleTextarea1Error').innerText = 'Description is required';
+          isValid = false;
+      }
 
-    // Validate Subcategory
-    if (subcategoryId.trim() === '') {
-      document.getElementById('subcategorySelectError').innerText = 'Subcategory is required';
-      isValid = false;
-    }
+      // Images validation (optional)
+      var images = document.getElementById('images').files;
+      if (images.length === 0) {
+          document.getElementById('imagesError').innerText = 'Please select at least one image';
+          isValid = false;
+      }
 
-    // Validate Description
-    if (description.trim() === '') {
-      document.getElementById('exampleTextarea1Error').innerText = 'Description is required';
-      isValid = false;
-    }
+      return isValid;
+  }
 
-    // Validate Images
-    if (images.trim() === '') {
-      document.getElementById('imagesError').innerText = 'Images are required';
-      isValid = false;
-    }
-
-    // Return whether the form is valid or not
-    return isValid;
+  function handleFileSelect(event) {
+      // Handle file selection if needed
   }
 </script>
 
@@ -428,6 +462,8 @@
     }
   }
 </script>
+
+
 
 
 </body>

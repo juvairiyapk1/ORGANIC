@@ -9,10 +9,11 @@ import java.util.*;
 
 @Entity
 public class PurchaseOrder {
+    private  Long purchaseCount;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
-    @OneToOne
+    @ManyToOne
     private Address address;
     @OneToMany(mappedBy = "order",cascade = CascadeType.ALL)
     private List<OrderItem>orderItems=new ArrayList<>();
@@ -35,7 +36,7 @@ public class PurchaseOrder {
 
     private String transactionId;
 
-//    private Integer orderedQuantity;
+   private Integer orderedQuantity;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "purchase_order_order_statuses",
@@ -65,6 +66,13 @@ public class PurchaseOrder {
 
     public PurchaseOrder() {
     }
+
+    public PurchaseOrder(PaymentMethod paymentMethod, Long purchaseCount) {
+        this.paymentMethod = paymentMethod;
+        this.purchaseCount = purchaseCount;
+    }
+
+
 
     public Long getOrderId() {
         return orderId;
@@ -156,4 +164,22 @@ public class PurchaseOrder {
     public void setOrderStatus(String orderStatus) {
         this.orderStatus = orderStatus;
     }
+
+    public Integer getOrderedQuantity() {
+        return orderedQuantity;
+    }
+
+    public Long getPurchaseCount() {
+        return purchaseCount;
+    }
+
+    public void setPurchaseCount(Long purchaseCount) {
+        this.purchaseCount = purchaseCount;
+    }
+
+    public void setOrderedQuantity(Integer orderedQuantity) {
+        this.orderedQuantity = orderedQuantity;
+    }
+
+
 }

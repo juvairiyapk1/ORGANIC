@@ -62,6 +62,8 @@ public class User {
 
     @OneToOne(mappedBy = "user",cascade=CascadeType.ALL)
     private WishList wishlist = new WishList();
+
+    private String referralCode;
     public User() {
 
     }
@@ -229,5 +231,13 @@ public class User {
 
     public void setWishlist(WishList wishlist) {
         this.wishlist = wishlist;
+    }
+
+    public String getReferralCode() {
+        return referralCode;
+    }
+
+    public void setReferralCode(String referralCode) {
+        this.referralCode = referralCode;
     }
 }

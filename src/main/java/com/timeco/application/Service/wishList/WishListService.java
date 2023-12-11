@@ -1,10 +1,12 @@
 package com.timeco.application.Service.wishList;
 
+import com.timeco.application.Dto.ProductDto;
 import com.timeco.application.model.order.WishList;
+import com.timeco.application.model.product.Product;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
-import java.util.List;
+import java.util.Set;
 
 @Service
 public interface WishListService {
@@ -15,5 +17,16 @@ public interface WishListService {
 
     void addProduct(Long productId, WishList wishList);
 
-    void delete(Long productId, WishList wishlist);
+    Set<Product> getWishListByUser(Principal principal);
+
+
+
+    void deleteProductFromWishList(Long productId, WishList wishList);
+
+    boolean isProductInWishList(Long productId, Principal principal);
+
+
+    int getProductCountInWishList(Long productId, Principal principal);
+
+    void addProductToWishList(Long productId, Principal principal);
 }

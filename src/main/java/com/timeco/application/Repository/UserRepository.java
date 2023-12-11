@@ -18,5 +18,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
    List<User> findByEmailContainingOrFirstNameContaining(String email,String firstName);
 
 
+    User findByReferralCode(String referral);
 
+//    Long countByBlockedUsers(boolean isBlocked);
 }

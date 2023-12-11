@@ -25,10 +25,6 @@ public class AdminUserController {
     private UserService userService;
 
 
-    @GetMapping("/adminHome")
-    public String home(){
-        return"adminHome";
-    }
 
 
 
