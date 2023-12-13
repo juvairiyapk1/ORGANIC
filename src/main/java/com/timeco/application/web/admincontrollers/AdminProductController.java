@@ -63,7 +63,7 @@ public class AdminProductController {
     @Autowired
     private ProductOfferService productOfferService;
 
-    public static final String UPLOAD_DIR = "/home/lenovo/Music/PROJECT/application/ORGANIC/src/main/resources/static/img";
+    public static final String UPLOAD_DIR = "/home/ubuntu/ORGANIC/src/main/resources/static/img";
 
     @GetMapping("/listProducts")
     public String productList(Model model){
