@@ -63,7 +63,7 @@ public class AdminProductController {
     @Autowired
     private ProductOfferService productOfferService;
 
-    public static final String UPLOAD_DIR = "/home/ubuntu/ORGANIC/src/main/resources/static/img";
+    public static final String UPLOAD_DIR = "src/main/resources/static/img";
 
     @GetMapping("/listProducts")
     public String productList(Model model){
@@ -99,44 +99,54 @@ public String addproductsForm(Model model) {
     @PostMapping("/addProducts")
     public String addProductstoDatabase(@ModelAttribute("product") ProductDto productDto,
                                         @RequestParam("file") MultipartFile file,
-                                        RedirectAttributes redirectAttributes) {
-        Category category = categoryService.getCategoryById(productDto.getCategoryId());
-//        Subcategory subcategory = subCategoryService.getSubCategoryById(productDto.getSubcategoryId());
-
-
-
+                                        RedirectAttributes redirectAttributes) throws IOException {
         try {
-            // Handle the file upload
+            // Ensure the directory exists
+            Path uploadDirectory = Paths.get(UPLOAD_DIR);
+            if (!Files.exists(uploadDirectory)) {
+                Files.createDirectories(uploadDirectory);
+            }
+
+            Category category = categoryService.getCategoryById(productDto.getCategoryId());
+
             byte[] imageBytes = file.getBytes();
 
             // Save the image to the specified directory
             String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
             Path filePath = Paths.get(UPLOAD_DIR, fileName);
-            Files.write(filePath, imageBytes);
 
-            // Rest of your code...
+            // Check if the file already exists
+            if (!Files.exists(filePath)) {
+                Files.write(filePath, imageBytes);
 
-            // Create a new Product instance and set its properties
-            Product product = new Product();
-            product.setProductName(productDto.getProductName());
-            product.setCurrent_state(productDto.getCurrent_state());
-            product.setDescription(productDto.getDescription());
-            product.setQuantity(productDto.getQuantity());
-            product.setPrice(productDto.getPrice());
-            product.setCategory(category);
-//            product.setSubcategory(subcategory);
-            product.setProductImages(fileName);  // Save the file name to the Product entity
+                // Create a new Product instance and set its properties
+                Product product = new Product();
+                product.setProductName(productDto.getProductName());
+                product.setCurrent_state(productDto.getCurrent_state());
+                product.setDescription(productDto.getDescription());
+                product.setQuantity(productDto.getQuantity());
+                product.setPrice(productDto.getPrice());
+                product.setCategory(category);
+                product.setProductImages(fileName);  // Save the file name to the Product entity
 
-            // Save the Product entity to the database
-            productService.addProduct(product);
+                // Save the Product entity to the database
+                productService.addProduct(product);
 
+                return "redirect:/admin/listProducts";
+            } else {
+                // Handle the case when the file already exists
+                System.out.println("File already exists: " + filePath);
+                redirectAttributes.addFlashAttribute("error", "File already exists");
+            }
         } catch (IOException e) {
-            // Handle the exception (e.g., log it, show an error message)
-            redirectAttributes.addFlashAttribute("error", "Failed to add product. " + e.getMessage());
+            // Handle the exception (e.g., log the error)
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Error uploading the file");
         }
 
-        return "redirect:/admin/listProducts";
+        return "redirect:/admin/listProducts"; // Redirect to add product page on error
     }
+
 
 
 
